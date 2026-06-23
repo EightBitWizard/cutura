@@ -1,0 +1,13 @@
+node_modules
+.next
+.open-next
+.wrangler
+.turbo
+dist
+coverage
+playwright-report
+test-results
+pnpm-lock.yaml
+docs/REQUIREMENTS.md
+docs/PLAN.md
+CLAUDE.md

@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+
+# Build output
+.next/
+.open-next/
+dist/
+.turbo/
+*.tsbuildinfo
+
+# Cloudflare / Wrangler
+.wrangler/
+.dev.vars
+cloudflare-env.d.ts
+
+# Test / tooling output
+coverage/
+playwright-report/
+test-results/
+.lighthouseci/
+
+# Local env and secrets (never commit real secrets)
+.env
+.env.local
+.env.*.local
+
+# OS / editor
+.DS_Store
+*.log

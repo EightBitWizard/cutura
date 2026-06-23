@@ -1,0 +1,34 @@
+{
+  "name": "cutura",
+  "version": "0.0.0",
+  "private": true,
+  "description": "CUTURA - Swiss made-to-measure clothing platform (Cloudflare rebuild)",
+  "packageManager": "pnpm@11.9.0",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "typecheck": "turbo run typecheck",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "test:e2e": "turbo run test:e2e",
+    "check:format": "prettier --check .",
+    "format": "prettier --write .",
+    "check:dashes": "node scripts/check-dashes.mjs",
+    "check:copy": "node scripts/check-copy.mjs",
+    "gate": "pnpm lint && pnpm typecheck && pnpm test && pnpm check:format && pnpm check:dashes && pnpm check:copy && pnpm build"
+  },
+  "devDependencies": {
+    "@cutura/config": "workspace:*",
+    "@eslint/js": "^9.17.0",
+    "eslint": "^9.17.0",
+    "globals": "^15.14.0",
+    "prettier": "^3.4.2",
+    "turbo": "^2.3.3",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.20.0",
+    "vitest": "^3.0.0"
+  }
+}
