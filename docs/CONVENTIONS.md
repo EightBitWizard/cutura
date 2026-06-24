@@ -123,6 +123,7 @@ webhook); body measurements encrypted at rest; never the em dash U+2014 (gate:
 
 ## Pending follow-ups
 
-- Next 16 deprecates `middleware.ts` in favour of `proxy.ts`; rename when convenient.
-- Reconcile cron trigger; supplier-PDF fabric/option/upgrade images (model image
-  done); full GDPR webhook handling; checkout-creation rate limit (M3 follow-ups).
+- The request gate lives in `proxy.ts` (both apps; renamed from `middleware.ts` for
+  Next 16). The exported function is `proxy`.
+- supplier-PDF fabric/option/upgrade images (model image done); R2-object copy on
+  publish + Shopify refund execution are wired but live-verified after provisioning.
