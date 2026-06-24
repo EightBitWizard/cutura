@@ -483,6 +483,9 @@ export interface AccountMessages {
   addAddress: string;
   makeDefault: string;
   defaultLabel: string;
+  exportData: string;
+  deleteData: string;
+  deleteWarning: string;
 }
 
 const accountCatalog: Record<Locale, AccountMessages> = {
@@ -504,6 +507,10 @@ const accountCatalog: Record<Locale, AccountMessages> = {
     addAddress: "Adresse hinzufügen",
     makeDefault: "Als Standard",
     defaultLabel: "Standard",
+    exportData: "Meine Daten exportieren",
+    deleteData: "Mein Konto und meine Daten löschen",
+    deleteWarning:
+      "Dies löscht Ihre persönlichen Daten unwiderruflich. Bestellungen bleiben aus buchhalterischen Gründen anonymisiert erhalten.",
   },
   en: {
     loginTitle: "Sign in",
@@ -523,6 +530,10 @@ const accountCatalog: Record<Locale, AccountMessages> = {
     addAddress: "Add address",
     makeDefault: "Set as default",
     defaultLabel: "Default",
+    exportData: "Export my data",
+    deleteData: "Delete my account and data",
+    deleteWarning:
+      "This permanently deletes your personal data. Orders are kept, anonymized, for accounting.",
   },
   it: {
     loginTitle: "Accedi",
@@ -542,6 +553,10 @@ const accountCatalog: Record<Locale, AccountMessages> = {
     addAddress: "Aggiungi indirizzo",
     makeDefault: "Imposta come predefinito",
     defaultLabel: "Predefinito",
+    exportData: "Esporta i miei dati",
+    deleteData: "Elimina il mio account e i dati",
+    deleteWarning:
+      "Questo elimina definitivamente i tuoi dati personali. Gli ordini restano, anonimizzati, per la contabilita.",
   },
   fr: {
     loginTitle: "Se connecter",
@@ -561,6 +576,10 @@ const accountCatalog: Record<Locale, AccountMessages> = {
     addAddress: "Ajouter une adresse",
     makeDefault: "Definir par defaut",
     defaultLabel: "Par defaut",
+    exportData: "Exporter mes donnees",
+    deleteData: "Supprimer mon compte et mes donnees",
+    deleteWarning:
+      "Ceci supprime definitivement vos donnees personnelles. Les commandes sont conservees, anonymisees, pour la comptabilite.",
   },
 };
 
