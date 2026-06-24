@@ -7,6 +7,7 @@ export * from "./getDb";
 export * from "./audit";
 export * from "./catalog";
 export * from "./config";
+export * from "./content";
 export * from "./kpi";
 export * from "./ops";
 export * from "./shipping";

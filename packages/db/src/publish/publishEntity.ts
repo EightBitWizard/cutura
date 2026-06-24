@@ -7,6 +7,7 @@ import {
   resolveAttributeDefinition,
   resolveBaseModel,
   resolveCollection,
+  resolveContentPage,
   resolveFabric,
   resolveGarmentType,
   resolveOptionGroup,
@@ -45,6 +46,7 @@ const RESOLVERS: Record<string, Resolver> = {
   upgrade: resolveUpgrade,
   attributeDefinition: resolveAttributeDefinition,
   collection: resolveCollection,
+  contentPage: resolveContentPage,
   baseModel: resolveBaseModel,
 };
 

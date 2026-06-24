@@ -89,6 +89,7 @@ export interface Messages {
   configure: string;
   viewOnlyNotice: string;
   notifyMe: string;
+  materials: string;
   back: string;
   fabric: string;
   options: string;
@@ -116,6 +117,7 @@ const de: Messages = {
   configure: "Konfigurieren",
   viewOnlyNotice: "Dieses Modell ist derzeit nur zur Ansicht und nicht bestellbar.",
   notifyMe: "Benachrichtigen, wenn verfügbar",
+  materials: "Materialien",
   back: "Zurück",
   fabric: "Stoff",
   options: "Optionen",
@@ -205,6 +207,7 @@ const en: Messages = {
   configure: "Configure",
   viewOnlyNotice: "This model is currently view-only and cannot be ordered.",
   notifyMe: "Notify me when available",
+  materials: "Materials",
   back: "Back",
   fabric: "Fabric",
   options: "Options",
@@ -293,6 +296,7 @@ const it: Messages = {
   configure: "Configura",
   viewOnlyNotice: "Questo modello e attualmente solo visualizzabile e non ordinabile.",
   notifyMe: "Avvisami quando disponibile",
+  materials: "Materiali",
   back: "Indietro",
   fabric: "Tessuto",
   options: "Opzioni",
@@ -382,6 +386,7 @@ const fr: Messages = {
   configure: "Configurer",
   viewOnlyNotice: "Ce modele est actuellement en consultation uniquement et non commandable.",
   notifyMe: "Me prevenir quand disponible",
+  materials: "Matieres",
   back: "Retour",
   fabric: "Tissu",
   options: "Options",

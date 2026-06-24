@@ -15,6 +15,17 @@ import { getOrderingState, leadTimeFor } from "@/server/ops";
 
 export const dynamic = "force-dynamic";
 
+// Render a fibre composition (object like {cotton: 100}, a string, or nothing).
+function fibreText(value: unknown): string {
+  if (typeof value === "string") return value;
+  if (value && typeof value === "object") {
+    return Object.entries(value as Record<string, unknown>)
+      .map(([k, v]) => (typeof v === "number" ? `${v}% ${k}` : `${k}: ${String(v)}`))
+      .join(", ");
+  }
+  return "";
+}
+
 export async function generateMetadata({
   params,
 }: {
@@ -67,6 +78,23 @@ export default async function ProductPage({
         <span className="text-sm text-neutral-400">{t.allInclusive}</span>
       </p>
       <p className="mt-1 text-sm text-neutral-500">{t.leadTime(lead.minDays, lead.maxDays)}</p>
+
+      {model.fabrics.some((f) => fibreText(f.fibreComposition)) && (
+        <section className="mt-4">
+          <h2 className="text-sm font-medium uppercase tracking-wide text-neutral-500">
+            {t.materials}
+          </h2>
+          <ul className="mt-1 text-sm text-neutral-600">
+            {model.fabrics
+              .filter((f) => fibreText(f.fibreComposition))
+              .map((f) => (
+                <li key={f.code}>
+                  {f.name}: {fibreText(f.fibreComposition)}
+                </li>
+              ))}
+          </ul>
+        </section>
+      )}
 
       {ordering.paused && model.status !== "view_only" && (
         <div className="mt-6 rounded-lg border border-amber-200 bg-amber-50 p-4">

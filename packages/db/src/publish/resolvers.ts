@@ -8,6 +8,7 @@ import {
   baseModel,
   collection,
   collectionMember,
+  contentPage,
   fabric,
   garmentType,
   measurementSchema,
@@ -132,6 +133,12 @@ export const resolveCollection: Resolver = async (control, target, id) => {
     ...replaceChildren(target, media, mediaScope("collection", id), mediaRows),
     ...replaceChildren(target, collectionMember, eq(collectionMember.collectionId, id), members),
   ];
+};
+
+export const resolveContentPage: Resolver = async (control, target, id) => {
+  const [row] = await control.select().from(contentPage).where(eq(contentPage.id, id));
+  if (!row) throw new EntityNotFoundError("contentPage", id);
+  return copyById(target, contentPage, [row]);
 };
 
 export const resolveBaseModel: Resolver = async (control, target, id) => {

@@ -46,7 +46,13 @@ export interface PublishedModelSummary {
 export interface PublishedModelDetail extends PublishedModelSummary {
   /** The garment type key (e.g. "shirt"), used by the snapshot, QC, and supplier spec. */
   garmentType: string;
-  fabrics: Array<{ code: string; name: string; surchargeMinor: number; available: boolean }>;
+  fabrics: Array<{
+    code: string;
+    name: string;
+    surchargeMinor: number;
+    available: boolean;
+    fibreComposition: unknown;
+  }>;
   optionGroups: Array<{
     code: string;
     label: string;
@@ -106,6 +112,7 @@ export async function getPublishedModel(
       name: localize(f.nameI18n, locale),
       surchargeMinor: f.surchargeMinor,
       available: f.available,
+      fibreComposition: f.fibreComposition,
     }));
 
   // Allowed option groups + their values.
