@@ -212,6 +212,17 @@ export const contentPage = sqliteTable("content_page", {
   ...timestamps(),
 });
 
+// Curated cross-sell rules (FR-2E0): a source (model handle or attribute key:value)
+// suggests a model. Behavioural recommendations are a later, separate concern.
+export const crossSellRule = sqliteTable("cross_sell_rule", {
+  id: text("id").primaryKey(),
+  sourceType: text("source_type", { enum: ["model", "attribute"] }).notNull(),
+  sourceKey: text("source_key").notNull(),
+  suggestedModelId: text("suggested_model_id").notNull(),
+  position: integer("position").notNull().default(0),
+  ...timestamps(),
+});
+
 // Publication: per entity, the publish targets, with audit (FR-190 to FR-192).
 // An item published only to staging cannot reach production because production
 // is a separate database; this table records what was published where.

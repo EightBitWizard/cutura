@@ -8,6 +8,7 @@ import {
   resolveBaseModel,
   resolveCollection,
   resolveContentPage,
+  resolveCrossSellRule,
   resolveFabric,
   resolveGarmentType,
   resolveOptionGroup,
@@ -47,6 +48,7 @@ const RESOLVERS: Record<string, Resolver> = {
   attributeDefinition: resolveAttributeDefinition,
   collection: resolveCollection,
   contentPage: resolveContentPage,
+  crossSellRule: resolveCrossSellRule,
   baseModel: resolveBaseModel,
 };
 

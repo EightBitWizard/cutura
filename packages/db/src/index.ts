@@ -8,6 +8,7 @@ export * from "./audit";
 export * from "./catalog";
 export * from "./config";
 export * from "./content";
+export * from "./crosssell";
 export * from "./kpi";
 export * from "./notify";
 export * from "./ops";

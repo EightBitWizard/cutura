@@ -9,6 +9,7 @@ import {
   collection,
   collectionMember,
   contentPage,
+  crossSellRule,
   fabric,
   garmentType,
   measurementSchema,
@@ -139,6 +140,12 @@ export const resolveContentPage: Resolver = async (control, target, id) => {
   const [row] = await control.select().from(contentPage).where(eq(contentPage.id, id));
   if (!row) throw new EntityNotFoundError("contentPage", id);
   return copyById(target, contentPage, [row]);
+};
+
+export const resolveCrossSellRule: Resolver = async (control, target, id) => {
+  const [row] = await control.select().from(crossSellRule).where(eq(crossSellRule.id, id));
+  if (!row) throw new EntityNotFoundError("crossSellRule", id);
+  return copyById(target, crossSellRule, [row]);
 };
 
 export const resolveBaseModel: Resolver = async (control, target, id) => {

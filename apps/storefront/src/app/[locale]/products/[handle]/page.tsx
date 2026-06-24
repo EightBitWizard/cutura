@@ -4,10 +4,17 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { buildAlternates, formatCHF } from "@cutura/core";
-import { getDb, getPrimaryMediaId, getPublishedModel } from "@cutura/db";
+import {
+  getCrossSellSuggestions,
+  getDb,
+  getPrimaryMediaId,
+  getPublishedModel,
+  primaryMediaForEntities,
+} from "@cutura/db";
 
 import { Configurator } from "@/components/Configurator";
 import { MediaImage } from "@/components/MediaImage";
+import { ModelGrid } from "@/components/ModelGrid";
 import { defaultLocale, isLocale, locales } from "@/i18n/config";
 import { getMessages } from "@/i18n/messages";
 import { getEnv } from "@/server/env";
@@ -58,6 +65,15 @@ export default async function ProductPage({
   if (!model) notFound();
 
   const mediaId = await getPrimaryMediaId(db, "model", model.id);
+  const suggestions = await getCrossSellSuggestions(db, locale, {
+    id: model.id,
+    handle: model.handle,
+  });
+  const suggestionMedia = await primaryMediaForEntities(
+    db,
+    "model",
+    suggestions.map((s) => s.id),
+  );
   const ordering = await getOrderingState(locale);
   const lead = leadTimeFor(ordering, model.leadTimeMinDays, model.leadTimeMaxDays);
 
@@ -150,6 +166,21 @@ export default async function ProductPage({
             recalculating: t.recalculating,
           }}
         />
+      )}
+
+      {suggestions.length > 0 && (
+        <section className="mt-12">
+          <h2 className="text-xl font-medium">{t.youMightAlsoLike}</h2>
+          <div className="mt-4">
+            <ModelGrid
+              models={suggestions}
+              mediaByModel={suggestionMedia}
+              locale={locale}
+              fromLabel={t.from}
+              notifyLabel={t.notifyMe}
+            />
+          </div>
+        </section>
       )}
     </main>
   );

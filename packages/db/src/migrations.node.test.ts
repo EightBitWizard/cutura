@@ -84,4 +84,11 @@ describe("D1 migrations", () => {
       expect(columnNames(db, "customer").has(col), `customer.${col}`).toBe(true);
     }
   });
+
+  it("apply the M6 cross_sell_rule table", () => {
+    const cols = columnNames(applyAllMigrations(), "cross_sell_rule");
+    for (const col of ["source_type", "source_key", "suggested_model_id", "position"]) {
+      expect(cols.has(col), `cross_sell_rule.${col}`).toBe(true);
+    }
+  });
 });
