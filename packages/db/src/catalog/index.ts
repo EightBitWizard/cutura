@@ -5,7 +5,7 @@
 // exercised on the Workers pool against real D1.
 
 import type { BatchItem } from "drizzle-orm/batch";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 
 import type { Database } from "../getDb";
 import { type IdTable } from "../publish/upsert";
@@ -18,6 +18,7 @@ import {
   collection,
   collectionMember,
   fabric,
+  media,
   modelAllowedFabric,
   modelAllowedOption,
   modelAllowedUpgrade,
@@ -252,6 +253,36 @@ export async function listCollectionMemberIds(
 export async function deleteCollection(db: Database, id: string): Promise<void> {
   await db.delete(collectionMember).where(eq(collectionMember.collectionId, id));
   await db.delete(collection).where(eq(collection.id, id));
+}
+
+/** Media rows attached to an entity, ordered by position (FR-170, FR-211). */
+export async function listMedia(
+  db: Database,
+  entityType: string,
+  entityId: string,
+): Promise<(typeof media.$inferSelect)[]> {
+  const rows = await db
+    .select()
+    .from(media)
+    .where(and(eq(media.entityType, entityType), eq(media.entityId, entityId)));
+  return [...rows].sort((a, b) => a.position - b.position);
+}
+
+/** Mark one media row primary and clear the others for the same entity (FR-211). */
+export function setPrimaryMedia(
+  db: Database,
+  entityType: string,
+  entityId: string,
+  mediaId: string,
+): Promise<unknown> {
+  const now = new Date().toISOString();
+  return db.batch([
+    db
+      .update(media)
+      .set({ isPrimary: false, updatedAt: now })
+      .where(and(eq(media.entityType, entityType), eq(media.entityId, entityId))),
+    db.update(media).set({ isPrimary: true, updatedAt: now }).where(eq(media.id, mediaId)),
+  ] as [BatchItem<"sqlite">, BatchItem<"sqlite">]);
 }
 
 /** Locales whose localized value is missing or blank (surfaces incomplete locales, FR-271). */
