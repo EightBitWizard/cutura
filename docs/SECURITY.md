@@ -8,8 +8,10 @@ that delivers them is upcoming.
 
 - **Secrets** live in Cloudflare Workers secrets and GitHub encrypted secrets;
   none in the repo. Required names are in `.dev.vars.example`. [done]
-- **Admin auth is separate** from customer auth, on its own worker/subdomain.
-  [planned, M2]
+- **Admin auth is separate** from customer auth, on its own worker. Password
+  checked timing-safe vs `ADMIN_AUTH_SECRET`; signed http-only KV-backed session;
+  middleware gates the admin surface; KV rate limit on login; form redirects
+  restricted to same-origin paths (`safePath`). [done, M2] Magic-link/RBAC later.
 - **Customer auth** is magic-link with signed, http-only cookie sessions backed
   by KV; ownership enforced on every customer resource. [planned, M4]
 - **Payments**: Shopify-hosted checkout only; CUTURA never handles card data.

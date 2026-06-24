@@ -49,10 +49,16 @@ pnpm exec wrangler r2 bucket create cutura-media-production
 pnpm --filter @cutura/storefront exec wrangler secret put SESSION_SECRET --env staging
 pnpm --filter @cutura/storefront exec wrangler secret put MEASUREMENT_ENCRYPTION_KEY --env staging
 pnpm --filter @cutura/storefront exec wrangler secret put EMAIL_PROVIDER_KEY --env staging
-# repeat with --env production, and for the admin worker (no --env) put ADMIN_AUTH_SECRET
+# repeat with --env production
+
+# admin worker (no --env): the login password and the session signing secret
+pnpm --filter @cutura/admin exec wrangler secret put ADMIN_AUTH_SECRET
+pnpm --filter @cutura/admin exec wrangler secret put SESSION_SECRET
 ```
 
-Secret names are listed in `.dev.vars.example`. Shopify secrets are added in M3.
+Secret names are listed in `.dev.vars.example`. For local admin dev, set
+`ADMIN_AUTH_SECRET` and `SESSION_SECRET` in `.dev.vars`. Shopify secrets are added
+in M3.
 
 ## 5. GitHub Actions secrets, variables, and the production gate
 

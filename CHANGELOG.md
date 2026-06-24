@@ -4,6 +4,21 @@ All notable changes to this project. Newest first.
 
 ## Unreleased
 
+### Added (M2 - catalog platform and admin control plane)
+
+- Admin authentication (password and a signed KV session, separate from
+  customers), an audit trail, and Web-Crypto session primitives in `packages/core`.
+- The catalog publish-to-environment routine (dependency-closure resolvers,
+  idempotent, one atomic D1 batch, environment-isolated; publish and unpublish),
+  with a real-D1 Workers Vitest pool.
+- Catalog data-layer helpers and a no-code admin for all eight entity types
+  (garment types; base models with pricing and allow-lists; fabrics; option
+  groups and values; upgrades; collections and members; attributes; supplier),
+  each with localized content, incomplete-locale surfacing, and publish/unpublish.
+- R2 image upload with a primary flag and ordering, and an authenticated preview.
+- The storefront published-catalog read API (localized, allow-lists resolved).
+- Security: fixed an open redirect in the publish/unpublish handlers (safePath).
+
 ### Added (M0 foundation + M1 start)
 
 - pnpm + Turborepo monorepo with shared config (`packages/config`): tsconfig

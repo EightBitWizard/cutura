@@ -43,17 +43,25 @@ reserved by `@opennextjs/cloudflare`: `NEXT_INC_CACHE_R2_BUCKET`,
 | QC checklist templates                 | `packages/core/src/qc.ts`                        |
 | DB schema                              | `packages/db/src/schema/*`                       |
 | Per-request DB client                  | `packages/db/src/getDb.ts`                       |
-| Catalog publish seam                   | `packages/db/src/publish.ts` (impl in M2)        |
+| Catalog publish routine                | `packages/db/src/publish/` (publish/unpublish)   |
+| Catalog authoring helpers              | `packages/db/src/catalog/` (CRUD, allow-lists)   |
+| Storefront catalog read                | `packages/db/src/catalog/read.ts`                |
+| Admin auth (password + KV session)     | `apps/admin/src/server/auth.ts`                  |
+| Web-Crypto session primitives          | `packages/core/src/crypto.ts`                    |
 | Recommendation seam                    | future (E11); same pattern as the estimator seam |
 
 `packages/core` is pure: no Next, React, or Cloudflare imports (ESLint-enforced).
+Apps never import `drizzle-orm` directly: catalog queries/writes go through
+`packages/db` helpers, keeping the ORM encapsulated and Workers-pool-testable.
 
 ## Testing approach (hybrid)
 
 - `packages/core`: Vitest on the plain **Node pool** (pure logic, fast).
-- `packages/db` and integration: real D1/KV via the **Workers pool**
-  (`@cloudflare/vitest-pool-workers`) once apps wire it; the migration validity
-  test currently uses Node `node:sqlite` (D1 is SQLite).
+- `packages/db`: two vitest configs - the **Node pool** for migration/seed
+  validity and pure helpers (`*.node.test.ts`, via `node:sqlite`), and the
+  **Workers pool** with real D1 for the publish routine and catalog queries
+  (`*.workers.test.ts`, `@cloudflare/vitest-pool-workers` pinned `~0.12` to keep
+  Vitest 3.2; v0.16 needs Vitest 4).
 - End to end / deploy smoke: Playwright against the **live deployed URL**
   (`apps/storefront/e2e/smoke.spec.ts`, `--grep @smoke`).
 
