@@ -14,6 +14,7 @@ import {
   collection,
   collectionMember,
   fabric,
+  garmentType,
   modelAllowedFabric,
   modelAllowedOption,
   modelAllowedUpgrade,
@@ -42,6 +43,8 @@ export interface PublishedModelSummary {
 }
 
 export interface PublishedModelDetail extends PublishedModelSummary {
+  /** The garment type key (e.g. "shirt"), used by the snapshot, QC, and supplier spec. */
+  garmentType: string;
   fabrics: Array<{ code: string; name: string; surchargeMinor: number; available: boolean }>;
   optionGroups: Array<{
     code: string;
@@ -82,6 +85,8 @@ export async function getPublishedModel(
 ): Promise<PublishedModelDetail | undefined> {
   const [model] = await db.select().from(baseModel).where(eq(baseModel.handle, handle));
   if (!model || model.status === "draft") return undefined;
+
+  const [gt] = await db.select().from(garmentType).where(eq(garmentType.id, model.garmentTypeId));
 
   // Allowed fabrics, in allow-list order, available only.
   const af = byPosition(
@@ -164,6 +169,7 @@ export async function getPublishedModel(
     leadTimeMinDays: model.leadTimeMinDays,
     leadTimeMaxDays: model.leadTimeMaxDays,
     status: model.status as "view_only" | "orderable",
+    garmentType: gt?.key ?? "shirt",
     fabrics,
     optionGroups,
     upgrades,

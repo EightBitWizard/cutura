@@ -4,3 +4,4 @@ export * from "./snapshotIo";
 export * from "./transitions";
 export * from "./qc";
 export * from "./pipeline";
+export * from "./checkout";
