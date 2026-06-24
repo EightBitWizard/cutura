@@ -114,6 +114,13 @@ supplier + shipping configuration, the KPI dashboard with per-order cost capture
 the audit log, and CSV order export (Dashboard -> Export orders). Set an admin
 notification email in Settings to be emailed on each new paid order.
 
+Deciding a fit review "refund" issues the Shopify refund automatically when the
+admin worker has Shopify credentials (otherwise it is recorded for you to refund
+manually); the outcome is in the audit log. Shopify data-protection requests arrive
+as webhooks: a deletion request erases the customer automatically; data-export and
+shop-closure requests appear in the audit log for you to fulfil. A scheduled job
+reconciles recent orders against Shopify every few hours (see Releasing/reconcile).
+
 ## Shipping configuration
 
 Under **Shipping** (`/shipping`): define zones (e.g. CH, LI) and methods. Standard

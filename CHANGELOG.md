@@ -4,6 +4,19 @@ All notable changes to this project. Newest first.
 
 ## Unreleased
 
+### Added (M9 - launch-hardening follow-ups)
+
+- A scheduled backstop that reconciles recent orders against Shopify, so a missed or
+  duplicated payment notification is caught.
+- Shopify data-protection (GDPR) webhooks: a deletion request erases the matching
+  customer through the existing audited erasure path; data-export and shop-closure
+  requests are recorded for the founder to action.
+- Published catalog images are now copied to the live image store on publish, so they
+  appear on the staging and production storefronts.
+- A fit-guarantee refund can be executed from the admin decision when Shopify is
+  connected (recorded only otherwise), with the outcome audited.
+- Renamed the request middleware to the Next 16 `proxy` convention.
+
 ### Added (M8 - second garment type and recommendations)
 
 - Trousers: a second garment type, added as catalog data plus the existing
