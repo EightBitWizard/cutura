@@ -14,9 +14,10 @@ EMAIL_PROVIDER_KEY=""
 # Admin control-plane auth (admin worker only).
 ADMIN_AUTH_SECRET=""
 
-# Shopify payment rail (M3, storefront worker). The admin API token + webhook
-# signing secret are secrets; the store domain + API version are non-secret and
-# in production live in wrangler.jsonc [vars].
+# Shopify payment rail (storefront worker; also the admin worker for executing
+# fit-guarantee refunds - optional, refunds are recorded-only when unset). The admin
+# API token + webhook signing secret are secrets; the store domain + API version are
+# non-secret and in production live in wrangler.jsonc [vars].
 SHOPIFY_ADMIN_API_TOKEN=""
 SHOPIFY_WEBHOOK_SECRET=""
 SHOPIFY_STORE_DOMAIN="cutura.myshopify.com"

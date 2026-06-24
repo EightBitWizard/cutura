@@ -20,6 +20,11 @@ export interface AdminEnv {
   MEASUREMENT_ENCRYPTION_KEY: string;
   EMAIL_PROVIDER_KEY: string;
   CUTURA_ENV: string;
+  // Optional Shopify credentials for executing refunds from the fit-review decision
+  // (M9). When unset, a refund decision is recorded only (no live call).
+  SHOPIFY_ADMIN_API_TOKEN?: string;
+  SHOPIFY_STORE_DOMAIN?: string;
+  SHOPIFY_API_VERSION?: string;
 }
 
 export function getEnv(): AdminEnv {
