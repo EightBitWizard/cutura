@@ -15,6 +15,8 @@ import {
   LOCALES,
   type Locale,
   baseModel,
+  collection,
+  collectionMember,
   fabric,
   modelAllowedFabric,
   modelAllowedOption,
@@ -212,6 +214,44 @@ export async function deleteBaseModel(db: Database, id: string): Promise<void> {
   await db.delete(modelAllowedOption).where(eq(modelAllowedOption.baseModelId, id));
   await db.delete(modelAllowedUpgrade).where(eq(modelAllowedUpgrade.baseModelId, id));
   await db.delete(baseModel).where(eq(baseModel.id, id));
+}
+
+/** Replace a collection's ordered members (FR-2D0). */
+export function setCollectionMembers(
+  db: Database,
+  collectionId: string,
+  baseModelIds: string[],
+): Promise<unknown> {
+  const rows = baseModelIds.map((baseModelId, position) => ({
+    id: `${collectionId}:${baseModelId}`,
+    collectionId,
+    baseModelId,
+    position,
+  }));
+  return replaceAllowList(
+    db,
+    collectionMember,
+    eq(collectionMember.collectionId, collectionId),
+    rows,
+  );
+}
+
+/** A collection's member base-model ids, in order. */
+export async function listCollectionMemberIds(
+  db: Database,
+  collectionId: string,
+): Promise<string[]> {
+  const rows = await db
+    .select()
+    .from(collectionMember)
+    .where(eq(collectionMember.collectionId, collectionId));
+  return [...rows].sort((a, b) => a.position - b.position).map((r) => r.baseModelId);
+}
+
+/** Delete a collection and its member rows from the control database. */
+export async function deleteCollection(db: Database, id: string): Promise<void> {
+  await db.delete(collectionMember).where(eq(collectionMember.collectionId, id));
+  await db.delete(collection).where(eq(collection.id, id));
 }
 
 /** Locales whose localized value is missing or blank (surfaces incomplete locales, FR-271). */
