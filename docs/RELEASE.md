@@ -30,7 +30,8 @@ database, transactionally and idempotently, with an audit record.
   versions).
 - Data: `wrangler d1 time-travel restore <db> --timestamp <ISO>` (any minute in
   the last 30 days) and `wrangler d1 export <db> --remote` for an off-platform
-  copy.
+  copy. The tested restore drill (run quarterly + after any migration) and the
+  billing-cap setup are in `infra/restore-drill.md` (helper: `infra/restore-drill.sh`).
 
 ## Smoke test
 
