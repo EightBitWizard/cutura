@@ -19,7 +19,10 @@ that delivers them is upcoming.
 - **Right to erasure**: customer-initiated deletion hard-deletes personal data and
   scrubs-but-retains order/accounting rows (PII + body data removed), removes R2
   photos, revokes sessions, and tombstones the account; idempotent and covered by
-  a "no PII remains" test. Export returns the customer's own data as JSON. [done, M4]
+  a "no PII remains" test. Export returns the customer's own data as JSON. The
+  Shopify `customers/redact` GDPR webhook reuses this path (`redactCustomerByEmail`);
+  `customers/data_request` + `shop/redact` are audited for the founder to fulfil and
+  never auto-wipe. [done, M4 + M9]
 - **Admin sensitive access is audited**: the back-office customer view decrypts
   body measurements and writes a `customer.view` audit row (FR-1050); CSV export
   carries order/money/dates only, never measurements or customer PII. The

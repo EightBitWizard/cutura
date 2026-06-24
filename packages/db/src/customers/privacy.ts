@@ -4,6 +4,7 @@ import { type GarmentMeasurements, decryptJson } from "@cutura/core";
 
 import { writeAudit } from "../audit";
 import type { Database } from "../getDb";
+import { findCustomerByEmail } from "./auth";
 import {
   address,
   communicationLog,
@@ -234,6 +235,22 @@ export async function deleteCustomerData(
     photosDeleted: photoKeys.length,
     signalsDeleted: signalIds.length,
   };
+}
+
+/**
+ * Erase a customer found by email (the Shopify `customers/redact` GDPR webhook).
+ * Reuses the audited erasure path; returns null if no such customer (idempotent: a
+ * re-delivery finds the tombstoned email gone and no-ops).
+ */
+export async function redactCustomerByEmail(
+  db: Database,
+  email: string,
+  r2: R2Like,
+  deps: { now?: () => string } = {},
+): Promise<DeletionReport | null> {
+  const customer = await findCustomerByEmail(db, email);
+  if (!customer) return null;
+  return deleteCustomerData(db, customer.id, r2, deps);
 }
 
 export interface CustomerExport {

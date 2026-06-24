@@ -6,8 +6,10 @@ import {
   getOrderById,
   notifyAdmin,
   processPaidEvent,
+  redactCustomerByEmail,
   renderOrderConfirmation,
   sendEmailAndLog,
+  writeAudit,
 } from "@cutura/db";
 
 import { isLocale } from "@/i18n/config";
@@ -64,8 +66,32 @@ export async function POST(request: Request): Promise<Response> {
     return new Response("bad json", { status: 400 });
   }
 
-  // GDPR compliance topics: acknowledge (full handling in the privacy milestone).
+  // GDPR compliance topics (HMAC already verified). customers/redact erases the
+  // customer via the audited erasure path; data_request + shop/redact are recorded
+  // for the founder to fulfil (data_request is merchant-fulfilled; shop/redact must
+  // never auto-wipe a single-store custom app's data). All audited in the env DB.
   if (topic.startsWith("customers/") || topic.startsWith("shop/")) {
+    const db = getDb(env.DB);
+    const gdpr = JSON.parse(raw) as { customer?: { email?: string } };
+    if (topic === "customers/redact") {
+      const email = gdpr.customer?.email;
+      if (email) await redactCustomerByEmail(db, email, env.MEDIA);
+      await writeAudit(db, {
+        actor: "shopify",
+        action: "gdpr.customers_redact",
+        entityType: "customer",
+        detail: { hadEmail: Boolean(email) },
+      });
+    } else if (topic === "customers/data_request") {
+      await writeAudit(db, {
+        actor: "shopify",
+        action: "gdpr.data_request",
+        entityType: "customer",
+        detail: { email: gdpr.customer?.email ?? null },
+      });
+    } else if (topic === "shop/redact") {
+      await writeAudit(db, { actor: "shopify", action: "gdpr.shop_redact" });
+    }
     return new Response("ok", { status: 200 });
   }
 

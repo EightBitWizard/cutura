@@ -23,7 +23,7 @@ import {
   session,
 } from "../schema";
 import { findOrCreateCustomer } from "./auth";
-import { deleteCustomerData, exportCustomerData } from "./privacy";
+import { deleteCustomerData, exportCustomerData, redactCustomerByEmail } from "./privacy";
 
 const db = () => getDb(env.TARGET_TEST_DB);
 const KEY = "test-measurement-encryption-key";
@@ -251,6 +251,24 @@ describe("deleteCustomerData (the privacy gate)", () => {
     const again = await deleteCustomerData(db(), c.id, r2b);
     expect(again.ordersScrubbed).toBe(1);
     expect(r2b.deleted).toEqual([]);
+  });
+
+  it("redacts by email (GDPR customers/redact) and no-ops on an unknown email", async () => {
+    const email = `red_${crypto.randomUUID()}@x.ch`;
+    const { customer: c } = await findOrCreateCustomer(db(), email, "de");
+    await seedFootprint(c.id, c.email);
+
+    const report = await redactCustomerByEmail(db(), email.toUpperCase(), new FakeR2());
+    expect(report?.signalsDeleted).toBe(1);
+    // The customer is tombstoned, so the original email no longer resolves (idempotent).
+    expect(await redactCustomerByEmail(db(), email, new FakeR2())).toBeNull();
+    const [tomb] = await db().select().from(customer).where(eq(customer.id, c.id));
+    expect(tomb?.deletionState).toBe("deleted");
+
+    // An unknown email is a clean no-op.
+    expect(
+      await redactCustomerByEmail(db(), `nobody_${crypto.randomUUID()}@x.ch`, new FakeR2()),
+    ).toBeNull();
   });
 
   it("exports the customer's own data", async () => {

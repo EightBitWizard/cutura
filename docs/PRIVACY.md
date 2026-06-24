@@ -55,6 +55,12 @@ deleted`) and kept as the foreign-key target; a tombstoned email cannot log back
 - **Residency**: measurement data resides in Switzerland or the EU (R2 EU
   jurisdiction; D1 region selection at provisioning).
 
+- **Shopify GDPR webhooks** (done): the HMAC-verified webhook handles
+  `customers/redact` (erases the matching customer via `redactCustomerByEmail` ->
+  the audited deletion path; idempotent), and records `customers/data_request`
+  (merchant-fulfilled out-of-band via the existing export) and `shop/redact` (never
+  auto-wipes) in the environment audit log for the founder to action.
+
 Never log measurements, addresses, order contents, or payment details; scrub
 error reports. Document every third-party service that touches user data.
 
