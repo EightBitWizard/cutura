@@ -60,6 +60,15 @@ export async function createGuestOrder(
   return { orderId, itemIds };
 }
 
+/** Resolve a local order id from its order number (webhook tag fallback). */
+export async function findOrderIdByNumber(
+  db: Database,
+  orderNumber: string,
+): Promise<string | null> {
+  const [row] = await db.select().from(order).where(eq(order.orderNumber, orderNumber));
+  return row?.id ?? null;
+}
+
 /** Record the Shopify draft id + hosted-checkout URL on the order (resume / expiry). */
 export async function attachShopifyDraft(
   db: Database,
