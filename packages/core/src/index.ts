@@ -5,6 +5,7 @@
 export * from "./types";
 export * from "./crypto";
 export * from "./measurementCrypto";
+export * from "./magicLink";
 export * from "./shopify";
 export * from "./status";
 export * from "./outliers";

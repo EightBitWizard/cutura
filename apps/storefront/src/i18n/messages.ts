@@ -462,3 +462,91 @@ const catalog: Record<Locale, Messages> = { de, en, it, fr };
 export function getMessages(locale: Locale): Messages {
   return catalog[locale];
 }
+
+export interface AccountMessages {
+  loginTitle: string;
+  loginIntro: string;
+  emailLabel: string;
+  sendLink: string;
+  linkSent: string;
+  signOut: string;
+  title: string;
+  navProfile: string;
+  navOrders: string;
+  navAddresses: string;
+  navPrivacy: string;
+  errExpired: string;
+  errDisabled: string;
+  errThrottled: string;
+}
+
+const accountCatalog: Record<Locale, AccountMessages> = {
+  de: {
+    loginTitle: "Anmelden",
+    loginIntro: "Geben Sie Ihre E-Mail ein. Wir senden Ihnen einen Anmeldelink.",
+    emailLabel: "E-Mail",
+    sendLink: "Link senden",
+    linkSent: "Wenn ein Konto existiert, ist ein Link unterwegs. Prüfen Sie Ihr Postfach.",
+    signOut: "Abmelden",
+    title: "Mein Konto",
+    navProfile: "Masse",
+    navOrders: "Bestellungen",
+    navAddresses: "Adressen",
+    navPrivacy: "Daten und Datenschutz",
+    errExpired: "Der Link ist abgelaufen oder ungültig. Bitte fordern Sie einen neuen an.",
+    errDisabled: "Dieses Konto ist nicht verfügbar.",
+    errThrottled: "Zu viele Versuche. Bitte später erneut versuchen.",
+  },
+  en: {
+    loginTitle: "Sign in",
+    loginIntro: "Enter your email and we will send you a sign-in link.",
+    emailLabel: "Email",
+    sendLink: "Send link",
+    linkSent: "If an account exists, a link is on its way. Check your inbox.",
+    signOut: "Sign out",
+    title: "My account",
+    navProfile: "Measurements",
+    navOrders: "Orders",
+    navAddresses: "Addresses",
+    navPrivacy: "Data and privacy",
+    errExpired: "The link expired or is invalid. Please request a new one.",
+    errDisabled: "This account is not available.",
+    errThrottled: "Too many attempts. Please try again later.",
+  },
+  it: {
+    loginTitle: "Accedi",
+    loginIntro: "Inserisci la tua email e ti invieremo un link di accesso.",
+    emailLabel: "Email",
+    sendLink: "Invia link",
+    linkSent: "Se esiste un account, il link e in arrivo. Controlla la posta.",
+    signOut: "Esci",
+    title: "Il mio account",
+    navProfile: "Misure",
+    navOrders: "Ordini",
+    navAddresses: "Indirizzi",
+    navPrivacy: "Dati e privacy",
+    errExpired: "Il link e scaduto o non valido. Richiedine uno nuovo.",
+    errDisabled: "Questo account non e disponibile.",
+    errThrottled: "Troppi tentativi. Riprova piu tardi.",
+  },
+  fr: {
+    loginTitle: "Se connecter",
+    loginIntro: "Saisissez votre e-mail et nous vous enverrons un lien de connexion.",
+    emailLabel: "E-mail",
+    sendLink: "Envoyer le lien",
+    linkSent: "Si un compte existe, un lien arrive. Verifiez votre boite.",
+    signOut: "Se deconnecter",
+    title: "Mon compte",
+    navProfile: "Mesures",
+    navOrders: "Commandes",
+    navAddresses: "Adresses",
+    navPrivacy: "Donnees et confidentialite",
+    errExpired: "Le lien a expire ou est invalide. Veuillez en demander un nouveau.",
+    errDisabled: "Ce compte n est pas disponible.",
+    errThrottled: "Trop de tentatives. Reessayez plus tard.",
+  },
+};
+
+export function getAccountMessages(locale: Locale): AccountMessages {
+  return accountCatalog[locale];
+}

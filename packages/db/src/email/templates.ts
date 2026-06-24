@@ -94,6 +94,55 @@ export function renderShippedEmail(
   };
 }
 
+const magicLink: Record<
+  EmailLocale,
+  { subject: string; heading: string; body: string; cta: string; expiry: string }
+> = {
+  de: {
+    subject: "Ihr CUTURA Anmeldelink",
+    heading: "Bei CUTURA anmelden",
+    body: "Klicken Sie auf den Link, um sich anzumelden oder ein Konto zu erstellen.",
+    cta: "Anmelden",
+    expiry: "Der Link ist 15 Minuten gültig und nur einmal verwendbar.",
+  },
+  en: {
+    subject: "Your CUTURA sign-in link",
+    heading: "Sign in to CUTURA",
+    body: "Click the link to sign in or create your account.",
+    cta: "Sign in",
+    expiry: "The link is valid for 15 minutes and can be used once.",
+  },
+  it: {
+    subject: "Il tuo link di accesso CUTURA",
+    heading: "Accedi a CUTURA",
+    body: "Clicca sul link per accedere o creare il tuo account.",
+    cta: "Accedi",
+    expiry: "Il link e valido 15 minuti e utilizzabile una sola volta.",
+  },
+  fr: {
+    subject: "Votre lien de connexion CUTURA",
+    heading: "Se connecter a CUTURA",
+    body: "Cliquez sur le lien pour vous connecter ou creer votre compte.",
+    cta: "Se connecter",
+    expiry: "Le lien est valable 15 minutes et utilisable une seule fois.",
+  },
+};
+
+/** Passwordless sign-in / account-recovery link (FR-610/620). */
+export function renderMagicLinkEmail(
+  input: { to: string; magicUrl: string },
+  locale: EmailLocale,
+): EmailMessage {
+  const t = pick(magicLink, locale);
+  return {
+    to: input.to,
+    from: FROM,
+    subject: t.subject,
+    html: `<h1>${t.heading}</h1><p>${t.body}</p><p><a href="${input.magicUrl}">${t.cta}</a></p><p>${t.expiry}</p>`,
+    text: `${t.heading}\n${t.body}\n${input.magicUrl}\n${t.expiry}`,
+  };
+}
+
 /** Supplier production email (German; the tailor-facing language). Carries the PDF spec. */
 export function renderSupplierEmail(input: {
   to: string;

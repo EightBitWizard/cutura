@@ -12,6 +12,7 @@
     "cf:build": "opennextjs-cloudflare build",
     "cf:deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
+    "test": "vitest run",
     "test:e2e": "playwright test"
   },
   "dependencies": {
@@ -33,6 +34,7 @@
     "eslint-config-next": "^16.2.9",
     "tailwindcss": "^4.0.0",
     "typescript": "^5.7.3",
+    "vitest": "^3.0.0",
     "wrangler": "^4.100.0"
   }
 }
