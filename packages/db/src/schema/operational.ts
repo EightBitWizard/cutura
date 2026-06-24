@@ -256,6 +256,19 @@ export const redirect = sqliteTable("redirect", {
   updatedAt: text("updated_at").notNull(),
 });
 
+// Consented recommendation signals (FR-1120): captured from the start so a future
+// ML model has training data. Only written with analytics consent; deleted with the
+// customer (FR-1142). Never holds measurements or order contents.
+export const recommendationSignal = sqliteTable("recommendation_signal", {
+  id: text("id").primaryKey(),
+  customerId: text("customer_id"),
+  sessionId: text("session_id").notNull(),
+  signalType: text("signal_type").notNull(), // "view" | "search" | "cart_add" | "impression"
+  entityType: text("entity_type").notNull(), // "model"
+  entityId: text("entity_id").notNull(),
+  createdAt: text("created_at").notNull(),
+});
+
 export const auditLog = sqliteTable("audit_log", {
   id: text("id").primaryKey(),
   actor: text("actor").notNull(),

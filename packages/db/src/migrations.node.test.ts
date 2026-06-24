@@ -92,6 +92,13 @@ describe("D1 migrations", () => {
     }
   });
 
+  it("apply the M8 recommendation_signal table", () => {
+    const cols = columnNames(applyAllMigrations(), "recommendation_signal");
+    for (const col of ["customer_id", "session_id", "signal_type", "entity_type", "entity_id"]) {
+      expect(cols.has(col), `recommendation_signal.${col}`).toBe(true);
+    }
+  });
+
   it("apply the M7 contact_message + redirect tables", () => {
     const db = applyAllMigrations();
     expect(columnNames(db, "contact_message").has("message")).toBe(true);

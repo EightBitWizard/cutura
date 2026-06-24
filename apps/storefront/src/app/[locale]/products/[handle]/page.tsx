@@ -15,6 +15,7 @@ import {
 import { Configurator } from "@/components/Configurator";
 import { MediaImage } from "@/components/MediaImage";
 import { ModelGrid } from "@/components/ModelGrid";
+import { ViewSignal } from "@/components/ViewSignal";
 import { defaultLocale, isLocale, locales } from "@/i18n/config";
 import { getMessages } from "@/i18n/messages";
 import { getEnv } from "@/server/env";
@@ -93,6 +94,7 @@ export default async function ProductPage({
         // < so a value containing </script> cannot break out of the tag.
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
       />
+      <ViewSignal entityId={model.id} />
       <Link href={`/${locale}`} className="text-sm text-neutral-500 underline">
         {t.back}
       </Link>

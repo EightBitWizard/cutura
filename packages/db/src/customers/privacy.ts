@@ -18,6 +18,7 @@ import {
   paymentEvent,
   productionPackage,
   qcRecord,
+  recommendationSignal,
   session,
 } from "../schema";
 
@@ -38,6 +39,7 @@ export interface DeletionReport {
   notifyRequests: number;
   ordersScrubbed: number;
   photosDeleted: number;
+  signalsDeleted: number;
 }
 
 function toKeys(value: unknown): string[] {
@@ -159,6 +161,16 @@ export async function deleteCustomerData(
   if (notifyIds.length && cust?.email) {
     await db.delete(notifyRequest).where(eq(notifyRequest.email, cust.email));
   }
+  // Personalization data is removed with the customer (FR-1142).
+  const signalIds = await ids(
+    await db
+      .select({ id: recommendationSignal.id })
+      .from(recommendationSignal)
+      .where(eq(recommendationSignal.customerId, customerId)),
+  );
+  if (signalIds.length) {
+    await db.delete(recommendationSignal).where(eq(recommendationSignal.customerId, customerId));
+  }
 
   // Scrub-keep order/accounting records.
   if (orderIds.length) {
@@ -220,6 +232,7 @@ export async function deleteCustomerData(
     notifyRequests: notifyIds.length,
     ordersScrubbed: orderIds.length,
     photosDeleted: photoKeys.length,
+    signalsDeleted: signalIds.length,
   };
 }
 

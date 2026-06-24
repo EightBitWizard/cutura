@@ -19,6 +19,7 @@ import {
   paymentEvent,
   productionPackage,
   qcRecord,
+  recommendationSignal,
   session,
 } from "../schema";
 import { findOrCreateCustomer } from "./auth";
@@ -168,6 +169,15 @@ async function seedFootprint(customerId: string, email: string) {
     payload: { email },
     processedAt: iso,
   });
+  await db().insert(recommendationSignal).values({
+    id: crypto.randomUUID(),
+    customerId,
+    sessionId: "sess1",
+    signalType: "view",
+    entityType: "model",
+    entityId: "bm1",
+    createdAt: iso,
+  });
   return { orderId, itemId, pkgId };
 }
 
@@ -182,6 +192,7 @@ describe("deleteCustomerData (the privacy gate)", () => {
     expect(report.addresses).toBe(1);
     expect(report.profiles).toBe(1);
     expect(report.notifyRequests).toBe(1);
+    expect(report.signalsDeleted).toBe(1);
     expect(r2.deleted.sort()).toEqual(["fr/photo1", "qc/photo1"]);
 
     // Personal data gone.
@@ -199,6 +210,14 @@ describe("deleteCustomerData (the privacy gate)", () => {
     ).toBe(0);
     expect(
       (await db().select().from(notifyRequest).where(eq(notifyRequest.email, email))).length,
+    ).toBe(0);
+    expect(
+      (
+        await db()
+          .select()
+          .from(recommendationSignal)
+          .where(eq(recommendationSignal.customerId, c.id))
+      ).length,
     ).toBe(0);
 
     // Retained order, scrubbed.
