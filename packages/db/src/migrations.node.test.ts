@@ -25,6 +25,11 @@ function tableNames(db: DatabaseSync): Set<string> {
   return new Set(rows.map((r) => (r as { name: string }).name));
 }
 
+function columnNames(db: DatabaseSync, table: string): Set<string> {
+  const rows = db.prepare(`PRAGMA table_info("${table}")`).all();
+  return new Set(rows.map((r) => (r as { name: string }).name));
+}
+
 describe("D1 migrations", () => {
   it("apply cleanly as valid SQLite", () => {
     expect(() => applyAllMigrations()).not.toThrow();
@@ -58,5 +63,13 @@ describe("D1 migrations", () => {
     for (const table of required) {
       expect(tables.has(table), `missing table: ${table}`).toBe(true);
     }
+  });
+
+  it("apply the M3 checkout columns (order_item.config_enc, order draft/invoice)", () => {
+    const db = applyAllMigrations();
+    expect(columnNames(db, "order_item").has("config_enc")).toBe(true);
+    const orderCols = columnNames(db, "order");
+    expect(orderCols.has("shopify_draft_id")).toBe(true);
+    expect(orderCols.has("invoice_url")).toBe(true);
   });
 });

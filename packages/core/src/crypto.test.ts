@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   type SessionPayload,
+  hmacSha256Base64,
   hmacSha256Hex,
   randomToken,
   sha256Hex,
@@ -11,6 +12,14 @@ import {
 } from "./crypto";
 
 const SECRET = "test-secret-at-least-32-characters-long!!";
+
+describe("hmacSha256Base64", () => {
+  it("produces the known base64 HMAC vector (key 'key', the fox message)", async () => {
+    expect(await hmacSha256Base64("The quick brown fox jumps over the lazy dog", "key")).toBe(
+      "97yD9DBThCSxMpjmqm+xQ+9NWaFJRhdZl0edvC0aPNg=",
+    );
+  });
+});
 
 describe("randomToken", () => {
   it("returns a url-safe token and is unique per call", () => {

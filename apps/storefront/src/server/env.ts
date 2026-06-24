@@ -11,6 +11,15 @@ export interface StorefrontEnv {
   RATE_LIMIT: KVNamespace;
   MEDIA: R2Bucket;
   CUTURA_ENV: string;
+  // Secrets (wrangler secret put) + Shopify vars, used by the measurement,
+  // checkout, and webhook routes (M3).
+  SESSION_SECRET: string;
+  MEASUREMENT_ENCRYPTION_KEY: string;
+  EMAIL_PROVIDER_KEY: string;
+  SHOPIFY_ADMIN_API_TOKEN: string;
+  SHOPIFY_WEBHOOK_SECRET: string;
+  SHOPIFY_STORE_DOMAIN: string;
+  SHOPIFY_API_VERSION: string;
 }
 
 export function getEnv(): StorefrontEnv {

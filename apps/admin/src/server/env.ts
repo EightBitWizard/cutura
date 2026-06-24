@@ -15,6 +15,10 @@ export interface AdminEnv {
   MEDIA_PRODUCTION: R2Bucket;
   SESSION_SECRET: string;
   ADMIN_AUTH_SECRET: string;
+  // Decrypts production-package snapshots for the order detail view + supplier
+  // spec, and sends supplier/status emails from the order-ops surface (M3).
+  MEASUREMENT_ENCRYPTION_KEY: string;
+  EMAIL_PROVIDER_KEY: string;
   CUTURA_ENV: string;
 }
 

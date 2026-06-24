@@ -22,12 +22,15 @@ export function parseVars(input: unknown): Vars {
 /**
  * Secret names expected per worker (documented in .dev.vars.example, set via
  * `wrangler secret put`). Listed here so a future env validator can assert their
- * presence at startup. Shopify secrets are added in the checkout milestone (M3).
+ * presence at startup. The Shopify secrets back the payment rail (M3); the store
+ * domain + API version are non-secret [vars].
  */
 export const SECRET_NAMES = [
   "SESSION_SECRET",
   "MEASUREMENT_ENCRYPTION_KEY",
   "EMAIL_PROVIDER_KEY",
   "ADMIN_AUTH_SECRET",
+  "SHOPIFY_ADMIN_API_TOKEN",
+  "SHOPIFY_WEBHOOK_SECRET",
 ] as const;
 export type SecretName = (typeof SECRET_NAMES)[number];

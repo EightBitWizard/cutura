@@ -59,6 +59,15 @@ export async function hmacSha256Hex(message: string, secret: string): Promise<st
     .join("");
 }
 
+/** HMAC-SHA256 of a message with a secret, as standard base64. Shopify webhook signatures use this. */
+export async function hmacSha256Base64(message: string, secret: string): Promise<string> {
+  const key = await hmacKey(secret);
+  const sig = await crypto.subtle.sign("HMAC", key, buf(encoder.encode(message)));
+  let binary = "";
+  for (const b of new Uint8Array(sig)) binary += String.fromCharCode(b);
+  return btoa(binary);
+}
+
 /** Constant-time string comparison. Returns false for differing lengths. */
 export function timingSafeEqual(a: string, b: string): boolean {
   if (a.length !== b.length) return false;

@@ -8,6 +8,13 @@
       "when": 1782252340647,
       "tag": "0000_condemned_azazel",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1782291270577,
+      "tag": "0001_gray_bloodscream",
+      "breakpoints": true
     }
   ]
 }

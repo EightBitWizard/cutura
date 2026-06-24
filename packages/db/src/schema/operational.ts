@@ -84,6 +84,10 @@ export const order = sqliteTable("order", {
   // Rolled-up status; validated by the core status machine.
   status: text("status").notNull().default("new"),
   shopifyOrderId: text("shopify_order_id").unique(),
+  // The Shopify draft order id + its hosted-checkout invoice URL, for resume and
+  // link-expiry handling (FR-7I0).
+  shopifyDraftId: text("shopify_draft_id"),
+  invoiceUrl: text("invoice_url"),
   ...timestamps(),
 });
 
@@ -92,6 +96,11 @@ export const orderItem = sqliteTable("order_item", {
   orderId: text("order_id").notNull(),
   baseModelId: text("base_model_id").notNull(),
   status: text("status").notNull().default("new"),
+  // Encrypted, frozen snapshot inputs captured at checkout (config + upgrades +
+  // confirmed measurements + per-piece override + price breakdown). The paid
+  // webhook builds the immutable production snapshot from this, independent of the
+  // transient guest measurement blob in KV (FR-810/811).
+  configEnc: text("config_enc"),
   ...timestamps(),
 });
 
