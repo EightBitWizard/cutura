@@ -9,17 +9,20 @@ import {
   getDb,
   getPrimaryMediaId,
   getPublishedModel,
+  getRecommendations,
   primaryMediaForEntities,
 } from "@cutura/db";
 
 import { Configurator } from "@/components/Configurator";
 import { MediaImage } from "@/components/MediaImage";
 import { ModelGrid } from "@/components/ModelGrid";
+import { RecommendedSection } from "@/components/RecommendedSection";
 import { ViewSignal } from "@/components/ViewSignal";
 import { defaultLocale, isLocale, locales } from "@/i18n/config";
 import { getMessages } from "@/i18n/messages";
 import { getEnv } from "@/server/env";
 import { getOrderingState, leadTimeFor } from "@/server/ops";
+import { getCustomerId } from "@/server/session";
 
 export const dynamic = "force-dynamic";
 
@@ -75,6 +78,13 @@ export default async function ProductPage({
     "model",
     suggestions.map((s) => s.id),
   );
+  const customerId = await getCustomerId();
+  const recommended = await getRecommendations(db, locale, {
+    sourceModelIds: [model.id],
+    customerId,
+    excludeIds: suggestions.map((s) => s.id),
+    limit: 4,
+  });
   const ordering = await getOrderingState(locale);
   const lead = leadTimeFor(ordering, model.leadTimeMinDays, model.leadTimeMaxDays);
 
@@ -198,6 +208,14 @@ export default async function ProductPage({
           </div>
         </section>
       )}
+
+      <RecommendedSection
+        locale={locale}
+        heading={t.recommendedForYou}
+        models={recommended}
+        fromLabel={t.from}
+        notifyLabel={t.notifyMe}
+      />
     </main>
   );
 }

@@ -1,7 +1,12 @@
 import Link from "next/link";
 
+import { getDb, getRecommendations } from "@cutura/db";
+
+import { RecommendedSection } from "@/components/RecommendedSection";
 import { defaultLocale, isLocale } from "@/i18n/config";
-import { getAccountMessages } from "@/i18n/messages";
+import { getAccountMessages, getMessages } from "@/i18n/messages";
+import { getEnv } from "@/server/env";
+import { getCustomerId } from "@/server/session";
 
 export const dynamic = "force-dynamic";
 
@@ -9,6 +14,12 @@ export default async function AccountPage({ params }: { params: Promise<{ locale
   const { locale: raw } = await params;
   const locale = isLocale(raw) ? raw : defaultLocale;
   const t = getAccountMessages(locale);
+  const tt = getMessages(locale);
+
+  const customerId = await getCustomerId();
+  const recommended = customerId
+    ? await getRecommendations(getDb(getEnv().DB), locale, { customerId, limit: 3 })
+    : [];
 
   const link = (path: string, label: string) => (
     <Link href={`/${locale}/account/${path}`} className="text-neutral-900 underline">
@@ -30,6 +41,14 @@ export default async function AccountPage({ params }: { params: Promise<{ locale
           {t.signOut}
         </button>
       </form>
+
+      <RecommendedSection
+        locale={locale}
+        heading={tt.recommendedForYou}
+        models={recommended}
+        fromLabel={tt.from}
+        notifyLabel={tt.notifyMe}
+      />
     </main>
   );
 }

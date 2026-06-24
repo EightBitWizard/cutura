@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 
-import { getCustomerOrderDetail, getDb } from "@cutura/db";
+import { getCustomerOrderDetail, getDb, getRecommendations } from "@cutura/db";
 
 import { OrderDetailView } from "@/components/OrderDetailView";
+import { RecommendedSection } from "@/components/RecommendedSection";
 import { defaultLocale, isLocale } from "@/i18n/config";
-import { getOrderMessages } from "@/i18n/messages";
+import { getMessages, getOrderMessages } from "@/i18n/messages";
 import { getEnv } from "@/server/env";
 import { getCustomerId } from "@/server/session";
 
@@ -30,6 +31,9 @@ export default async function OrderDetailPage({
     env.MEASUREMENT_ENCRYPTION_KEY,
   );
   if (!detail) notFound();
+
+  const tt = getMessages(locale);
+  const recommended = await getRecommendations(getDb(env.DB), locale, { customerId, limit: 4 });
 
   return (
     <main className="mx-auto max-w-2xl px-6 py-10">
@@ -73,6 +77,14 @@ export default async function OrderDetailPage({
           {t.feedback}
         </Link>
       </div>
+
+      <RecommendedSection
+        locale={locale}
+        heading={tt.recommendedForYou}
+        models={recommended}
+        fromLabel={tt.from}
+        notifyLabel={tt.notifyMe}
+      />
     </main>
   );
 }

@@ -5,15 +5,18 @@ import type { Metadata } from "next";
 import { buildAlternates, formatCHF } from "@cutura/core";
 import {
   getDb,
+  getRecommendations,
   listPublishedCollections,
   listPublishedModels,
   primaryMediaForEntities,
 } from "@cutura/db";
 
 import { MediaImage } from "@/components/MediaImage";
+import { RecommendedSection } from "@/components/RecommendedSection";
 import { defaultLocale, isLocale, locales } from "@/i18n/config";
 import { getMessages } from "@/i18n/messages";
 import { getEnv } from "@/server/env";
+import { getCustomerId } from "@/server/session";
 
 export const dynamic = "force-dynamic";
 
@@ -48,12 +51,26 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   );
   const modelByHandle = new Map(models.map((m) => [m.handle, m]));
 
+  // Personalized only when signed in; a guest home would just mirror the catalog.
+  const customerId = await getCustomerId();
+  const recommended = customerId
+    ? await getRecommendations(db, locale, { customerId, limit: 3 })
+    : [];
+
   return (
     <main className="mx-auto max-w-5xl px-6 py-12">
       <header>
         <h1 className="text-4xl font-semibold tracking-tight">{t.brand}</h1>
         <p className="mt-3 text-lg text-neutral-600">{t.tagline}</p>
       </header>
+
+      <RecommendedSection
+        locale={locale}
+        heading={t.recommendedForYou}
+        models={recommended}
+        fromLabel={t.from}
+        notifyLabel={t.notifyMe}
+      />
 
       {collections.map((c) => (
         <section key={c.handle} className="mt-12">

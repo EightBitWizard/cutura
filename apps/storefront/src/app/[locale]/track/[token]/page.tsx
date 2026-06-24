@@ -1,10 +1,11 @@
 import { notFound } from "next/navigation";
 
-import { getDb, getOrderByTrackingToken } from "@cutura/db";
+import { getDb, getOrderByTrackingToken, getRecommendations } from "@cutura/db";
 
 import { OrderDetailView } from "@/components/OrderDetailView";
+import { RecommendedSection } from "@/components/RecommendedSection";
 import { defaultLocale, isLocale } from "@/i18n/config";
-import { getOrderMessages } from "@/i18n/messages";
+import { getMessages, getOrderMessages } from "@/i18n/messages";
 import { getEnv } from "@/server/env";
 
 export const dynamic = "force-dynamic";
@@ -26,6 +27,9 @@ export default async function TrackPage({
   );
   if (!detail) notFound();
 
+  const tt = getMessages(locale);
+  const recommended = await getRecommendations(getDb(env.DB), locale, { limit: 4 });
+
   return (
     <main className="mx-auto max-w-2xl px-6 py-10">
       <h1 className="text-2xl font-semibold tracking-tight">{t.trackingTitle}</h1>
@@ -33,6 +37,14 @@ export default async function TrackPage({
         {t.orderNumber} <span className="font-mono">{detail.orderNumber}</span>
       </p>
       <OrderDetailView detail={detail} locale={locale} />
+
+      <RecommendedSection
+        locale={locale}
+        heading={tt.youMightAlsoLike}
+        models={recommended}
+        fromLabel={tt.from}
+        notifyLabel={tt.notifyMe}
+      />
     </main>
   );
 }

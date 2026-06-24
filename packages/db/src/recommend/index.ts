@@ -38,6 +38,8 @@ export interface RecommendOptions {
   sourceModelIds?: string[];
   /** A logged-in customer, to use their own past orders (context + exclude owned). */
   customerId?: string | null;
+  /** Extra models to never suggest (e.g. cross-sell already shown on the page). */
+  excludeIds?: string[];
   limit?: number;
 }
 
@@ -80,7 +82,7 @@ export async function getRecommendations(
     for (const s of suggestions) curatedIds.push(s.id);
   }
 
-  const excludeIds = [...new Set([...sourceIds, ...owned])];
+  const excludeIds = [...new Set([...sourceIds, ...owned, ...(opts.excludeIds ?? [])])];
   const rankedIds = recommend({
     candidates,
     contextAttributes,
