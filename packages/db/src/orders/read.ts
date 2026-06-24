@@ -1,4 +1,4 @@
-import { desc, eq } from "drizzle-orm";
+import { count, desc, eq, ne } from "drizzle-orm";
 
 import type { Database } from "../getDb";
 import { order, orderItem, productionPackage, qcRecord, statusEvent } from "../schema";
@@ -24,6 +24,12 @@ export interface OrderDetail {
 /** Orders newest-first for the admin list. */
 export function listOrders(db: Database): Promise<OrderRow[]> {
   return db.select().from(order).orderBy(desc(order.createdAt));
+}
+
+/** Count of open (not-yet-shipped) orders - the production load for the capacity cap (FR-2B0). */
+export async function countOpenOrders(db: Database): Promise<number> {
+  const [row] = await db.select({ c: count() }).from(order).where(ne(order.status, "shipped"));
+  return row?.c ?? 0;
 }
 
 /** Full order detail for the admin order page: items + their package + QC, and the timeline. */

@@ -3,6 +3,7 @@ import { getDb } from "@cutura/db";
 import { defaultLocale } from "@/i18n/config";
 import { cartCookie, newCartToken, readCart, readCartToken, writeCart } from "@/server/cart";
 import { getEnv } from "@/server/env";
+import { getOrderingState } from "@/server/ops";
 import { priceConfigured } from "@/server/pricing";
 
 export const dynamic = "force-dynamic";
@@ -35,6 +36,13 @@ export async function POST(request: Request): Promise<Response> {
     // add (default): recompute + validate from the current catalog before storing.
     if (typeof body.handle !== "string") {
       return Response.json({ error: "missing handle" }, { status: 400 });
+    }
+    const ordering = await getOrderingState(defaultLocale);
+    if (ordering.paused) {
+      return Response.json(
+        { error: "ordering paused", message: ordering.message },
+        { status: 409 },
+      );
     }
     const priced = await priceConfigured(getDb(getEnv().DB), body.handle, defaultLocale, {
       fabricCode: body.fabricCode ?? null,

@@ -10,6 +10,7 @@ export * from "./shopify";
 export * from "./status";
 export * from "./customerStatusTimeline";
 export * from "./fitWindow";
+export * from "./capacity";
 export * from "./operationsSettings";
 export * from "./outliers";
 export * from "./estimator";

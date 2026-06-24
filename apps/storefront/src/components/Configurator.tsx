@@ -28,10 +28,12 @@ interface PriceResponse {
 export function Configurator({
   model,
   locale,
+  paused = false,
   messages: t,
 }: {
   model: PublishedModelDetail;
   locale: string;
+  paused?: boolean;
   messages: ConfiguratorMessages;
 }) {
   // Fast-path defaults (FR-460/461): first available fabric, first value of each
@@ -226,7 +228,7 @@ export function Configurator({
         {!valid && <p className="mt-2 text-sm text-amber-700">{t.selectRequired}</p>}
         <button
           type="button"
-          disabled={!valid || submitting}
+          disabled={!valid || submitting || paused}
           onClick={addToCart}
           className="mt-4 w-full rounded-md bg-neutral-900 px-4 py-3 font-medium text-white disabled:opacity-40"
         >

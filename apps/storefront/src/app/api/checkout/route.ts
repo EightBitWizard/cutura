@@ -21,6 +21,7 @@ import { PRIVACY_VERSION, TERMS_VERSION } from "@/legal";
 import { type CartLine, readCart, readCartToken } from "@/server/cart";
 import { getEnv } from "@/server/env";
 import { readMeasureToken, readMeasurementVersion } from "@/server/measurement";
+import { getOrderingState } from "@/server/ops";
 import { priceConfigured } from "@/server/pricing";
 import { getCustomerId } from "@/server/session";
 import { createShopifyClient } from "@/server/shopify";
@@ -129,6 +130,12 @@ export async function POST(request: Request): Promise<Response> {
   const cookie = request.headers.get("cookie");
   const cart = await readCart(readCartToken(cookie));
   if (cart.lines.length === 0) return Response.json({ error: "empty cart" }, { status: 400 });
+
+  // Server-authoritative pause gate (FR-2B0/2B1): never accept an order while paused.
+  const ordering = await getOrderingState(locale);
+  if (ordering.paused) {
+    return Response.json({ error: "ordering paused", message: ordering.message }, { status: 409 });
+  }
 
   const customerId = await getCustomerId();
   const measureToken = readMeasureToken(cookie);
