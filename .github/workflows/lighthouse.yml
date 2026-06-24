@@ -1,0 +1,26 @@
+name: Lighthouse
+
+# Mobile performance + Core Web Vitals budgets (NFR-11). Runs against the deployed
+# staging URL; gated on the STAGING_URL repo variable so it skips cleanly until
+# Cloudflare provisioning exists. Manual or on push to main.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  lighthouse:
+    name: Lighthouse (staging)
+    if: vars.STAGING_URL != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Run Lighthouse CI
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          urls: |
+            ${{ vars.STAGING_URL }}/de
+            ${{ vars.STAGING_URL }}/de/discover
+          # Mobile preset; budgets are advisory until launch hardening.
+          configPath: ./.github/lighthouse/lighthouserc.json
+          uploadArtifacts: true
