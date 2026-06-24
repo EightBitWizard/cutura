@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { type OrderSnapshot, getDefaultQcChecklist } from "@cutura/core";
+import { type OrderSnapshot, checkOutliers, getDefaultQcChecklist } from "@cutura/core";
 import { getOrderDetail, readSnapshot } from "@cutura/db";
 
 import { environmentDb } from "@/server/catalog";
@@ -72,6 +72,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
             <h2 className="font-medium">{snapshot?.baseModelName ?? item.baseModelId}</h2>
             <span className="text-sm text-neutral-500">{item.status}</span>
           </div>
+          {snapshot && <OutlierWarning snapshot={snapshot} />}
           {snapshot && <SnapshotView snapshot={snapshot} />}
           {qc && (
             <p className="mt-2 text-sm">
@@ -115,6 +116,21 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
         ))}
       </ul>
     </main>
+  );
+}
+
+function OutlierWarning({ snapshot }: { snapshot: OrderSnapshot }) {
+  const result = checkOutliers(snapshot.garmentType, snapshot.effectiveMeasurements);
+  if (!result.isOutlier) return null;
+  return (
+    <div className="mt-2 rounded border border-amber-300 bg-amber-50 p-3 text-sm text-amber-800">
+      <p className="font-medium">Outlier - bitte Masse prüfen</p>
+      <ul className="mt-1 list-disc pl-5">
+        {result.flags.map((f) => (
+          <li key={f}>{f}</li>
+        ))}
+      </ul>
+    </div>
   );
 }
 

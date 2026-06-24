@@ -6,7 +6,12 @@
 // German operator-facing strings only; all dashes are ASCII hyphens per the
 // CLAUDE.md style rule.
 
-import type { OutlierCheck, ShirtMeasurements, TrouserMeasurements } from "./types";
+import type {
+  GarmentMeasurements,
+  OutlierCheck,
+  ShirtMeasurements,
+  TrouserMeasurements,
+} from "./types";
 
 /**
  * A field counts as provided when it is a finite number, including 0. A truthy
@@ -68,6 +73,17 @@ export function checkShirtOutliers(
   }
 
   return { isOutlier: flags.length > 0, flags };
+}
+
+/** Dispatch the outlier check by garment type (used to surface review/outlier orders in the admin). */
+export function checkOutliers(
+  garmentType: string,
+  measurements: GarmentMeasurements | null | undefined,
+): OutlierCheck {
+  if (garmentType === "trouser") {
+    return checkTrouserOutliers(measurements as Partial<TrouserMeasurements> | null | undefined);
+  }
+  return checkShirtOutliers(measurements as Partial<ShirtMeasurements> | null | undefined);
 }
 
 export function checkTrouserOutliers(
