@@ -4,6 +4,8 @@
 // per workstream across M3; the full i18n milestone (M-i18n) replaces this with a
 // richer setup.
 
+import type { CustomerMilestone } from "@cutura/core";
+
 import type { Locale } from "./config";
 
 export interface ShirtFieldLabels {
@@ -549,4 +551,88 @@ const accountCatalog: Record<Locale, AccountMessages> = {
 
 export function getAccountMessages(locale: Locale): AccountMessages {
   return accountCatalog[locale];
+}
+
+export const milestoneLabels: Record<Locale, Record<CustomerMilestone, string>> = {
+  de: {
+    received: "Eingegangen",
+    in_production: "In Produktion",
+    quality_check: "Qualitätskontrolle",
+    shipped: "Versandt",
+    attention: "In Bearbeitung",
+  },
+  en: {
+    received: "Received",
+    in_production: "In production",
+    quality_check: "Quality check",
+    shipped: "Shipped",
+    attention: "In progress",
+  },
+  it: {
+    received: "Ricevuto",
+    in_production: "In produzione",
+    quality_check: "Controllo qualita",
+    shipped: "Spedito",
+    attention: "In corso",
+  },
+  fr: {
+    received: "Recu",
+    in_production: "En production",
+    quality_check: "Controle qualite",
+    shipped: "Expedie",
+    attention: "En cours",
+  },
+};
+
+export interface OrderMessages {
+  ordersTitle: string;
+  viewOrder: string;
+  trackingTitle: string;
+  empty: string;
+  orderNumber: string;
+  fitReview: string;
+  feedback: string;
+}
+
+const orderCatalog: Record<Locale, OrderMessages> = {
+  de: {
+    ordersTitle: "Bestellungen",
+    viewOrder: "Ansehen",
+    trackingTitle: "Bestellverfolgung",
+    empty: "Noch keine Bestellungen.",
+    orderNumber: "Bestellnummer",
+    fitReview: "Passform reklamieren",
+    feedback: "Feedback geben",
+  },
+  en: {
+    ordersTitle: "Orders",
+    viewOrder: "View",
+    trackingTitle: "Order tracking",
+    empty: "No orders yet.",
+    orderNumber: "Order number",
+    fitReview: "Report a fit issue",
+    feedback: "Give feedback",
+  },
+  it: {
+    ordersTitle: "Ordini",
+    viewOrder: "Vedi",
+    trackingTitle: "Tracciamento ordine",
+    empty: "Nessun ordine.",
+    orderNumber: "Numero ordine",
+    fitReview: "Segnala un problema di vestibilita",
+    feedback: "Lascia un feedback",
+  },
+  fr: {
+    ordersTitle: "Commandes",
+    viewOrder: "Voir",
+    trackingTitle: "Suivi de commande",
+    empty: "Aucune commande.",
+    orderNumber: "Numero de commande",
+    fitReview: "Signaler un probleme de coupe",
+    feedback: "Donner un avis",
+  },
+};
+
+export function getOrderMessages(locale: Locale): OrderMessages {
+  return orderCatalog[locale];
 }

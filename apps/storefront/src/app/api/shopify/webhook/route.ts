@@ -96,11 +96,19 @@ export async function POST(request: Request): Promise<Response> {
       const order = await getOrderById(db, orderId);
       if (order?.guestEmail) {
         const locale: EmailLocale = isLocale(order.locale) ? order.locale : "de";
+        const trackingUrl = order.guestTrackingToken
+          ? `${new URL(request.url).origin}/${locale}/track/${order.guestTrackingToken}`
+          : undefined;
         await sendEmailAndLog(
           db,
           new ResendEmailProvider(env.EMAIL_PROVIDER_KEY),
           renderOrderConfirmation(
-            { to: order.guestEmail, orderNumber: order.orderNumber, totalMinor: order.totalMinor },
+            {
+              to: order.guestEmail,
+              orderNumber: order.orderNumber,
+              totalMinor: order.totalMinor,
+              trackingUrl,
+            },
             locale,
           ),
           { orderId, template: "order_confirmation" },

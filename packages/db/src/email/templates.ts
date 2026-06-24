@@ -65,8 +65,19 @@ function pick<T>(map: Record<EmailLocale, T>, locale: EmailLocale): T {
   return map[locale] ?? map.de;
 }
 
+const trackLabel: Record<EmailLocale, string> = {
+  de: "Bestellung verfolgen",
+  en: "Track your order",
+  it: "Segui il tuo ordine",
+  fr: "Suivre votre commande",
+};
+
+function trackHtml(trackingUrl: string | undefined, locale: EmailLocale): string {
+  return trackingUrl ? `<p><a href="${trackingUrl}">${pick(trackLabel, locale)}</a></p>` : "";
+}
+
 export function renderOrderConfirmation(
-  input: { to: string; orderNumber: string; totalMinor: number },
+  input: { to: string; orderNumber: string; totalMinor: number; trackingUrl?: string },
   locale: EmailLocale,
 ): EmailMessage {
   const t = pick(confirmation, locale);
@@ -75,13 +86,13 @@ export function renderOrderConfirmation(
     to: input.to,
     from: FROM,
     subject: `${t.subject} ${input.orderNumber}`,
-    html: `<h1>${t.heading}</h1><p>${t.body}</p><p>${input.orderNumber}</p><p>${t.total}: ${total}</p>`,
-    text: `${t.heading}\n${t.body}\n${input.orderNumber}\n${t.total}: ${total}`,
+    html: `<h1>${t.heading}</h1><p>${t.body}</p><p>${input.orderNumber}</p><p>${t.total}: ${total}</p>${trackHtml(input.trackingUrl, locale)}`,
+    text: `${t.heading}\n${t.body}\n${input.orderNumber}\n${t.total}: ${total}${input.trackingUrl ? `\n${input.trackingUrl}` : ""}`,
   };
 }
 
 export function renderShippedEmail(
-  input: { to: string; orderNumber: string },
+  input: { to: string; orderNumber: string; trackingUrl?: string },
   locale: EmailLocale,
 ): EmailMessage {
   const t = pick(shipped, locale);
@@ -89,8 +100,8 @@ export function renderShippedEmail(
     to: input.to,
     from: FROM,
     subject: `${t.subject} (${input.orderNumber})`,
-    html: `<h1>${t.heading}</h1><p>${t.body}</p><p>${input.orderNumber}</p>`,
-    text: `${t.heading}\n${t.body}\n${input.orderNumber}`,
+    html: `<h1>${t.heading}</h1><p>${t.body}</p><p>${input.orderNumber}</p>${trackHtml(input.trackingUrl, locale)}`,
+    text: `${t.heading}\n${t.body}\n${input.orderNumber}${input.trackingUrl ? `\n${input.trackingUrl}` : ""}`,
   };
 }
 
