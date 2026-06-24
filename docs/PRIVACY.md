@@ -11,6 +11,8 @@ by design: minimize, protect, use only for the stated purpose, fully deletable.
   encrypted at rest; effective values frozen into the immutable order snapshot.
 - **Orders**: configuration, totals, accepted terms/privacy version, locale,
   guest tracking token.
+- **Notify-me**: an email + the item + locale for back-in-stock notification
+  (FR-361); minimal, and removed by customer deletion (it is keyed by email).
 
 ## Commitments (with the milestone that delivers each)
 

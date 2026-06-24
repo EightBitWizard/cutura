@@ -95,6 +95,22 @@ notification email in Settings to be emailed on each new paid order.
 Under **Shipping** (`/shipping`): define zones (e.g. CH, LI) and methods. Standard
 shipping is included in the displayed price.
 
+## Content, collections, and discovery
+
+- **Content + legal pages** (`/content`): create and edit About, FAQ, the fit
+  guide, and the legal pages in four languages, then publish. They render on the
+  storefront at `/<lang>/content/<slug>` and `/<lang>/legal/<slug>`. Final legal
+  text needs lawyer sign-off (pending).
+- **Collections** (`/collections`): set members, localized name/description, and a
+  banner image. Collections and the home page drive browsing.
+- **Discovery filters**: assign attributes (colour, occasion, fit, ...) on a base
+  model's edit page; they become storefront filters at `/<lang>/discover` and
+  occasion pages at `/<lang>/occasions/<value>`.
+- **Cross-sell** (`/cross-sell`): curate "you might also like" suggestions.
+- **Languages**: the storefront serves German, English, Italian, and French with
+  locale-prefixed URLs, browser detection, and a switcher. New visible copy is
+  drafted professionally but should be reviewed by a translator before launch.
+
 ## Reading CI
 
 Each push runs the quality gate and (on main) deploys to Staging with the smoke

@@ -4,6 +4,21 @@ All notable changes to this project. Newest first.
 
 ## Unreleased
 
+### Added (M6 - internationalization, discovery, and content)
+
+- Public catalog image serving (safe raster-only serve) with images on the home,
+  product, collection, and discovery pages.
+- Browser-language detection with a manual switcher; SEO metadata, hreflang
+  alternates, a sitemap and robots, and locale-aware date/number formatting.
+- Editable content and legal pages (authored, published, rendered from the
+  database); fibre composition on the product page.
+- Attribute-driven discovery (filter and sort), occasion browsing, collection
+  pages, localized search, and notify-me on unavailable items.
+- Merchandising tools: per-item attribute assignment, collection banners, and
+  curated cross-sell with product suggestions on the product page.
+- A localized parcel card and an admin packaging step; designed empty and
+  not-found states; seeded About, FAQ, and fit-guide content.
+
 ### Added (M5 - operations and backoffice)
 
 - A status-grouped pipeline board with review/outlier lanes, and outlier warnings

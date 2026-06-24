@@ -29,8 +29,13 @@ that delivers them is upcoming.
   never handles card data. The paid webhook is verified with timing-safe HMAC
   (base64) over the raw body and is idempotent on the webhook id; a reconcile job
   backstops missed events. [done, M3]
-- **Rate limiting** (KV) on admin login + magic-link issuance/verification (done).
-  Checkout-creation + webhook-adjacent limits are a follow-up. [partial]
+- **Rate limiting** (KV) on admin login + magic-link issuance/verification + the
+  notify-me endpoint (done). Checkout-creation + webhook-adjacent limits are a
+  follow-up. [partial]
+- **Public media serving** mirrors the admin safe serve: only allow-listed raster
+  types inline, anything else is an opaque download with nosniff + a locked-down
+  CSP (no stored SVG/HTML XSS). Shared allow-list in `packages/core/src/media.ts`.
+  [done, M6]
 - **Body measurements encrypted at rest**: AES-256-GCM (HKDF from
   `MEASUREMENT_ENCRYPTION_KEY`, per-purpose key) for the guest measurement KV
   blob, the checkout-frozen `order_item.config_enc`, and the production snapshot;
