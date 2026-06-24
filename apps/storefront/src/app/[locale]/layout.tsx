@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { ConsentBanner } from "@/components/ConsentBanner";
+import { Footer } from "@/components/Footer";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { isLocale, locales } from "@/i18n/config";
 import { getMessages } from "@/i18n/messages";
@@ -42,6 +43,7 @@ export default async function LocaleLayout({
           </div>
         </header>
         {children}
+        <Footer locale={locale} contactLabel={t.contact} />
         <ConsentBanner
           messages={{ text: t.consentText, accept: t.consentAccept, decline: t.consentDecline }}
         />

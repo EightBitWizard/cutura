@@ -96,6 +96,7 @@ export interface Messages {
   consentText: string;
   consentAccept: string;
   consentDecline: string;
+  contact: string;
   discoverTitle: string;
   filters: string;
   sortLabel: string;
@@ -142,6 +143,7 @@ const de: Messages = {
     "Wir verwenden notwendige Cookies. Optionale Analyse-Cookies nur mit Ihrer Zustimmung.",
   consentAccept: "Alle akzeptieren",
   consentDecline: "Nur notwendige",
+  contact: "Kontakt",
   discoverTitle: "Entdecken",
   filters: "Filter",
   sortLabel: "Sortieren",
@@ -249,6 +251,7 @@ const en: Messages = {
   consentText: "We use necessary cookies. Optional analytics cookies only with your consent.",
   consentAccept: "Accept all",
   consentDecline: "Necessary only",
+  contact: "Contact",
   discoverTitle: "Discover",
   filters: "Filters",
   sortLabel: "Sort",
@@ -355,6 +358,7 @@ const it: Messages = {
   consentText: "Usiamo cookie necessari. Cookie di analisi opzionali solo con il tuo consenso.",
   consentAccept: "Accetta tutti",
   consentDecline: "Solo necessari",
+  contact: "Contatti",
   discoverTitle: "Scopri",
   filters: "Filtri",
   sortLabel: "Ordina",
@@ -463,6 +467,7 @@ const fr: Messages = {
     "Nous utilisons des cookies necessaires. Cookies d'analyse optionnels seulement avec votre accord.",
   consentAccept: "Tout accepter",
   consentDecline: "Necessaires seulement",
+  contact: "Contact",
   discoverTitle: "Decouvrir",
   filters: "Filtres",
   sortLabel: "Trier",
