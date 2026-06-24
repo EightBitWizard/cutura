@@ -45,6 +45,36 @@ export interface MeasureMessages {
   fields: ShirtFieldLabels;
 }
 
+export interface CartMessages {
+  title: string;
+  empty: string;
+  remove: string;
+  measurementProvided: string;
+  measurementMissing: string;
+  addMeasurement: string;
+  total: string;
+  checkout: string;
+  base: string;
+}
+
+export interface CheckoutMessages {
+  title: string;
+  email: string;
+  line1: string;
+  city: string;
+  zip: string;
+  country: string;
+  phoneOptional: string;
+  acceptTerms: string;
+  acceptPrivacy: string;
+  placeOrder: string;
+  missingConfig: string;
+  missingMeasurement: string;
+  mustAccept: string;
+  regionNote: string;
+  redirecting: string;
+}
+
 export interface Messages {
   brand: string;
   tagline: string;
@@ -68,6 +98,8 @@ export interface Messages {
   addToCart: string;
   recalculating: string;
   measure: MeasureMessages;
+  cart: CartMessages;
+  checkout: CheckoutMessages;
 }
 
 const de: Messages = {
@@ -129,6 +161,34 @@ const de: Messages = {
       shirtLength: "Hemdlänge",
     },
   },
+  cart: {
+    title: "Warenkorb",
+    empty: "Ihr Warenkorb ist leer.",
+    remove: "Entfernen",
+    measurementProvided: "Masse erfasst.",
+    measurementMissing: "Noch keine Masse erfasst.",
+    addMeasurement: "Masse erfassen",
+    total: "Gesamt",
+    checkout: "Zur Kasse",
+    base: "Grundpreis",
+  },
+  checkout: {
+    title: "Kasse",
+    email: "E-Mail",
+    line1: "Adresse",
+    city: "Ort",
+    zip: "PLZ",
+    country: "Land",
+    phoneOptional: "Telefon (optional)",
+    acceptTerms: "Ich akzeptiere die AGB",
+    acceptPrivacy: "Ich akzeptiere die Datenschutzerklärung",
+    placeOrder: "Zahlungspflichtig bestellen",
+    missingConfig: "Eine Position ist unvollständig konfiguriert.",
+    missingMeasurement: "Bitte zuerst Ihre Masse erfassen.",
+    mustAccept: "Bitte AGB und Datenschutz akzeptieren.",
+    regionNote: "Lieferung nur in die Schweiz und nach Liechtenstein.",
+    redirecting: "Weiterleitung zur Zahlung ...",
+  },
 };
 
 const en: Messages = {
@@ -188,6 +248,34 @@ const en: Messages = {
       sleeveLength: "Sleeve length",
       shirtLength: "Shirt length",
     },
+  },
+  cart: {
+    title: "Cart",
+    empty: "Your cart is empty.",
+    remove: "Remove",
+    measurementProvided: "Measurements captured.",
+    measurementMissing: "No measurements yet.",
+    addMeasurement: "Add measurements",
+    total: "Total",
+    checkout: "Checkout",
+    base: "Base price",
+  },
+  checkout: {
+    title: "Checkout",
+    email: "Email",
+    line1: "Address",
+    city: "City",
+    zip: "Postal code",
+    country: "Country",
+    phoneOptional: "Phone (optional)",
+    acceptTerms: "I accept the Terms",
+    acceptPrivacy: "I accept the Privacy Policy",
+    placeOrder: "Place order",
+    missingConfig: "An item is incompletely configured.",
+    missingMeasurement: "Please capture your measurements first.",
+    mustAccept: "Please accept the Terms and Privacy Policy.",
+    regionNote: "Delivery to Switzerland and Liechtenstein only.",
+    redirecting: "Redirecting to payment ...",
   },
 };
 
@@ -250,6 +338,34 @@ const it: Messages = {
       shirtLength: "Lunghezza camicia",
     },
   },
+  cart: {
+    title: "Carrello",
+    empty: "Il tuo carrello e vuoto.",
+    remove: "Rimuovi",
+    measurementProvided: "Misure acquisite.",
+    measurementMissing: "Nessuna misura ancora.",
+    addMeasurement: "Aggiungi le misure",
+    total: "Totale",
+    checkout: "Cassa",
+    base: "Prezzo base",
+  },
+  checkout: {
+    title: "Cassa",
+    email: "Email",
+    line1: "Indirizzo",
+    city: "Citta",
+    zip: "CAP",
+    country: "Paese",
+    phoneOptional: "Telefono (facoltativo)",
+    acceptTerms: "Accetto le condizioni",
+    acceptPrivacy: "Accetto l informativa sulla privacy",
+    placeOrder: "Ordina",
+    missingConfig: "Un articolo non e configurato completamente.",
+    missingMeasurement: "Acquisisci prima le tue misure.",
+    mustAccept: "Accetta le condizioni e la privacy.",
+    regionNote: "Spedizione solo in Svizzera e Liechtenstein.",
+    redirecting: "Reindirizzamento al pagamento ...",
+  },
 };
 
 const fr: Messages = {
@@ -310,6 +426,34 @@ const fr: Messages = {
       sleeveLength: "Longueur de manche",
       shirtLength: "Longueur de chemise",
     },
+  },
+  cart: {
+    title: "Panier",
+    empty: "Votre panier est vide.",
+    remove: "Retirer",
+    measurementProvided: "Mesures enregistrees.",
+    measurementMissing: "Pas encore de mesures.",
+    addMeasurement: "Ajouter les mesures",
+    total: "Total",
+    checkout: "Commander",
+    base: "Prix de base",
+  },
+  checkout: {
+    title: "Commande",
+    email: "E-mail",
+    line1: "Adresse",
+    city: "Ville",
+    zip: "Code postal",
+    country: "Pays",
+    phoneOptional: "Telephone (facultatif)",
+    acceptTerms: "J accepte les conditions",
+    acceptPrivacy: "J accepte la politique de confidentialite",
+    placeOrder: "Commander",
+    missingConfig: "Un article est configure de maniere incomplete.",
+    missingMeasurement: "Veuillez d abord enregistrer vos mesures.",
+    mustAccept: "Veuillez accepter les conditions et la confidentialite.",
+    regionNote: "Livraison en Suisse et au Liechtenstein uniquement.",
+    redirecting: "Redirection vers le paiement ...",
   },
 };
 
