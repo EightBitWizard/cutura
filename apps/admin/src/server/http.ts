@@ -8,6 +8,17 @@ export function seeOther(location: string): Response {
 }
 
 /**
+ * Restrict a form-supplied redirect target to a same-origin relative path,
+ * rejecting absolute and protocol-relative URLs. Prevents open redirects from
+ * user-controlled `back` fields.
+ */
+export function safePath(value: FormDataEntryValue | null, fallback = "/"): string {
+  const v = typeof value === "string" ? value : "";
+  if (v.startsWith("/") && !v.startsWith("//") && !v.startsWith("/\\")) return v;
+  return fallback;
+}
+
+/**
  * Build a localized-text object from per-locale form fields named `${field}_de`,
  * `${field}_en`, etc. German is always present (forms require it).
  */
