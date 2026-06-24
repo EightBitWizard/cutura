@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { MeasurementFlow } from "@/components/MeasurementFlow";
 import { defaultLocale, isLocale } from "@/i18n/config";
 import { getMessages } from "@/i18n/messages";
@@ -24,6 +26,12 @@ export default async function MeasurePage({
   return (
     <main className="mx-auto max-w-2xl px-6 py-10">
       <h1 className="text-2xl font-semibold tracking-tight">{t.measure.title}</h1>
+      <Link
+        href={`/${locale}/content/fit-guide`}
+        className="mt-1 inline-block text-sm text-neutral-500 underline"
+      >
+        {t.fitGuide}
+      </Link>
       <MeasurementFlow locale={locale} messages={t.measure} returnUrl={returnUrl} />
     </main>
   );

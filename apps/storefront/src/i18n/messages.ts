@@ -92,6 +92,7 @@ export interface Messages {
   notifyThanks: string;
   materials: string;
   youMightAlsoLike: string;
+  fitGuide: string;
   discoverTitle: string;
   filters: string;
   sortLabel: string;
@@ -133,6 +134,7 @@ const de: Messages = {
   notifyThanks: "Danke, wir benachrichtigen Sie, sobald es verfügbar ist.",
   materials: "Materialien",
   youMightAlsoLike: "Das könnte Ihnen auch gefallen",
+  fitGuide: "Passform- und Massleitfaden",
   discoverTitle: "Entdecken",
   filters: "Filter",
   sortLabel: "Sortieren",
@@ -236,6 +238,7 @@ const en: Messages = {
   notifyThanks: "Thank you, we will let you know when it is available.",
   materials: "Materials",
   youMightAlsoLike: "You might also like",
+  fitGuide: "Fit and size guide",
   discoverTitle: "Discover",
   filters: "Filters",
   sortLabel: "Sort",
@@ -338,6 +341,7 @@ const it: Messages = {
   notifyThanks: "Grazie, ti avviseremo quando sara disponibile.",
   materials: "Materiali",
   youMightAlsoLike: "Potrebbe interessarti anche",
+  fitGuide: "Guida a vestibilita e misure",
   discoverTitle: "Scopri",
   filters: "Filtri",
   sortLabel: "Ordina",
@@ -441,6 +445,7 @@ const fr: Messages = {
   notifyThanks: "Merci, nous vous previendrons des que disponible.",
   materials: "Matieres",
   youMightAlsoLike: "Vous pourriez aussi aimer",
+  fitGuide: "Guide des tailles et coupes",
   discoverTitle: "Decouvrir",
   filters: "Filtres",
   sortLabel: "Trier",

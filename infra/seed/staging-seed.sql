@@ -46,3 +46,11 @@ VALUES ('sm_standard', 'sz_ch_li', 'standard', 0, 'standard', 1, '2026-06-24T00:
 -- Config: capacity cap and pause state
 INSERT OR IGNORE INTO config (key, value, updated_at) VALUES ('capacity_cap', '{"maxOpenOrders":50}', '2026-06-24T00:00:00Z');
 INSERT OR IGNORE INTO config (key, value, updated_at) VALUES ('pause', '{"active":false,"message":""}', '2026-06-24T00:00:00Z');
+
+-- Content + legal pages (placeholder copy; final legal text + lawyer sign-off in M7).
+INSERT OR IGNORE INTO content_page (id, slug, kind, title_i18n, body_i18n, version, created_at, updated_at)
+VALUES ('cp_about', 'about', 'content', '{"de":"Ueber CUTURA","en":"About CUTURA","it":"Chi siamo","fr":"A propos"}', '{"de":"Massgefertigte Kleidung aus der Schweiz.","en":"Made-to-measure clothing from Switzerland.","it":"Abbigliamento su misura dalla Svizzera.","fr":"Vetements sur mesure de Suisse."}', 1, '2026-06-24T00:00:00Z', '2026-06-24T00:00:00Z');
+INSERT OR IGNORE INTO content_page (id, slug, kind, title_i18n, body_i18n, version, created_at, updated_at)
+VALUES ('cp_faq', 'faq', 'content', '{"de":"Haeufige Fragen","en":"FAQ","it":"Domande frequenti","fr":"FAQ"}', '{"de":"Antworten auf haeufige Fragen folgen.","en":"Answers to common questions are coming.","it":"Le risposte alle domande comuni sono in arrivo.","fr":"Les reponses aux questions frequentes arrivent."}', 1, '2026-06-24T00:00:00Z', '2026-06-24T00:00:00Z');
+INSERT OR IGNORE INTO content_page (id, slug, kind, title_i18n, body_i18n, version, created_at, updated_at)
+VALUES ('cp_fit_guide', 'fit-guide', 'content', '{"de":"Passform- und Massleitfaden","en":"Fit and size guide","it":"Guida a vestibilita e misure","fr":"Guide des tailles et coupes"}', '{"de":"So messen Sie richtig.","en":"How to measure correctly.","it":"Come misurare correttamente.","fr":"Comment bien mesurer."}', 1, '2026-06-24T00:00:00Z', '2026-06-24T00:00:00Z');
