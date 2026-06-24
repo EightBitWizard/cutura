@@ -14,6 +14,8 @@ export * from "./read";
 import {
   LOCALES,
   type Locale,
+  attributeDefinition,
+  attributeValue,
   baseModel,
   collection,
   collectionMember,
@@ -293,4 +295,69 @@ export function incompleteLocales(
     const value = text?.[locale];
     return value === undefined || value === null || value.trim() === "";
   });
+}
+
+/** Set (upsert) an attribute value for a model or fabric (FR-2C0); one value per definition + entity. */
+export async function setEntityAttributeValue(
+  db: Database,
+  attributeDefinitionId: string,
+  entityType: "model" | "fabric",
+  entityId: string,
+  value: string,
+): Promise<void> {
+  await db
+    .insert(attributeValue)
+    .values({ id: crypto.randomUUID(), attributeDefinitionId, entityType, entityId, value })
+    .onConflictDoUpdate({
+      target: [
+        attributeValue.attributeDefinitionId,
+        attributeValue.entityType,
+        attributeValue.entityId,
+      ],
+      set: { value },
+    });
+}
+
+export async function removeEntityAttributeValue(
+  db: Database,
+  attributeDefinitionId: string,
+  entityType: "model" | "fabric",
+  entityId: string,
+): Promise<void> {
+  await db
+    .delete(attributeValue)
+    .where(
+      and(
+        eq(attributeValue.attributeDefinitionId, attributeDefinitionId),
+        eq(attributeValue.entityType, entityType),
+        eq(attributeValue.entityId, entityId),
+      ),
+    );
+}
+
+export interface EntityAttribute {
+  attributeDefinitionId: string;
+  key: string;
+  value: string;
+}
+
+/** The attribute values assigned to a model or fabric, with the definition key. */
+export async function listEntityAttributeValues(
+  db: Database,
+  entityType: "model" | "fabric",
+  entityId: string,
+): Promise<EntityAttribute[]> {
+  const rows = await db
+    .select({
+      defId: attributeValue.attributeDefinitionId,
+      key: attributeDefinition.key,
+      value: attributeValue.value,
+    })
+    .from(attributeValue)
+    .innerJoin(
+      attributeDefinition,
+      eq(attributeValue.attributeDefinitionId, attributeDefinition.id),
+    )
+    .where(and(eq(attributeValue.entityType, entityType), eq(attributeValue.entityId, entityId)));
+  return rows.map((r) => ({ attributeDefinitionId: r.defId, key: r.key, value: r.value }));
 }

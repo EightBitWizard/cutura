@@ -99,6 +99,24 @@ export default async function CollectionDetailPage({
         </div>
       </form>
 
+      <section className="mt-8">
+        <h2 className="text-sm font-medium uppercase tracking-wide text-neutral-500">Banner</h2>
+        <p className="mt-1 text-sm text-neutral-500">
+          {col.bannerMediaId ? `Current: ${col.bannerMediaId}` : "No banner set."}
+        </p>
+        <form
+          method="post"
+          action={`/api/catalog/collections/${id}/banner`}
+          encType="multipart/form-data"
+          className="mt-2 flex items-end gap-3"
+        >
+          <input type="file" name="file" accept="image/*" required className="text-sm" />
+          <button type="submit" className="rounded border border-neutral-300 px-3 py-1 text-sm">
+            Upload banner
+          </button>
+        </form>
+      </section>
+
       <form method="post" action="/api/catalog/publish" className="mt-6">
         <input type="hidden" name="entityType" value="collection" />
         <input type="hidden" name="entityId" value={id} />

@@ -1,10 +1,12 @@
 import Link from "next/link";
 
 import {
+  attributeDefinition,
   baseModel,
   fabric,
   getModelAllowLists,
   getRow,
+  listEntityAttributeValues,
   listMedia,
   listRows,
   optionGroup,
@@ -37,6 +39,9 @@ export default async function BaseModelDetailPage({ params }: { params: Promise<
   const optionGroups = await listRows(db, optionGroup);
   const upgrades = await listRows(db, upgrade);
   const mediaRows = await listMedia(db, "model", id);
+  const attrDefs = (await listRows(db, attributeDefinition)).filter((d) => d.appliesTo === "model");
+  const attrValues = await listEntityAttributeValues(db, "model", id);
+  const attrByDef = new Map(attrValues.map((a) => [a.attributeDefinitionId, a.value]));
 
   const fabricSet = new Set(allow.fabricIds);
   const upgradeSet = new Set(allow.upgradeIds);
@@ -262,6 +267,44 @@ export default async function BaseModelDetailPage({ params }: { params: Promise<
             Upload
           </button>
         </form>
+      </section>
+
+      <section className="mt-8">
+        <h2 className="text-sm font-medium uppercase tracking-wide text-neutral-500">
+          Attributes (discovery filters)
+        </h2>
+        {attrDefs.length === 0 && (
+          <p className="mt-2 text-sm text-neutral-500">
+            No model attributes defined yet. Create them under Attributes.
+          </p>
+        )}
+        <div className="mt-2 flex flex-col gap-2">
+          {attrDefs.map((d) => (
+            <form
+              key={d.id}
+              method="post"
+              action="/api/catalog/attribute-values"
+              className="flex items-end gap-2 text-sm"
+            >
+              <input type="hidden" name="entityType" value="model" />
+              <input type="hidden" name="entityId" value={id} />
+              <input type="hidden" name="attributeDefinitionId" value={d.id} />
+              <input type="hidden" name="back" value={`/base-models/${id}`} />
+              <label className="flex flex-col">
+                {d.key}
+                <input
+                  name="value"
+                  defaultValue={attrByDef.get(d.id) ?? ""}
+                  placeholder="(blank to clear)"
+                  className={inputClass}
+                />
+              </label>
+              <button type="submit" className="rounded border border-neutral-300 px-2 py-1">
+                Save
+              </button>
+            </form>
+          ))}
+        </div>
       </section>
 
       <form method="post" action="/api/catalog/publish" className="mt-6">
