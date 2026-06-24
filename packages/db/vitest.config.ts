@@ -7,7 +7,10 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   test: {
     environment: "node",
-    include: ["src/**/*.{test,spec}.ts"],
+    // Node-pool tests only (migration + seed validity via node:sqlite). The
+    // publish routine's D1-batch behavior is tested on the Workers pool in
+    // vitest.workers.config.ts.
+    include: ["src/**/*.node.test.ts"],
     pool: "forks",
     poolOptions: {
       forks: { execArgv: ["--experimental-sqlite"] },
