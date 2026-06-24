@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { buildAlternates, formatCHF } from "@cutura/core";
+import { buildAlternates, buildProductJsonLd, formatCHF } from "@cutura/core";
 import {
   getCrossSellSuggestions,
   getDb,
@@ -77,8 +77,22 @@ export default async function ProductPage({
   const ordering = await getOrderingState(locale);
   const lead = leadTimeFor(ordering, model.leadTimeMinDays, model.leadTimeMaxDays);
 
+  const jsonLd = buildProductJsonLd({
+    name: model.name,
+    description: model.description || undefined,
+    priceMinor: model.basePriceMinor,
+    currency: "CHF",
+    availability: model.status === "orderable" ? "InStock" : "PreOrder",
+  });
+
   return (
     <main className="mx-auto max-w-3xl px-6 py-10">
+      <script
+        type="application/ld+json"
+        // Structured data (NFR-20). Catalog-controlled content; "<" is escaped to
+        // < so a value containing </script> cannot break out of the tag.
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
+      />
       <Link href={`/${locale}`} className="text-sm text-neutral-500 underline">
         {t.back}
       </Link>

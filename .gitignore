@@ -23,6 +23,7 @@ test-results/
 .env
 .env.local
 .env.*.local
+infra/.secrets/
 
 # OS / editor
 .DS_Store

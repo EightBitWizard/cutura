@@ -1,7 +1,9 @@
+import type { D1Database } from "@cloudflare/workers-types";
 import { type NextRequest, NextResponse } from "next/server";
 
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { pickLocale } from "@cutura/core";
+import { getDb, getRedirect } from "@cutura/db";
 
 import { defaultLocale, locales } from "@/i18n/config";
 import { type KVLike, readSessionCookie, verifyCustomerSession } from "@/server/auth";
@@ -12,6 +14,21 @@ export const LOCALE_COOKIE = "cutura_locale";
 // behind a customer session. Static assets and API routes are excluded (matcher).
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  // Admin-managed redirects (NFR-20): an exact-path match wins before anything else.
+  const env = getCloudflareContext().env as unknown as {
+    DB: D1Database;
+    SESSIONS: KVLike;
+    SESSION_SECRET: string;
+  };
+  const red = await getRedirect(getDb(env.DB), pathname);
+  if (red) {
+    const url = request.nextUrl.clone();
+    url.pathname = red.toPath;
+    url.search = "";
+    return NextResponse.redirect(url, red.code);
+  }
+
   const hasLocale = locales.some(
     (locale) => pathname === `/${locale}` || pathname.startsWith(`/${locale}/`),
   );
@@ -35,10 +52,6 @@ export async function middleware(request: NextRequest) {
   const isAccount = rest === "/account" || rest.startsWith("/account/");
   const isLoginFlow = rest === "/account/login" || rest.startsWith("/account/login");
   if (isAccount && !isLoginFlow) {
-    const env = getCloudflareContext().env as unknown as {
-      SESSIONS: KVLike;
-      SESSION_SECRET: string;
-    };
     const token = readSessionCookie(request.headers.get("cookie"));
     const ok = await verifyCustomerSession(token, env.SESSIONS, env.SESSION_SECRET);
     if (!ok) {
