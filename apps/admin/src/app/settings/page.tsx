@@ -36,6 +36,11 @@ export default async function SettingsPage({
           Pause new orders now
         </label>
 
+        <label className="flex items-center gap-2 text-sm">
+          <input type="checkbox" name="maintenance" defaultChecked={s.maintenance} />
+          Maintenance mode (whole storefront offline; admin stays reachable)
+        </label>
+
         <label className="block text-sm">
           Capacity cap (open orders; blank = no cap)
           <input

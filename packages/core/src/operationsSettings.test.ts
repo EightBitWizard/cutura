@@ -32,6 +32,7 @@ describe("operations settings", () => {
       leadTimeBufferDays: 10,
       capacityHighWaterFraction: 0.75,
       adminEmail: "ops@cutura.ch",
+      maintenance: true,
     };
     expect(parseOperationsSettings(s)).toEqual(s);
   });

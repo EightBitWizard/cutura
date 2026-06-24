@@ -3,11 +3,14 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { getDb, getOperationsSettings } from "@cutura/db";
+
 import { ConsentBanner } from "@/components/ConsentBanner";
 import { Footer } from "@/components/Footer";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { isLocale, locales } from "@/i18n/config";
 import { getMessages } from "@/i18n/messages";
+import { getEnv } from "@/server/env";
 
 import "../globals.css";
 
@@ -25,6 +28,22 @@ export default async function LocaleLayout({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const t = getMessages(locale);
+
+  // Maintenance mode (NFR-17): the whole storefront is offline; the admin app is a
+  // separate worker and stays reachable, and /api routes are outside this layout.
+  const settings = await getOperationsSettings(getDb(getEnv().DB));
+  if (settings.maintenance) {
+    return (
+      <html lang={locale}>
+        <body>
+          <main className="mx-auto max-w-xl px-6 py-20 text-center">
+            <h1 className="text-3xl font-semibold tracking-tight">{t.maintenanceTitle}</h1>
+            <p className="mt-3 text-neutral-600">{t.maintenanceBody}</p>
+          </main>
+        </body>
+      </html>
+    );
+  }
 
   return (
     <html lang={locale}>

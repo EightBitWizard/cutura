@@ -115,6 +115,17 @@ export function renderAdminNotification(
 }
 
 /** Contact-form notification to the admin (German, operator-facing). */
+// Escape HTML so attacker-controlled contact-form input cannot inject markup into
+// the admin notification email (the subject/text are plain; only the html needs it).
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 export function renderContactNotification(
   to: string,
   input: { name: string; email: string; message: string },
@@ -125,7 +136,7 @@ export function renderContactNotification(
     to,
     from: FROM,
     subject,
-    html: `<p>${subject}</p><p>${input.email}</p><pre>${input.message}</pre>`,
+    html: `<p>Neue Kontaktanfrage von ${escapeHtml(input.name)}</p><p>${escapeHtml(input.email)}</p><pre>${escapeHtml(input.message)}</pre>`,
     text: body,
     replyTo: input.email,
   };

@@ -44,6 +44,7 @@ export async function POST(request: Request): Promise<Response> {
       Math.max(0, num(form, "capacityHighWaterFraction", current.capacityHighWaterFraction)),
     ),
     adminEmail: String(form.get("adminEmail") ?? "").trim() || null,
+    maintenance: form.get("maintenance") === "on",
   });
 
   return seeOther(safePath(`/settings?env=${environment}&saved=1`, "/settings"));

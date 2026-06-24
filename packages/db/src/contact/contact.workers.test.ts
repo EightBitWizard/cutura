@@ -19,6 +19,7 @@ const SETTINGS = {
   leadTimeBufferDays: 7,
   capacityHighWaterFraction: 0.8,
   adminEmail: null,
+  maintenance: false,
 };
 
 describe("submitContactMessage", () => {

@@ -102,6 +102,8 @@ export interface Messages {
   contactSend: string;
   contactSent: string;
   help: string;
+  maintenanceTitle: string;
+  maintenanceBody: string;
   discoverTitle: string;
   filters: string;
   sortLabel: string;
@@ -154,6 +156,8 @@ const de: Messages = {
   contactSend: "Senden",
   contactSent: "Danke, wir haben Ihre Nachricht erhalten.",
   help: "Hilfe und haeufige Fragen",
+  maintenanceTitle: "Wartung",
+  maintenanceBody: "Wir sind in Kuerze wieder da. Vielen Dank fuer Ihre Geduld.",
   discoverTitle: "Entdecken",
   filters: "Filter",
   sortLabel: "Sortieren",
@@ -267,6 +271,8 @@ const en: Messages = {
   contactSend: "Send",
   contactSent: "Thank you, we have received your message.",
   help: "Help and FAQ",
+  maintenanceTitle: "Maintenance",
+  maintenanceBody: "We will be back shortly. Thank you for your patience.",
   discoverTitle: "Discover",
   filters: "Filters",
   sortLabel: "Sort",
@@ -379,6 +385,8 @@ const it: Messages = {
   contactSend: "Invia",
   contactSent: "Grazie, abbiamo ricevuto il tuo messaggio.",
   help: "Aiuto e domande frequenti",
+  maintenanceTitle: "Manutenzione",
+  maintenanceBody: "Torniamo a breve. Grazie per la pazienza.",
   discoverTitle: "Scopri",
   filters: "Filtri",
   sortLabel: "Ordina",
@@ -493,6 +501,8 @@ const fr: Messages = {
   contactSend: "Envoyer",
   contactSent: "Merci, nous avons bien recu votre message.",
   help: "Aide et FAQ",
+  maintenanceTitle: "Maintenance",
+  maintenanceBody: "Nous revenons bientot. Merci de votre patience.",
   discoverTitle: "Decouvrir",
   filters: "Filtres",
   sortLabel: "Trier",

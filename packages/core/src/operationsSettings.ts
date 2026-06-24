@@ -31,6 +31,8 @@ export const operationsSettingsSchema = z.object({
   capacityHighWaterFraction: z.number().min(0).max(1),
   /** Where admin notifications (new order, needs review, QC due) are sent. Optional. */
   adminEmail: z.string().nullable().default(null),
+  /** Whole-storefront maintenance mode (NFR-17); the admin app stays reachable. */
+  maintenance: z.boolean().default(false),
 });
 
 export type OperationsSettings = z.infer<typeof operationsSettingsSchema>;
@@ -52,6 +54,7 @@ export const DEFAULT_OPERATIONS_SETTINGS: OperationsSettings = {
   leadTimeBufferDays: 7,
   capacityHighWaterFraction: 0.8,
   adminEmail: null,
+  maintenance: false,
 };
 
 /** Parse a stored config value; fall back to safe defaults if missing or invalid. */
