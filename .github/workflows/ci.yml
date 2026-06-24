@@ -1,0 +1,94 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: Quality gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      # lint, typecheck, test (core + db), format, dashes, copy, build (both apps)
+      - run: pnpm gate
+
+  guards:
+    name: Architecture guards
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: No edge runtime (OpenNext manages the runtime)
+        run: |
+          if grep -rnE "runtime *= *[\"']edge[\"']" apps packages 2>/dev/null; then
+            echo "::error::Found an edge runtime directive. OpenNext manages the runtime; remove it."
+            exit 1
+          fi
+          echo "ok: no edge runtime directive"
+
+  gitleaks:
+    name: Secret scan
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  deploy-staging:
+    name: Deploy to Staging
+    needs: [quality, guards, gitleaks]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      # Apply migrations before deploying new code (expand-then-contract; a code
+      # rollback does not revert D1, so migrations stay backwards-compatible).
+      - name: Migrate control and staging databases
+        run: |
+          pnpm --filter @cutura/admin exec wrangler d1 migrations apply cutura-control --remote
+          pnpm --filter @cutura/storefront exec wrangler d1 migrations apply cutura-staging --env staging --remote
+      - name: Build and deploy storefront (staging)
+        run: |
+          pnpm --filter @cutura/storefront cf:build
+          pnpm --filter @cutura/storefront exec opennextjs-cloudflare deploy --env=staging
+      - name: Build and deploy admin
+        run: |
+          pnpm --filter @cutura/admin cf:build
+          pnpm --filter @cutura/admin exec opennextjs-cloudflare deploy
+      - name: Install Playwright browsers
+        run: pnpm --filter @cutura/storefront exec playwright install --with-deps chromium webkit
+      # The mandatory live-URL smoke test: fails the run if the deployed app is
+      # not actually serving real content. STAGING_URL is a repo variable.
+      - name: Live-URL smoke test (staging)
+        env:
+          BASE_URL: ${{ vars.STAGING_URL }}
+        run: pnpm --filter @cutura/storefront exec playwright test --grep @smoke

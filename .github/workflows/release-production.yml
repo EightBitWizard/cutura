@@ -1,0 +1,53 @@
+name: Release to Production
+
+# Manual, gated production release. Requires approval via the GitHub "production"
+# environment (configure a required reviewer). Deploys current main, applies
+# migrations, runs the live-URL smoke test, and tags the release.
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: release-production
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm gate
+      - name: Migrate production database
+        run: pnpm --filter @cutura/storefront exec wrangler d1 migrations apply cutura-production --env production --remote
+      - name: Build and deploy storefront (production)
+        run: |
+          pnpm --filter @cutura/storefront cf:build
+          pnpm --filter @cutura/storefront exec opennextjs-cloudflare deploy --env=production
+      - name: Build and deploy admin
+        run: |
+          pnpm --filter @cutura/admin cf:build
+          pnpm --filter @cutura/admin exec opennextjs-cloudflare deploy
+      - name: Install Playwright browsers
+        run: pnpm --filter @cutura/storefront exec playwright install --with-deps chromium webkit
+      - name: Live-URL smoke test (production)
+        env:
+          BASE_URL: ${{ vars.PRODUCTION_URL }}
+        run: pnpm --filter @cutura/storefront exec playwright test --grep @smoke
+      - name: Tag the release
+        run: |
+          TAG="release-$(date -u +%Y%m%d-%H%M%S)"
+          git tag "$TAG"
+          git push origin "$TAG"
