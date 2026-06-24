@@ -71,6 +71,12 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
             </button>
           </form>
         )}
+        <a
+          href={`/api/orders/${id}/parcel-card`}
+          className="rounded border border-neutral-300 px-3 py-1 text-sm"
+        >
+          Parcel card (PDF)
+        </a>
       </div>
 
       <form

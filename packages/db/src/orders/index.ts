@@ -7,3 +7,4 @@ export * from "./pipeline";
 export * from "./checkout";
 export * from "./read";
 export * from "./supplierPdf";
+export * from "./parcelCardPdf";

@@ -15,6 +15,7 @@ export * from "./capacity";
 export * from "./format";
 export * from "./kpiMath";
 export * from "./media";
+export * from "./parcelCard";
 export * from "./seo";
 export * from "./operationsSettings";
 export * from "./outliers";
