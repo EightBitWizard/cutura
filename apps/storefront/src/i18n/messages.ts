@@ -6,14 +6,51 @@
 
 import type { Locale } from "./config";
 
+export interface ShirtFieldLabels {
+  chest: string;
+  waist: string;
+  hips: string;
+  neck: string;
+  shoulder: string;
+  sleeveLength: string;
+  shirtLength: string;
+}
+
+export interface MeasureMessages {
+  title: string;
+  intro: string;
+  wizardCard: string;
+  wizardDesc: string;
+  detailedCard: string;
+  detailedDesc: string;
+  height: string;
+  weight: string;
+  fit: string;
+  fitSlim: string;
+  fitRegular: string;
+  fitRelaxed: string;
+  estimate: string;
+  reviewTitle: string;
+  reviewIntro: string;
+  confidenceHigh: string;
+  confidenceMedium: string;
+  confidenceLow: string;
+  confirm: string;
+  back: string;
+  detailedTitle: string;
+  unitCm: string;
+  unitInch: string;
+  outlierNotice: string;
+  saving: string;
+  fields: ShirtFieldLabels;
+}
+
 export interface Messages {
   brand: string;
   tagline: string;
-  // home
   collections: string;
   allModels: string;
   view: string;
-  // pdp
   from: string;
   leadTime: (min: number, max: number) => string;
   allInclusive: string;
@@ -21,7 +58,6 @@ export interface Messages {
   viewOnlyNotice: string;
   notifyMe: string;
   back: string;
-  // configurator
   fabric: string;
   options: string;
   upgrades: string;
@@ -31,6 +67,7 @@ export interface Messages {
   selectRequired: string;
   addToCart: string;
   recalculating: string;
+  measure: MeasureMessages;
 }
 
 const de: Messages = {
@@ -55,6 +92,43 @@ const de: Messages = {
   selectRequired: "Bitte alle erforderlichen Optionen wählen.",
   addToCart: "Weiter zu den Massen",
   recalculating: "Preis wird aktualisiert ...",
+  measure: {
+    title: "Ihre Masse",
+    intro: "Wählen Sie, wie Sie Ihre Masse angeben möchten.",
+    wizardCard: "Schnell-Assistent",
+    wizardDesc: "Wenige Angaben, wir leiten den Rest ab.",
+    detailedCard: "Detaillierte Eingabe",
+    detailedDesc: "Alle Masse selbst eingeben.",
+    height: "Körpergrösse",
+    weight: "Gewicht",
+    fit: "Passform",
+    fitSlim: "Schmal",
+    fitRegular: "Normal",
+    fitRelaxed: "Locker",
+    estimate: "Masse ableiten",
+    reviewTitle: "Bitte bestätigen Sie Ihre Masse",
+    reviewIntro: "Wir haben diese Masse abgeleitet. Prüfen und anpassen, dann bestätigen.",
+    confidenceHigh: "Hohe Genauigkeit",
+    confidenceMedium: "Mittlere Genauigkeit",
+    confidenceLow: "Geringe Genauigkeit",
+    confirm: "Masse bestätigen",
+    back: "Zurück",
+    detailedTitle: "Masse eingeben (in cm)",
+    unitCm: "cm",
+    unitInch: "Zoll",
+    outlierNotice:
+      "Einige Masse sind ungewöhnlich. Ihre Bestellung wird vor der Produktion geprüft.",
+    saving: "Wird gespeichert ...",
+    fields: {
+      chest: "Brustumfang",
+      waist: "Taillenumfang",
+      hips: "Hüftumfang",
+      neck: "Halsumfang",
+      shoulder: "Schulterbreite",
+      sleeveLength: "Ärmellänge",
+      shirtLength: "Hemdlänge",
+    },
+  },
 };
 
 const en: Messages = {
@@ -79,6 +153,42 @@ const en: Messages = {
   selectRequired: "Please choose all required options.",
   addToCart: "Continue to measurements",
   recalculating: "Updating price ...",
+  measure: {
+    title: "Your measurements",
+    intro: "Choose how you want to provide your measurements.",
+    wizardCard: "Quick wizard",
+    wizardDesc: "A few inputs; we derive the rest.",
+    detailedCard: "Detailed entry",
+    detailedDesc: "Enter every measurement yourself.",
+    height: "Height",
+    weight: "Weight",
+    fit: "Fit",
+    fitSlim: "Slim",
+    fitRegular: "Regular",
+    fitRelaxed: "Relaxed",
+    estimate: "Derive measurements",
+    reviewTitle: "Please confirm your measurements",
+    reviewIntro: "We derived these. Review and adjust, then confirm.",
+    confidenceHigh: "High confidence",
+    confidenceMedium: "Medium confidence",
+    confidenceLow: "Low confidence",
+    confirm: "Confirm measurements",
+    back: "Back",
+    detailedTitle: "Enter measurements (in cm)",
+    unitCm: "cm",
+    unitInch: "inch",
+    outlierNotice: "Some measurements are unusual. Your order will be reviewed before production.",
+    saving: "Saving ...",
+    fields: {
+      chest: "Chest",
+      waist: "Waist",
+      hips: "Hips",
+      neck: "Neck",
+      shoulder: "Shoulder width",
+      sleeveLength: "Sleeve length",
+      shirtLength: "Shirt length",
+    },
+  },
 };
 
 const it: Messages = {
@@ -103,6 +213,43 @@ const it: Messages = {
   selectRequired: "Scegli tutte le opzioni obbligatorie.",
   addToCart: "Continua con le misure",
   recalculating: "Aggiornamento del prezzo ...",
+  measure: {
+    title: "Le tue misure",
+    intro: "Scegli come fornire le tue misure.",
+    wizardCard: "Procedura rapida",
+    wizardDesc: "Pochi dati; deriviamo il resto.",
+    detailedCard: "Inserimento dettagliato",
+    detailedDesc: "Inserisci tu stesso tutte le misure.",
+    height: "Altezza",
+    weight: "Peso",
+    fit: "Vestibilita",
+    fitSlim: "Aderente",
+    fitRegular: "Normale",
+    fitRelaxed: "Comoda",
+    estimate: "Deriva le misure",
+    reviewTitle: "Conferma le tue misure",
+    reviewIntro: "Abbiamo derivato queste misure. Controlla e modifica, poi conferma.",
+    confidenceHigh: "Affidabilita alta",
+    confidenceMedium: "Affidabilita media",
+    confidenceLow: "Affidabilita bassa",
+    confirm: "Conferma le misure",
+    back: "Indietro",
+    detailedTitle: "Inserisci le misure (in cm)",
+    unitCm: "cm",
+    unitInch: "pollici",
+    outlierNotice:
+      "Alcune misure sono insolite. Il tuo ordine sara verificato prima della produzione.",
+    saving: "Salvataggio ...",
+    fields: {
+      chest: "Torace",
+      waist: "Vita",
+      hips: "Fianchi",
+      neck: "Collo",
+      shoulder: "Larghezza spalle",
+      sleeveLength: "Lunghezza manica",
+      shirtLength: "Lunghezza camicia",
+    },
+  },
 };
 
 const fr: Messages = {
@@ -127,6 +274,43 @@ const fr: Messages = {
   selectRequired: "Veuillez choisir toutes les options requises.",
   addToCart: "Continuer vers les mesures",
   recalculating: "Mise a jour du prix ...",
+  measure: {
+    title: "Vos mesures",
+    intro: "Choisissez comment fournir vos mesures.",
+    wizardCard: "Assistant rapide",
+    wizardDesc: "Quelques donnees; nous deduisons le reste.",
+    detailedCard: "Saisie detaillee",
+    detailedDesc: "Saisissez vous-meme toutes les mesures.",
+    height: "Taille",
+    weight: "Poids",
+    fit: "Coupe",
+    fitSlim: "Ajustee",
+    fitRegular: "Normale",
+    fitRelaxed: "Ample",
+    estimate: "Deduire les mesures",
+    reviewTitle: "Veuillez confirmer vos mesures",
+    reviewIntro: "Nous avons deduit ces mesures. Verifiez et ajustez, puis confirmez.",
+    confidenceHigh: "Confiance elevee",
+    confidenceMedium: "Confiance moyenne",
+    confidenceLow: "Confiance faible",
+    confirm: "Confirmer les mesures",
+    back: "Retour",
+    detailedTitle: "Saisir les mesures (en cm)",
+    unitCm: "cm",
+    unitInch: "pouce",
+    outlierNotice:
+      "Certaines mesures sont inhabituelles. Votre commande sera verifiee avant production.",
+    saving: "Enregistrement ...",
+    fields: {
+      chest: "Poitrine",
+      waist: "Taille",
+      hips: "Hanches",
+      neck: "Cou",
+      shoulder: "Largeur d epaules",
+      sleeveLength: "Longueur de manche",
+      shirtLength: "Longueur de chemise",
+    },
+  },
 };
 
 const catalog: Record<Locale, Messages> = { de, en, it, fr };
