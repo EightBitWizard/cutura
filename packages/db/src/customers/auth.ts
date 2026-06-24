@@ -1,8 +1,8 @@
-import { eq } from "drizzle-orm";
+import { and, eq, isNull } from "drizzle-orm";
 
 import { writeAudit } from "../audit";
 import type { Database } from "../getDb";
-import { customer, session } from "../schema";
+import { customer, order, session } from "../schema";
 
 export type CustomerRow = typeof customer.$inferSelect;
 
@@ -62,6 +62,35 @@ export async function findOrCreateCustomer(
     entityId: id,
   });
   return { customer: row, created: true };
+}
+
+/**
+ * Attach prior guest orders (same email, not yet owned) to the customer (FR-661).
+ * Idempotent; guest identifiers are kept so in-flight tracking links keep working.
+ * Returns the number of orders claimed.
+ */
+export async function claimGuestOrders(
+  db: Database,
+  customerId: string,
+  email: string,
+  deps: CustomerClock = {},
+): Promise<number> {
+  const norm = normalizeEmail(email);
+  const scope = and(eq(order.guestEmail, norm), isNull(order.customerId));
+  const pending = await db.select({ id: order.id }).from(order).where(scope);
+  if (pending.length === 0) return 0;
+  await db
+    .update(order)
+    .set({ customerId, updatedAt: (deps.now ?? nowIso)() })
+    .where(scope);
+  await writeAudit(db, {
+    actor: `customer:${customerId}`,
+    action: "customer.orders.claimed",
+    entityType: "customer",
+    entityId: customerId,
+    detail: { count: pending.length },
+  });
+  return pending.length;
 }
 
 // --- D1 session mirror (KV is the request-path authority; these power deletion enumeration) ---

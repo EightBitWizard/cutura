@@ -33,6 +33,15 @@ export function measureCookie(token: string): string {
   return `${MEASURE_COOKIE}=${token}; Path=/; HttpOnly; SameSite=Lax; Secure; Max-Age=${TTL_SECONDS}`;
 }
 
+export function clearedMeasureCookie(): string {
+  return `${MEASURE_COOKIE}=; Path=/; HttpOnly; SameSite=Lax; Secure; Max-Age=0`;
+}
+
+/** Delete the guest measurement blob from KV (after migrating it to an account). */
+export async function clearMeasurement(token: string): Promise<void> {
+  await getEnv().SESSIONS.delete(kvKey(token));
+}
+
 /** Encrypt and store a measurement-profile version under the token. */
 export async function saveMeasurementVersion(
   token: string,

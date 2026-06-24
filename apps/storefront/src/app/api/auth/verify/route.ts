@@ -1,8 +1,20 @@
-import { findOrCreateCustomer, getDb, recordSession } from "@cutura/db";
+import {
+  claimGuestOrders,
+  findOrCreateCustomer,
+  getDb,
+  migrateGuestMeasurement,
+  recordSession,
+} from "@cutura/db";
 
 import { defaultLocale, isLocale } from "@/i18n/config";
 import { consumeMagicLink, createCustomerSession, sessionCookie } from "@/server/auth";
 import { getEnv } from "@/server/env";
+import {
+  clearMeasurement,
+  clearedMeasureCookie,
+  readMeasureToken,
+  readMeasurementVersion,
+} from "@/server/measurement";
 import { rateLimit } from "@/server/ratelimit";
 
 export const dynamic = "force-dynamic";
@@ -22,9 +34,9 @@ async function handle(request: Request): Promise<Response> {
   const token = url.searchParams.get("token") ?? "";
   const localeParam = url.searchParams.get("locale") ?? "";
   const locale = isLocale(localeParam) ? localeParam : defaultLocale;
-  const redirect = (path: string, cookie?: string): Response => {
+  const redirect = (path: string, cookies: string[] = []): Response => {
     const headers = new Headers({ Location: new URL(path, url.origin).toString() });
-    if (cookie) headers.append("Set-Cookie", cookie);
+    for (const c of cookies) headers.append("Set-Cookie", c);
     return new Response(null, { status: 303, headers });
   };
 
@@ -44,7 +56,30 @@ async function handle(request: Request): Promise<Response> {
     return redirect(`/${locale}/account/login?error=disabled`);
   }
 
-  // WS-B wires guest-order claiming + guest-measurement migration here.
+  // Claim prior guest orders + migrate the guest measurement into the account
+  // (best-effort: login still proceeds if either fails).
+  let clearMeasure = false;
+  try {
+    await claimGuestOrders(db, customer.id, payload.email);
+    const measureToken = readMeasureToken(request.headers.get("cookie"));
+    if (measureToken) {
+      const version = await readMeasurementVersion(measureToken);
+      if (version) {
+        const migrated = await migrateGuestMeasurement(
+          db,
+          customer.id,
+          version,
+          env.MEASUREMENT_ENCRYPTION_KEY,
+        );
+        if (migrated) {
+          await clearMeasurement(measureToken);
+          clearMeasure = true;
+        }
+      }
+    }
+  } catch {
+    // best-effort
+  }
 
   const sess = await createCustomerSession(env.SESSIONS, env.SESSION_SECRET, customer.id);
   await recordSession(db, {
@@ -52,5 +87,7 @@ async function handle(request: Request): Promise<Response> {
     customerId: customer.id,
     expiresAt: new Date(sess.expiresAtSeconds * 1000).toISOString(),
   });
-  return redirect(`/${customer.locale}/account`, sessionCookie(sess.token));
+  const cookies = [sessionCookie(sess.token)];
+  if (clearMeasure) cookies.push(clearedMeasureCookie());
+  return redirect(`/${customer.locale}/account`, cookies);
 }
