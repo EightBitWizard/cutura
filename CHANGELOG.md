@@ -4,6 +4,23 @@ All notable changes to this project. Newest first.
 
 ## Unreleased
 
+### Added (M7 - compliance, trust, and hardening)
+
+- A cookie/tracking consent banner that gates analytics (opt-in; the single gate
+  any future analytics must pass).
+- Editable legal pages (terms, privacy, imprint, shipping, fit-guarantee) with a
+  footer, plus a contact form and help links. Final legal text + lawyer sign-off
+  are pending.
+- Maintenance mode, broader rate limiting (checkout + contact) and a Turnstile
+  bot-protection hook, product structured data, and an admin-managed redirects
+  table.
+- The language-neutral sewn-in label (composition + care symbols) carried into the
+  supplier package.
+- Accessibility linting in the gate, a Lighthouse + accessibility CI setup (runs
+  against the deployed site), and a documented, scripted backup/restore drill.
+- A compliance + NFR evidence checklist (docs/COMPLIANCE.md) with a data inventory
+  and retention rules.
+
 ### Added (M6 - internationalization, discovery, and content)
 
 - Public catalog image serving (safe raster-only serve) with images on the home,

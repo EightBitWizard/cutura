@@ -65,6 +65,24 @@ pnpm --filter @cutura/storefront exec wrangler d1 time-travel restore cutura-pro
 pnpm --filter @cutura/storefront exec wrangler d1 export cutura-production --remote --output backup.sql
 ```
 
+The full, tested restore drill (run quarterly + after any migration) is in
+`infra/restore-drill.md`.
+
+## Maintenance mode
+
+In the admin **Settings**, "Maintenance mode" takes the whole storefront offline
+with a calm page. The admin and the Shopify webhook stay reachable, so you can turn
+it back off. Use it for risky migrations or incidents.
+
+## Compliance + trust (before launch)
+
+The storefront shows a consent banner, a contact form, and editable legal pages
+(`/content` in the admin: terms, privacy, imprint, shipping, fit-guarantee). The
+code is in place; before launch the founder must: fill the real company data in the
+imprint, get the legal pages lawyer-reviewed, confirm the textile-labeling basis
+with an advisor, set a billing cap + Turnstile keys, and run the restore drill. The
+full checklist is `docs/COMPLIANCE.md`.
+
 ## Pausing orders
 
 In the admin under **Settings** (`/settings`) you can pause new orders three ways,

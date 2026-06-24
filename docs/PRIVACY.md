@@ -42,9 +42,11 @@ deleted`) and kept as the foreign-key target; a tombstoned email cannot log back
   view writes a `customer.view` audit row when it decrypts body measurements. The
   CSV order export carries order/money/dates only - never measurements or customer
   PII (done M5).
-- **Retention** windows documented for measurements, orders, and logs (M7).
-- **Consent** banner gating analytics, pixels, and broader profiling; body
-  measurements are used only for fit relevance inside CUTURA's boundary, never
+- **Retention** windows documented for measurements, orders, and logs (done M7;
+  see the retention table + data inventory in `docs/COMPLIANCE.md`).
+- **Consent** banner gating analytics, pixels, and broader profiling (done M7;
+  `hasAnalyticsConsent` is the single gate, opt-in, no analytics integrated yet);
+  body measurements are used only for fit relevance inside CUTURA's boundary, never
   for cross-customer profiling (M7/E11).
 - **Residency**: measurement data resides in Switzerland or the EU (R2 EU
   jurisdiction; D1 region selection at provisioning).

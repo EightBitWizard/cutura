@@ -65,6 +65,10 @@ reserved by `@opennextjs/cloudflare`: `NEXT_INC_CACHE_R2_BUCKET`,
 | Discovery (facets / filter / search)        | `packages/db/src/catalog/read.ts` + storefront `/[locale]/discover`           |
 | Content/legal + cross-sell + notify         | `packages/db/src/{content,crosssell,notify}/`                                 |
 | Localized parcel card                       | `packages/core/src/parcelCard.ts` + `packages/db/src/orders/parcelCardPdf.ts` |
+| Consent gate + bot protection               | `packages/core/src/{consent,turnstile}.ts`                                    |
+| Contact + redirects + structured data       | `packages/db/src/{contact,redirects}/` + `packages/core/src/productJsonLd.ts` |
+| Maintenance mode                            | `operationsSettings.maintenance` + storefront `[locale]/layout.tsx`           |
+| Compliance evidence map                     | `docs/COMPLIANCE.md` (FR/NFR -> evidence or owner)                            |
 | Recommendation seam                         | future (E11); same pattern as the estimator seam                              |
 
 `packages/core` is pure: no Next, React, or Cloudflare imports (ESLint-enforced).
