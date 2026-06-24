@@ -12,6 +12,8 @@ export interface NewOrderItem {
 
 export interface NewOrder {
   orderNumber: string;
+  /** Set for a logged-in customer; null for a pure guest. */
+  customerId?: string | null;
   guestEmail: string;
   guestTrackingToken: string;
   locale: string;
@@ -33,6 +35,7 @@ export async function createGuestOrder(
   await db.insert(order).values({
     id: orderId,
     orderNumber: input.orderNumber,
+    customerId: input.customerId ?? null,
     guestEmail: input.guestEmail,
     guestTrackingToken: input.guestTrackingToken,
     locale: input.locale,

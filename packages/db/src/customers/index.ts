@@ -15,3 +15,4 @@ export * from "./auth";
 export * from "./profiles";
 export * from "./orders";
 export * from "./addresses";
+export * from "./reorder";

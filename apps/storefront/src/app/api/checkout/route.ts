@@ -1,21 +1,100 @@
-import { encryptJson, minorToDecimal, randomToken } from "@cutura/core";
+import {
+  type GarmentMeasurements,
+  type MeasurementMethod,
+  encryptJson,
+  minorToDecimal,
+  randomToken,
+} from "@cutura/core";
 import {
   type NewOrderItem,
   type OrderItemConfig,
   attachShopifyDraft,
   createGuestOrder,
+  getCustomerProfileId,
   getDb,
+  getOrderItemConfigForCustomer,
+  getProfile,
 } from "@cutura/db";
 
 import { defaultLocale, isLocale } from "@/i18n/config";
 import { PRIVACY_VERSION, TERMS_VERSION } from "@/legal";
-import { readCart, readCartToken } from "@/server/cart";
+import { type CartLine, readCart, readCartToken } from "@/server/cart";
 import { getEnv } from "@/server/env";
 import { readMeasureToken, readMeasurementVersion } from "@/server/measurement";
 import { priceConfigured } from "@/server/pricing";
+import { getCustomerId } from "@/server/session";
 import { createShopifyClient } from "@/server/shopify";
 
 export const dynamic = "force-dynamic";
+
+interface ResolvedMeasurement {
+  confirmedValues: GarmentMeasurements;
+  method: MeasurementMethod;
+  version: number;
+  override?: Record<string, number>;
+}
+
+// Resolve the measurement for one cart line. Reorder lines pull from the source
+// order (keep/override) or the latest profile (update); a logged-in normal line
+// uses the customer's profile; a guest uses the transient KV measurement.
+async function resolveLineMeasurement(
+  db: ReturnType<typeof getDb>,
+  key: string,
+  customerId: string | null,
+  measureToken: string | undefined,
+  line: CartLine,
+): Promise<ResolvedMeasurement | null> {
+  if (line.reorder && customerId) {
+    if (line.reorder.mode === "update") {
+      const profileId = await getCustomerProfileId(db, customerId);
+      const profile = profileId ? await getProfile(db, customerId, profileId, key) : null;
+      if (!profile) return null;
+      return {
+        confirmedValues: profile.confirmed,
+        method: profile.method,
+        version: profile.currentVersion,
+        override: line.perPieceOverride,
+      };
+    }
+    const src = await getOrderItemConfigForCustomer(
+      db,
+      customerId,
+      line.reorder.sourceOrderItemId,
+      key,
+    );
+    if (!src) return null;
+    return {
+      confirmedValues: src.confirmedValues,
+      method: src.measurementMethod,
+      version: src.measurementProfileVersion,
+      override: line.reorder.mode === "override" ? line.perPieceOverride : src.override,
+    };
+  }
+  if (customerId) {
+    const profileId = await getCustomerProfileId(db, customerId);
+    const profile = profileId ? await getProfile(db, customerId, profileId, key) : null;
+    if (profile) {
+      return {
+        confirmedValues: profile.confirmed,
+        method: profile.method,
+        version: profile.currentVersion,
+        override: line.perPieceOverride,
+      };
+    }
+  }
+  if (measureToken) {
+    const m = await readMeasurementVersion(measureToken);
+    if (m) {
+      return {
+        confirmedValues: m.confirmedValues,
+        method: m.method,
+        version: m.version,
+        override: line.perPieceOverride,
+      };
+    }
+  }
+  return null;
+}
 
 interface CheckoutBody {
   locale?: string;
@@ -51,13 +130,17 @@ export async function POST(request: Request): Promise<Response> {
   const cart = await readCart(readCartToken(cookie));
   if (cart.lines.length === 0) return Response.json({ error: "empty cart" }, { status: 400 });
 
+  const customerId = await getCustomerId();
   const measureToken = readMeasureToken(cookie);
-  const measurement = measureToken ? await readMeasurementVersion(measureToken) : null;
-  if (!measurement) return Response.json({ error: "missing measurement" }, { status: 400 });
-
   const db = getDb(env.DB);
+  const key = env.MEASUREMENT_ENCRYPTION_KEY;
   const items: NewOrderItem[] = [];
-  const lineMeta: Array<{ title: string; totalMinor: number; selection: unknown }> = [];
+  const lineMeta: Array<{
+    title: string;
+    totalMinor: number;
+    version: number;
+    selection: unknown;
+  }> = [];
   let total = 0;
 
   for (const line of cart.lines) {
@@ -66,6 +149,9 @@ export async function POST(request: Request): Promise<Response> {
     if (!priced || !priced.valid) {
       return Response.json({ error: "invalid line" }, { status: 400 });
     }
+    const m = await resolveLineMeasurement(db, key, customerId, measureToken, line);
+    if (!m) return Response.json({ error: "missing measurement" }, { status: 400 });
+
     const config: OrderItemConfig = {
       baseModelName: priced.model.name,
       fabricCode: priced.fabric?.code ?? "",
@@ -76,17 +162,18 @@ export async function POST(request: Request): Promise<Response> {
         priceMinor: u.priceMinor,
       })),
       garmentType: priced.model.garmentType,
-      measurementMethod: measurement.method,
-      measurementProfileVersion: measurement.version,
-      confirmedValues: measurement.confirmedValues,
-      override: line.perPieceOverride,
+      measurementMethod: m.method,
+      measurementProfileVersion: m.version,
+      confirmedValues: m.confirmedValues,
+      override: m.override,
       price: priced.breakdown,
     };
-    const configEnc = await encryptJson(config, env.MEASUREMENT_ENCRYPTION_KEY, "snapshot");
+    const configEnc = await encryptJson(config, key, "snapshot");
     items.push({ baseModelId: priced.model.id, configEnc });
     lineMeta.push({
       title: priced.model.name,
       totalMinor: priced.breakdown.total,
+      version: m.version,
       selection: {
         fabricCode: line.fabricCode,
         optionValueCodes: line.optionValueCodes,
@@ -99,6 +186,7 @@ export async function POST(request: Request): Promise<Response> {
   const orderNumber = `CUT-${crypto.randomUUID().slice(0, 8).toUpperCase()}`;
   const { orderId, itemIds } = await createGuestOrder(db, {
     orderNumber,
+    customerId: customerId ?? undefined,
     guestEmail: email,
     guestTrackingToken: randomToken(24),
     locale,
@@ -121,7 +209,7 @@ export async function POST(request: Request): Promise<Response> {
         taxable: true,
         customAttributes: [
           { key: "_cutura_order_item_id", value: itemIds[i] ?? "" },
-          { key: "_measurement_ref", value: `${measureToken}:${measurement.version}` },
+          { key: "_measurement_ref", value: `v${m.version}` },
           { key: "_config", value: JSON.stringify(m.selection) },
         ],
       })),

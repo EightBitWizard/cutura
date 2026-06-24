@@ -21,6 +21,8 @@ export interface CartLine {
   /** Per-piece measurement deltas in cm (advanced; applied to this garment only). */
   perPieceOverride?: Record<string, number>;
   qty: number;
+  /** Set when this line re-orders a past garment; checkout resolves the measurement per mode. */
+  reorder?: { sourceOrderItemId: string; mode: "keep" | "update" | "override" };
 }
 
 export interface Cart {

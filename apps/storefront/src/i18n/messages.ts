@@ -607,6 +607,9 @@ export interface OrderMessages {
   orderNumber: string;
   fitReview: string;
   feedback: string;
+  reorderTitle: string;
+  reorderKeep: string;
+  reorderUpdate: string;
 }
 
 const orderCatalog: Record<Locale, OrderMessages> = {
@@ -618,6 +621,9 @@ const orderCatalog: Record<Locale, OrderMessages> = {
     orderNumber: "Bestellnummer",
     fitReview: "Passform reklamieren",
     feedback: "Feedback geben",
+    reorderTitle: "Erneut bestellen",
+    reorderKeep: "Masse wie bestellt",
+    reorderUpdate: "Aktuelle Masse verwenden",
   },
   en: {
     ordersTitle: "Orders",
@@ -627,6 +633,9 @@ const orderCatalog: Record<Locale, OrderMessages> = {
     orderNumber: "Order number",
     fitReview: "Report a fit issue",
     feedback: "Give feedback",
+    reorderTitle: "Reorder",
+    reorderKeep: "Keep size as ordered",
+    reorderUpdate: "Use my latest measurements",
   },
   it: {
     ordersTitle: "Ordini",
@@ -636,6 +645,9 @@ const orderCatalog: Record<Locale, OrderMessages> = {
     orderNumber: "Numero ordine",
     fitReview: "Segnala un problema di vestibilita",
     feedback: "Lascia un feedback",
+    reorderTitle: "Riordina",
+    reorderKeep: "Misure come ordinate",
+    reorderUpdate: "Usa le mie ultime misure",
   },
   fr: {
     ordersTitle: "Commandes",
@@ -645,6 +657,9 @@ const orderCatalog: Record<Locale, OrderMessages> = {
     orderNumber: "Numero de commande",
     fitReview: "Signaler un probleme de coupe",
     feedback: "Donner un avis",
+    reorderTitle: "Recommander",
+    reorderKeep: "Mesures comme commandees",
+    reorderUpdate: "Utiliser mes dernieres mesures",
   },
 };
 
