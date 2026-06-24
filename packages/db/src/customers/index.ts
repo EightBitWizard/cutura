@@ -14,3 +14,4 @@ export class NotOwnerError extends Error {
 export * from "./auth";
 export * from "./profiles";
 export * from "./orders";
+export * from "./addresses";

@@ -480,6 +480,9 @@ export interface AccountMessages {
   errExpired: string;
   errDisabled: string;
   errThrottled: string;
+  addAddress: string;
+  makeDefault: string;
+  defaultLabel: string;
 }
 
 const accountCatalog: Record<Locale, AccountMessages> = {
@@ -498,6 +501,9 @@ const accountCatalog: Record<Locale, AccountMessages> = {
     errExpired: "Der Link ist abgelaufen oder ungültig. Bitte fordern Sie einen neuen an.",
     errDisabled: "Dieses Konto ist nicht verfügbar.",
     errThrottled: "Zu viele Versuche. Bitte später erneut versuchen.",
+    addAddress: "Adresse hinzufügen",
+    makeDefault: "Als Standard",
+    defaultLabel: "Standard",
   },
   en: {
     loginTitle: "Sign in",
@@ -514,6 +520,9 @@ const accountCatalog: Record<Locale, AccountMessages> = {
     errExpired: "The link expired or is invalid. Please request a new one.",
     errDisabled: "This account is not available.",
     errThrottled: "Too many attempts. Please try again later.",
+    addAddress: "Add address",
+    makeDefault: "Set as default",
+    defaultLabel: "Default",
   },
   it: {
     loginTitle: "Accedi",
@@ -530,6 +539,9 @@ const accountCatalog: Record<Locale, AccountMessages> = {
     errExpired: "Il link e scaduto o non valido. Richiedine uno nuovo.",
     errDisabled: "Questo account non e disponibile.",
     errThrottled: "Troppi tentativi. Riprova piu tardi.",
+    addAddress: "Aggiungi indirizzo",
+    makeDefault: "Imposta come predefinito",
+    defaultLabel: "Predefinito",
   },
   fr: {
     loginTitle: "Se connecter",
@@ -546,6 +558,9 @@ const accountCatalog: Record<Locale, AccountMessages> = {
     errExpired: "Le lien a expire ou est invalide. Veuillez en demander un nouveau.",
     errDisabled: "Ce compte n est pas disponible.",
     errThrottled: "Trop de tentatives. Reessayez plus tard.",
+    addAddress: "Ajouter une adresse",
+    makeDefault: "Definir par defaut",
+    defaultLabel: "Par defaut",
   },
 };
 
