@@ -7,6 +7,8 @@
 
 import { and, eq, inArray } from "drizzle-orm";
 
+import type { SewnInLabel } from "@cutura/core";
+
 import type { Database } from "../getDb";
 import {
   type Locale,
@@ -344,6 +346,34 @@ export async function listPublishedModelsFiltered(
   else if (filter.sort === "price_desc") result.sort((a, b) => b.basePriceMinor - a.basePriceMinor);
   else if (filter.sort === "name") result.sort((a, b) => a.name.localeCompare(b.name));
   return result;
+}
+
+function stringifyComposition(value: unknown): string | undefined {
+  if (typeof value === "string") return value || undefined;
+  if (value && typeof value === "object") {
+    const parts = Object.entries(value as Record<string, unknown>).map(([k, v]) =>
+      typeof v === "number" ? `${v}% ${k}` : `${k}`,
+    );
+    return parts.length ? parts.join(", ") : undefined;
+  }
+  return undefined;
+}
+
+function stringifyCare(value: unknown): string | undefined {
+  if (typeof value === "string") return value || undefined;
+  if (Array.isArray(value)) return value.length ? value.join(", ") : undefined;
+  if (value && typeof value === "object") {
+    const vals = Object.values(value as Record<string, unknown>).map(String);
+    return vals.length ? vals.join(", ") : undefined;
+  }
+  return undefined;
+}
+
+/** The language-neutral sewn-in label (composition + care) for a fabric code (FR-1391). */
+export async function getFabricSewnInLabel(db: Database, fabricCode: string): Promise<SewnInLabel> {
+  const [f] = await db.select().from(fabric).where(eq(fabric.code, fabricCode));
+  if (!f) return {};
+  return { composition: stringifyComposition(f.fibreComposition), care: stringifyCare(f.careData) };
 }
 
 /** The primary media id for an entity (primary flag first, else lowest position), or null. */

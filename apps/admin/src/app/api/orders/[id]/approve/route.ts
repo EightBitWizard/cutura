@@ -2,6 +2,7 @@ import { type EmailAttachment, buildSupplierSpec } from "@cutura/core";
 import {
   ResendEmailProvider,
   approveOrderItem,
+  getFabricSewnInLabel,
   getOrderDetail,
   getRow,
   listMedia,
@@ -67,7 +68,8 @@ export async function POST(
     const images = media
       .filter((m) => m.isPrimary)
       .map((m) => ({ r2Key: m.r2Key, caption: "Modell" }));
-    const spec = buildSupplierSpec(snapshot, { images });
+    const label = await getFabricSewnInLabel(db, snapshot.fabricCode);
+    const spec = buildSupplierSpec(snapshot, { images, label });
     const pdfBytes = await renderSupplierPdf(spec, fetcher);
     const pdf: EmailAttachment = {
       filename: `${detail.order.orderNumber}-${d.item.id}.pdf`,

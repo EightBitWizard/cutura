@@ -52,4 +52,13 @@ describe("buildSupplierSpec", () => {
     });
     expect(spec.images).toHaveLength(1);
   });
+
+  it("carries the language-neutral sewn-in label, defaulting to empty", () => {
+    expect(buildSupplierSpec(snapshot).label).toEqual({});
+    const spec = buildSupplierSpec(snapshot, {
+      label: { composition: "100% Cotton", care: "30C, no bleach" },
+    });
+    expect(spec.label.composition).toBe("100% Cotton");
+    expect(spec.label.care).toBe("30C, no bleach");
+  });
 });

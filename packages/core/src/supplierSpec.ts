@@ -20,13 +20,26 @@ export interface SupplierSpec {
   configuration: Array<{ key: string; value: string }>;
   upgrades: Array<{ code: string; placement: string; price: string }>;
   measurements: Array<{ field: string; label: string; value: number }>;
+  label: SewnInLabel;
   images: SupplierSpecImage[];
+}
+
+/**
+ * The one standard, language-neutral sewn-in label (FR-1391): fibre composition +
+ * international care symbols. Care text + the localized note go on the parcel card,
+ * not sewn in. The caller resolves these strings from the fabric.
+ */
+export interface SewnInLabel {
+  composition?: string;
+  care?: string;
 }
 
 export interface BuildSupplierSpecOptions {
   images?: SupplierSpecImage[];
   /** Field-label map (supplier-facing); defaults to the German labels. */
   fieldLabels?: Record<string, string>;
+  /** The language-neutral sewn-in label (composition + care), resolved from the fabric. */
+  label?: SewnInLabel;
 }
 
 export function buildSupplierSpec(
@@ -50,6 +63,7 @@ export function buildSupplierSpec(
       price: formatCHF(u.priceMinor),
     })),
     measurements,
+    label: opts.label ?? {},
     images: opts.images ?? [],
   };
 }

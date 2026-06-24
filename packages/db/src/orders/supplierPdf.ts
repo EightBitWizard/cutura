@@ -67,6 +67,15 @@ export async function renderSupplierPdf(
   for (const m of spec.measurements) write(`${m.label}: ${m.value}`);
   gap();
 
+  // The one standard, language-neutral sewn-in label (FR-1391): composition + care
+  // symbols only. Localized care text goes on the parcel card, not sewn in.
+  if (spec.label.composition || spec.label.care) {
+    write("Eingenaehtes Etikett (sprachneutral)", bold, 13);
+    if (spec.label.composition) write(`Zusammensetzung: ${spec.label.composition}`);
+    if (spec.label.care) write(`Pflege: ${spec.label.care}`);
+    gap();
+  }
+
   if (spec.images.length > 0) {
     write("Bilder", bold, 13);
     for (const image of spec.images) {
