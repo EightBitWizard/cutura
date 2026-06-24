@@ -1,0 +1,64 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "cutura-storefront",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-06-01",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": { "binding": "ASSETS", "directory": ".open-next/assets" },
+  "observability": { "enabled": true },
+  // Per-request CPU ceiling. Without raising it above the 50ms default, the
+  // OpenNext cold-start init can exceed it and yield half-initialized isolates.
+  // 30s is a ceiling, not a charge; requires Workers Paid/Standard.
+  "limits": { "cpu_ms": 30000 },
+
+  // Top-level bindings are the LOCAL DEV config (Miniflare). Real deploys always
+  // pass --env staging|production, whose blocks below fully redeclare bindings
+  // (vars/d1/kv/r2 do NOT inherit into env blocks). Local ids are placeholders;
+  // Miniflare keys local storage by binding name.
+  "d1_databases": [{ "binding": "DB", "database_name": "cutura-dev", "database_id": "local-dev" }],
+  "kv_namespaces": [
+    { "binding": "SESSIONS", "id": "local-dev-sessions" },
+    { "binding": "RATE_LIMIT", "id": "local-dev-rate-limit" },
+  ],
+  "r2_buckets": [{ "binding": "MEDIA", "bucket_name": "cutura-media-dev" }],
+  "vars": { "CUTURA_ENV": "development" },
+
+  "env": {
+    "staging": {
+      "name": "cutura-storefront-staging",
+      // Custom domain (staging.cutura.ch) is attached once cutura.ch DNS moves to
+      // Cloudflare; until then this serves on *.workers.dev.
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "cutura-staging",
+          "database_id": "REPLACE_WITH_STAGING_D1_ID",
+          "migrations_dir": "../../infra/migrations",
+        },
+      ],
+      "kv_namespaces": [
+        { "binding": "SESSIONS", "id": "REPLACE_WITH_STAGING_SESSIONS_KV_ID" },
+        { "binding": "RATE_LIMIT", "id": "REPLACE_WITH_STAGING_RATE_LIMIT_KV_ID" },
+      ],
+      "r2_buckets": [{ "binding": "MEDIA", "bucket_name": "cutura-media-staging" }],
+      "vars": { "CUTURA_ENV": "staging" },
+    },
+    "production": {
+      "name": "cutura-storefront-production",
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "cutura-production",
+          "database_id": "REPLACE_WITH_PROD_D1_ID",
+          "migrations_dir": "../../infra/migrations",
+        },
+      ],
+      "kv_namespaces": [
+        { "binding": "SESSIONS", "id": "REPLACE_WITH_PROD_SESSIONS_KV_ID" },
+        { "binding": "RATE_LIMIT", "id": "REPLACE_WITH_PROD_RATE_LIMIT_KV_ID" },
+      ],
+      "r2_buckets": [{ "binding": "MEDIA", "bucket_name": "cutura-media-production" }],
+      "vars": { "CUTURA_ENV": "production" },
+    },
+  },
+}

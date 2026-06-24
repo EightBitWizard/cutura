@@ -1,0 +1,44 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "cutura-admin",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-06-01",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": { "binding": "ASSETS", "directory": ".open-next/assets" },
+  "observability": { "enabled": true },
+  "limits": { "cpu_ms": 30000 },
+
+  // The admin control plane is a single deployment bound to all three databases
+  // so it can author catalog (control) and publish into staging and production.
+  // Ids are placeholders for the provisioning runbook; local dev uses Miniflare
+  // (keyed by binding name). Custom domain admin.cutura.ch is attached when DNS
+  // moves to Cloudflare.
+  "d1_databases": [
+    {
+      "binding": "CONTROL_DB",
+      "database_name": "cutura-control",
+      "database_id": "REPLACE_WITH_CONTROL_D1_ID",
+      "migrations_dir": "../../infra/migrations",
+    },
+    {
+      "binding": "STAGING_DB",
+      "database_name": "cutura-staging",
+      "database_id": "REPLACE_WITH_STAGING_D1_ID",
+    },
+    {
+      "binding": "PRODUCTION_DB",
+      "database_name": "cutura-production",
+      "database_id": "REPLACE_WITH_PROD_D1_ID",
+    },
+  ],
+  "kv_namespaces": [
+    { "binding": "SESSIONS", "id": "REPLACE_WITH_ADMIN_SESSIONS_KV_ID" },
+    { "binding": "RATE_LIMIT", "id": "REPLACE_WITH_ADMIN_RATE_LIMIT_KV_ID" },
+  ],
+  "r2_buckets": [
+    { "binding": "MEDIA_CONTROL", "bucket_name": "cutura-media-control" },
+    { "binding": "MEDIA_STAGING", "bucket_name": "cutura-media-staging" },
+    { "binding": "MEDIA_PRODUCTION", "bucket_name": "cutura-media-production" },
+  ],
+  "vars": { "CUTURA_ENV": "admin" },
+}

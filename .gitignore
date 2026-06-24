@@ -27,3 +27,6 @@ test-results/
 # OS / editor
 .DS_Store
 *.log
+
+# Next generated
+next-env.d.ts
