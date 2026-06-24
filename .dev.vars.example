@@ -1,0 +1,19 @@
+# Local development secrets for `next dev` / wrangler. Copy to .dev.vars (which is
+# gitignored) and fill with non-production values. NEVER commit real secrets.
+# In production these are set with `wrangler secret put` (see infra/setup-runbook.md).
+
+# Signs session cookies (HMAC). Use a long random string (>= 32 chars).
+SESSION_SECRET=""
+
+# Encrypts body measurements at rest.
+MEASUREMENT_ENCRYPTION_KEY=""
+
+# Transactional email provider (Resend by default).
+EMAIL_PROVIDER_KEY=""
+
+# Admin control-plane auth (admin worker only).
+ADMIN_AUTH_SECRET=""
+
+# Shopify (added in M3, payment rail only):
+# SHOPIFY_ADMIN_API_TOKEN=""
+# SHOPIFY_WEBHOOK_SECRET=""
