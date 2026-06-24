@@ -43,16 +43,17 @@ jobs:
   gitleaks:
     name: Secret scan
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pull-requests: read
     steps:
       - uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-      - uses: gitleaks/gitleaks-action@v3
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # Scan the working tree directly (gitleaks dir) rather than a push commit
+      # range, so the scan is deterministic and does not break on the initial
+      # push where the root commit has no parent.
+      - name: Run gitleaks
+        run: |
+          VERSION=8.24.3
+          curl -sSfL "https://github.com/gitleaks/gitleaks/releases/download/v${VERSION}/gitleaks_${VERSION}_linux_x64.tar.gz" -o /tmp/gitleaks.tgz
+          tar -xzf /tmp/gitleaks.tgz -C /tmp gitleaks
+          /tmp/gitleaks dir . --redact --verbose --exit-code 1
 
   deploy-staging:
     name: Deploy to Staging
