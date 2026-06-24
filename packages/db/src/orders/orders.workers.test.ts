@@ -41,6 +41,31 @@ function sampleConfig() {
   };
 }
 
+const trouserConfirmed: GarmentMeasurements = {
+  waist: 88,
+  hips: 96,
+  inseam: 80,
+  outseam: 104,
+  thigh: 60,
+  knee: 43,
+  legOpening: 34,
+  rise: 26,
+};
+
+function trouserConfig() {
+  return {
+    baseModelName: "Chino Navy",
+    fabricCode: "CHN-NAV-01",
+    configuration: { pleats: "flat_front" },
+    upgrades: [],
+    garmentType: "trouser",
+    measurementMethod: "wizard" as const,
+    measurementProfileVersion: 1,
+    confirmedValues: trouserConfirmed,
+    price: { base: 14900, fabric: 0, options: 0, upgrades: 0, total: 14900 },
+  };
+}
+
 async function seedOrder(itemCount: number): Promise<{ orderId: string; itemIds: string[] }> {
   const orderId = crypto.randomUUID();
   await db().insert(order).values({
@@ -69,6 +94,43 @@ async function seedOrder(itemCount: number): Promise<{ orderId: string; itemIds:
     itemIds.push(itemId);
   }
   return { orderId, itemIds };
+}
+
+/** An order with one shirt item and one trouser item. */
+async function seedMixedOrder(): Promise<{
+  orderId: string;
+  shirtItemId: string;
+  trouserItemId: string;
+}> {
+  const orderId = crypto.randomUUID();
+  await db().insert(order).values({
+    id: orderId,
+    orderNumber: orderId,
+    totalMinor: 27800,
+    acceptedTermsVersion: "2026-06-24",
+    acceptedPrivacyVersion: "2026-06-24",
+    status: "new",
+    createdAt: iso,
+    updatedAt: iso,
+  });
+  const itemIds: string[] = [];
+  for (const cfg of [sampleConfig(), trouserConfig()]) {
+    const itemId = crypto.randomUUID();
+    const configEnc = await encryptJson(cfg, KEY, "snapshot");
+    await db()
+      .insert(orderItem)
+      .values({
+        id: itemId,
+        orderId,
+        baseModelId: cfg.garmentType === "shirt" ? "bm_oxford" : "bm_chino",
+        status: "new",
+        configEnc,
+        createdAt: iso,
+        updatedAt: iso,
+      });
+    itemIds.push(itemId);
+  }
+  return { orderId, shirtItemId: itemIds[0]!, trouserItemId: itemIds[1]! };
 }
 
 function paidEvent(orderId: string, eventId = crypto.randomUUID()) {
@@ -227,6 +289,65 @@ describe("transitions + QC", () => {
     });
     await shipOrder(db(), { orderId, actor: "admin" });
 
+    const items = await db().select().from(orderItem).where(eq(orderItem.orderId, orderId));
+    expect(items.every((i) => i.status === "shipped")).toBe(true);
+    const [row] = await db().select().from(order).where(eq(order.id, orderId));
+    expect(row?.status).toBe("shipped");
+  });
+});
+
+describe("multi-item mixed garment types (FR-850/851/852)", () => {
+  it("builds one package per item with its own garment type, QC'd independently, shipped together", async () => {
+    const { orderId, shirtItemId, trouserItemId } = await seedMixedOrder();
+    const result = await processPaidEvent(db(), paidEvent(orderId), { measurementKey: KEY });
+    expect(result.productionPackageIds).toHaveLength(2);
+
+    // Each garment is its own package + snapshot, with the correct garment type.
+    const [shirtPkg] = await db()
+      .select()
+      .from(productionPackage)
+      .where(eq(productionPackage.orderItemId, shirtItemId));
+    const [trouserPkg] = await db()
+      .select()
+      .from(productionPackage)
+      .where(eq(productionPackage.orderItemId, trouserItemId));
+    expect(shirtPkg!.garmentType).toBe("shirt");
+    expect(trouserPkg!.garmentType).toBe("trouser");
+    expect((await readSnapshot(shirtPkg!.snapshotEnc, KEY)).effectiveMeasurements).toEqual(
+      confirmed,
+    );
+    expect((await readSnapshot(trouserPkg!.snapshotEnc, KEY)).effectiveMeasurements).toEqual(
+      trouserConfirmed,
+    );
+
+    await advanceToArrived(shirtItemId);
+    await advanceToArrived(trouserItemId);
+
+    // QC each with its own garment-type checklist; pass the shirt only.
+    const passShirt = getDefaultQcChecklist("shirt").map((c) => ({ ...c, result: "ok" as const }));
+    await submitQc(db(), {
+      productionPackageId: shirtPkg!.id,
+      checklist: passShirt,
+      reviewedBy: "qc",
+    });
+
+    // The trouser has not passed yet, so the parcel cannot ship.
+    await expect(shipOrder(db(), { orderId, actor: "admin" })).rejects.toBeInstanceOf(
+      ShippingBlockedError,
+    );
+
+    const passTrouser = getDefaultQcChecklist("trouser").map((c) => ({
+      ...c,
+      result: "ok" as const,
+    }));
+    await submitQc(db(), {
+      productionPackageId: trouserPkg!.id,
+      checklist: passTrouser,
+      reviewedBy: "qc",
+    });
+
+    // Both passed: the two garments ship together in one parcel.
+    await shipOrder(db(), { orderId, actor: "admin" });
     const items = await db().select().from(orderItem).where(eq(orderItem.orderId, orderId));
     expect(items.every((i) => i.status === "shipped")).toBe(true);
     const [row] = await db().select().from(order).where(eq(order.id, orderId));
