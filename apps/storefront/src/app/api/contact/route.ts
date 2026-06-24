@@ -1,3 +1,4 @@
+import { verifyTurnstile } from "@cutura/core";
 import { ResendEmailProvider, getDb, submitContactMessage } from "@cutura/db";
 
 import { defaultLocale, isLocale } from "@/i18n/config";
@@ -22,6 +23,11 @@ export async function POST(request: Request): Promise<Response> {
   const ip = request.headers.get("cf-connecting-ip") ?? "anon";
   if (!(await rateLimit(env.RATE_LIMIT, `contact:${ip}`, 5, 3600))) {
     return redirectTo(request, `${dest}?error=throttled`);
+  }
+  // Turnstile (no-op until a secret is configured).
+  const turnstileToken = String(form.get("cf-turnstile-response") ?? "");
+  if (!(await verifyTurnstile(turnstileToken, env.TURNSTILE_SECRET))) {
+    return redirectTo(request, `${dest}?error=captcha`);
   }
 
   await submitContactMessage(getDb(env.DB), new ResendEmailProvider(env.EMAIL_PROVIDER_KEY), {

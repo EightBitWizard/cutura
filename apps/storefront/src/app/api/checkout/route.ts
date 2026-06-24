@@ -23,6 +23,7 @@ import { getEnv } from "@/server/env";
 import { readMeasureToken, readMeasurementVersion } from "@/server/measurement";
 import { getOrderingState } from "@/server/ops";
 import { priceConfigured } from "@/server/pricing";
+import { rateLimit } from "@/server/ratelimit";
 import { getCustomerId } from "@/server/session";
 import { createShopifyClient } from "@/server/shopify";
 
@@ -108,6 +109,11 @@ interface CheckoutBody {
 
 export async function POST(request: Request): Promise<Response> {
   const env = getEnv();
+  // Abuse protection on checkout creation (NFR-18).
+  const ip = request.headers.get("cf-connecting-ip") ?? "anon";
+  if (!(await rateLimit(env.RATE_LIMIT, `checkout:${ip}`, 10, 600))) {
+    return Response.json({ error: "rate limited" }, { status: 429 });
+  }
   const body = (await request.json().catch(() => null)) as CheckoutBody | null;
   if (!body) return Response.json({ error: "bad request" }, { status: 400 });
 

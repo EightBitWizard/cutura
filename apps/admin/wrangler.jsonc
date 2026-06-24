@@ -17,23 +17,23 @@
     {
       "binding": "CONTROL_DB",
       "database_name": "cutura-control",
-      "database_id": "REPLACE_WITH_CONTROL_D1_ID",
+      "database_id": "9399dd99-07de-4b63-9849-d3a22cf2165e",
       "migrations_dir": "../../infra/migrations",
     },
     {
       "binding": "STAGING_DB",
       "database_name": "cutura-staging",
-      "database_id": "REPLACE_WITH_STAGING_D1_ID",
+      "database_id": "8572549d-4a97-407c-b61b-b99df34aa96a",
     },
     {
       "binding": "PRODUCTION_DB",
       "database_name": "cutura-production",
-      "database_id": "REPLACE_WITH_PROD_D1_ID",
+      "database_id": "79f3d697-9f2f-4ec3-afc5-90f8326c66e6",
     },
   ],
   "kv_namespaces": [
-    { "binding": "SESSIONS", "id": "REPLACE_WITH_ADMIN_SESSIONS_KV_ID" },
-    { "binding": "RATE_LIMIT", "id": "REPLACE_WITH_ADMIN_RATE_LIMIT_KV_ID" },
+    { "binding": "SESSIONS", "id": "7606ece37e20473e85880c4e93704103" },
+    { "binding": "RATE_LIMIT", "id": "ee49d493449e4d238149dfe005c51b21" },
   ],
   "r2_buckets": [
     { "binding": "MEDIA_CONTROL", "bucket_name": "cutura-media-control" },

@@ -29,9 +29,10 @@ that delivers them is upcoming.
   never handles card data. The paid webhook is verified with timing-safe HMAC
   (base64) over the raw body and is idempotent on the webhook id; a reconcile job
   backstops missed events. [done, M3]
-- **Rate limiting** (KV) on admin login + magic-link issuance/verification + the
-  notify-me endpoint (done). Checkout-creation + webhook-adjacent limits are a
-  follow-up. [partial]
+- **Rate limiting** (KV) on admin login, magic-link issuance/verification,
+  notify-me, checkout creation, and the contact form. Turnstile bot protection is
+  wired (pass-through until a `TURNSTILE_SECRET` is provisioned). Webhook-adjacent
+  limits remain a follow-up. [done, M7] (NFR-18)
 - **Public media serving** mirrors the admin safe serve: only allow-listed raster
   types inline, anything else is an opaque download with nosniff + a locked-down
   CSP (no stored SVG/HTML XSS). Shared allow-list in `packages/core/src/media.ts`.

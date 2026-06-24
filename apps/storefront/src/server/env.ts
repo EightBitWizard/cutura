@@ -20,6 +20,8 @@ export interface StorefrontEnv {
   SHOPIFY_WEBHOOK_SECRET: string;
   SHOPIFY_STORE_DOMAIN: string;
   SHOPIFY_API_VERSION: string;
+  // Optional Turnstile secret (NFR-18); when set, the contact form is verified.
+  TURNSTILE_SECRET?: string;
 }
 
 export function getEnv(): StorefrontEnv {

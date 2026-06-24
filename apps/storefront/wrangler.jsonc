@@ -32,13 +32,13 @@
         {
           "binding": "DB",
           "database_name": "cutura-staging",
-          "database_id": "REPLACE_WITH_STAGING_D1_ID",
+          "database_id": "8572549d-4a97-407c-b61b-b99df34aa96a",
           "migrations_dir": "../../infra/migrations",
         },
       ],
       "kv_namespaces": [
-        { "binding": "SESSIONS", "id": "REPLACE_WITH_STAGING_SESSIONS_KV_ID" },
-        { "binding": "RATE_LIMIT", "id": "REPLACE_WITH_STAGING_RATE_LIMIT_KV_ID" },
+        { "binding": "SESSIONS", "id": "f4bc3e8fad4c46409fe2ecce4bdcbd57" },
+        { "binding": "RATE_LIMIT", "id": "c31999866a144ea28c96e62e82d85016" },
       ],
       "r2_buckets": [{ "binding": "MEDIA", "bucket_name": "cutura-media-staging" }],
       "vars": { "CUTURA_ENV": "staging" },
@@ -49,13 +49,13 @@
         {
           "binding": "DB",
           "database_name": "cutura-production",
-          "database_id": "REPLACE_WITH_PROD_D1_ID",
+          "database_id": "79f3d697-9f2f-4ec3-afc5-90f8326c66e6",
           "migrations_dir": "../../infra/migrations",
         },
       ],
       "kv_namespaces": [
-        { "binding": "SESSIONS", "id": "REPLACE_WITH_PROD_SESSIONS_KV_ID" },
-        { "binding": "RATE_LIMIT", "id": "REPLACE_WITH_PROD_RATE_LIMIT_KV_ID" },
+        { "binding": "SESSIONS", "id": "c3c1b09a9a53422c8c5728a5a071db34" },
+        { "binding": "RATE_LIMIT", "id": "c973455db9904f5897f6feae42987a17" },
       ],
       "r2_buckets": [{ "binding": "MEDIA", "bucket_name": "cutura-media-production" }],
       "vars": { "CUTURA_ENV": "production" },
