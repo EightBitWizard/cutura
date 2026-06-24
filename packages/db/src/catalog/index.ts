@@ -19,6 +19,8 @@ import {
   modelAllowedFabric,
   modelAllowedOption,
   modelAllowedUpgrade,
+  optionGroup,
+  optionValue,
 } from "../schema";
 
 type Row<T extends IdTable> = T["$inferInsert"] & { id: string };
@@ -151,6 +153,25 @@ export async function setBaseModelStatus(
     .update(baseModel)
     .set({ status, updatedAt: new Date().toISOString() })
     .where(eq(baseModel.id, id));
+}
+
+/** List the option values of a group (admin detail view). */
+export function listOptionValues(
+  db: Database,
+  optionGroupId: string,
+): Promise<(typeof optionValue.$inferSelect)[]> {
+  return db
+    .select()
+    .from(optionValue)
+    .where(eq(optionValue.optionGroupId, optionGroupId)) as Promise<
+    (typeof optionValue.$inferSelect)[]
+  >;
+}
+
+/** Delete an option group and its values from the control database. */
+export async function deleteOptionGroup(db: Database, id: string): Promise<void> {
+  await db.delete(optionValue).where(eq(optionValue.optionGroupId, id));
+  await db.delete(optionGroup).where(eq(optionGroup.id, id));
 }
 
 /** Locales whose localized value is missing or blank (surfaces incomplete locales, FR-271). */

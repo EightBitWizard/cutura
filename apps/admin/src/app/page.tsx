@@ -14,6 +14,9 @@ export default function AdminHome() {
         <Link className="text-neutral-900 underline" href="/fabrics">
           Fabrics
         </Link>
+        <Link className="text-neutral-900 underline" href="/option-groups">
+          Option groups
+        </Link>
         <Link className="text-neutral-900 underline" href="/upgrades">
           Upgrades
         </Link>
