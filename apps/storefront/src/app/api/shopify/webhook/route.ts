@@ -1,6 +1,15 @@
-import { hmacSha256Base64, timingSafeEqual } from "@cutura/core";
-import { findOrderIdByNumber, getDb, processPaidEvent } from "@cutura/db";
+import { type EmailLocale, hmacSha256Base64, timingSafeEqual } from "@cutura/core";
+import {
+  ResendEmailProvider,
+  findOrderIdByNumber,
+  getDb,
+  getOrderById,
+  processPaidEvent,
+  renderOrderConfirmation,
+  sendEmailAndLog,
+} from "@cutura/db";
 
+import { isLocale } from "@/i18n/config";
 import { getEnv } from "@/server/env";
 
 export const dynamic = "force-dynamic";
@@ -71,7 +80,7 @@ export async function POST(request: Request): Promise<Response> {
     const db = getDb(env.DB);
     const orderId = await resolveLocalOrderId(db, payload);
     if (!orderId) return new Response("ok (unmatched)", { status: 200 });
-    await processPaidEvent(
+    const result = await processPaidEvent(
       db,
       {
         eventId: webhookId,
@@ -82,6 +91,22 @@ export async function POST(request: Request): Promise<Response> {
       },
       { measurementKey: env.MEASUREMENT_ENCRYPTION_KEY },
     );
+    // Order confirmation email once, on first processing (FR-790/901).
+    if (result.status === "processed") {
+      const order = await getOrderById(db, orderId);
+      if (order?.guestEmail) {
+        const locale: EmailLocale = isLocale(order.locale) ? order.locale : "de";
+        await sendEmailAndLog(
+          db,
+          new ResendEmailProvider(env.EMAIL_PROVIDER_KEY),
+          renderOrderConfirmation(
+            { to: order.guestEmail, orderNumber: order.orderNumber, totalMinor: order.totalMinor },
+            locale,
+          ),
+          { orderId, template: "order_confirmation" },
+        );
+      }
+    }
     return new Response("ok", { status: 200 });
   }
 

@@ -69,6 +69,15 @@ export async function findOrderIdByNumber(
   return row?.id ?? null;
 }
 
+/** Read a full order row by id. */
+export async function getOrderById(
+  db: Database,
+  id: string,
+): Promise<typeof order.$inferSelect | undefined> {
+  const [row] = await db.select().from(order).where(eq(order.id, id));
+  return row;
+}
+
 /** Record the Shopify draft id + hosted-checkout URL on the order (resume / expiry). */
 export async function attachShopifyDraft(
   db: Database,

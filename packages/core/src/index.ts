@@ -15,3 +15,5 @@ export * from "./pricing";
 export * from "./profile";
 export * from "./snapshot";
 export * from "./garment";
+export * from "./supplierSpec";
+export * from "./email";
