@@ -8,6 +8,9 @@ export default function AdminHome() {
         Control plane for the catalog, publishing, and operations.
       </p>
       <nav className="mt-6 flex flex-col gap-2">
+        <Link className="text-neutral-900 underline" href="/orders">
+          Orders
+        </Link>
         <Link className="text-neutral-900 underline" href="/garment-types">
           Garment types
         </Link>
