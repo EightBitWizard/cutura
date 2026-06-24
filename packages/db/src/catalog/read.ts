@@ -5,7 +5,7 @@
 // orderability and fabric availability. See REQUIREMENTS.md E3 (FR-320), E4
 // (FR-420), E12 (FR-1202).
 
-import { eq, inArray } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 
 import type { Database } from "../getDb";
 import {
@@ -15,6 +15,7 @@ import {
   collectionMember,
   fabric,
   garmentType,
+  media,
   modelAllowedFabric,
   modelAllowedOption,
   modelAllowedUpgrade,
@@ -210,4 +211,49 @@ export async function listPublishedCollections(
     });
   }
   return result;
+}
+
+/** The primary media id for an entity (primary flag first, else lowest position), or null. */
+export async function getPrimaryMediaId(
+  db: Database,
+  entityType: string,
+  entityId: string,
+): Promise<string | null> {
+  const rows = await db
+    .select({ id: media.id, isPrimary: media.isPrimary, position: media.position })
+    .from(media)
+    .where(and(eq(media.entityType, entityType), eq(media.entityId, entityId)));
+  if (rows.length === 0) return null;
+  rows.sort((a, b) => Number(b.isPrimary) - Number(a.isPrimary) || a.position - b.position);
+  return rows[0]!.id;
+}
+
+/** Primary media ids for many entities of one type, as a Map (one query). */
+export async function primaryMediaForEntities(
+  db: Database,
+  entityType: string,
+  entityIds: string[],
+): Promise<Map<string, string>> {
+  const out = new Map<string, string>();
+  if (entityIds.length === 0) return out;
+  const rows = await db
+    .select({
+      id: media.id,
+      entityId: media.entityId,
+      isPrimary: media.isPrimary,
+      position: media.position,
+    })
+    .from(media)
+    .where(and(eq(media.entityType, entityType), inArray(media.entityId, entityIds)));
+  const byEntity = new Map<string, typeof rows>();
+  for (const r of rows) {
+    const list = byEntity.get(r.entityId) ?? [];
+    list.push(r);
+    byEntity.set(r.entityId, list);
+  }
+  for (const [entityId, list] of byEntity) {
+    list.sort((a, b) => Number(b.isPrimary) - Number(a.isPrimary) || a.position - b.position);
+    out.set(entityId, list[0]!.id);
+  }
+  return out;
 }

@@ -2,9 +2,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { formatCHF } from "@cutura/core";
-import { getDb, getPublishedModel } from "@cutura/db";
+import { getDb, getPrimaryMediaId, getPublishedModel } from "@cutura/db";
 
 import { Configurator } from "@/components/Configurator";
+import { MediaImage } from "@/components/MediaImage";
 import { defaultLocale, isLocale } from "@/i18n/config";
 import { getMessages } from "@/i18n/messages";
 import { getEnv } from "@/server/env";
@@ -20,9 +21,11 @@ export default async function ProductPage({
   const { locale: raw, handle } = await params;
   const locale = isLocale(raw) ? raw : defaultLocale;
   const t = getMessages(locale);
-  const model = await getPublishedModel(getDb(getEnv().DB), handle, locale);
+  const db = getDb(getEnv().DB);
+  const model = await getPublishedModel(db, handle, locale);
   if (!model) notFound();
 
+  const mediaId = await getPrimaryMediaId(db, "model", model.id);
   const ordering = await getOrderingState(locale);
   const lead = leadTimeFor(ordering, model.leadTimeMinDays, model.leadTimeMaxDays);
 
@@ -31,6 +34,12 @@ export default async function ProductPage({
       <Link href={`/${locale}`} className="text-sm text-neutral-500 underline">
         {t.back}
       </Link>
+
+      <MediaImage
+        mediaId={mediaId}
+        alt={model.name}
+        className="mt-4 aspect-[4/3] w-full rounded-lg bg-neutral-100 object-cover"
+      />
 
       <h1 className="mt-4 text-3xl font-semibold tracking-tight">{model.name}</h1>
       {model.description && <p className="mt-3 text-neutral-600">{model.description}</p>}
