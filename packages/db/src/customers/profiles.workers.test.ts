@@ -8,10 +8,12 @@ import { findOrCreateCustomer } from "./auth";
 import {
   archiveProfile,
   getProfile,
+  getProfileIdForGarmentType,
   listProfiles,
   migrateGuestMeasurement,
   renameProfile,
   reviseProfile,
+  saveCustomerMeasurement,
 } from "./profiles";
 
 const db = () => getDb(env.TARGET_TEST_DB);
@@ -26,6 +28,27 @@ const confirmed: GarmentMeasurements = {
   sleeveLength: 64,
   shirtLength: 76,
 };
+
+const trouserConfirmed: GarmentMeasurements = {
+  waist: 88,
+  hips: 96,
+  inseam: 80,
+  outseam: 104,
+  thigh: 60,
+  knee: 43,
+  legOpening: 34,
+  rise: 26,
+};
+
+function versionFor(values: GarmentMeasurements) {
+  return createProfileVersion({
+    method: "wizard",
+    originalInputs: {},
+    derivedValues: {},
+    confirmedValues: values,
+    createdAt: "2026-06-24T10:00:00.000Z",
+  });
+}
 
 async function seedProfile(): Promise<{ customerId: string; profileId: string }> {
   const { customer } = await findOrCreateCustomer(db(), `p_${crypto.randomUUID()}@x.ch`, "de");
@@ -69,6 +92,36 @@ describe("profile management", () => {
     const { customerId, profileId } = await seedProfile();
     expect(await archiveProfile(db(), customerId, profileId)).toBe(true);
     expect((await listProfiles(db(), customerId)).map((p) => p.id)).not.toContain(profileId);
+  });
+
+  it("keeps one profile per garment type (shirt and trouser are independent)", async () => {
+    const { customer } = await findOrCreateCustomer(db(), `g_${crypto.randomUUID()}@x.ch`, "de");
+
+    // First a shirt, then a trouser: two distinct profiles.
+    const shirt = await saveCustomerMeasurement(db(), customer.id, versionFor(confirmed), KEY);
+    const trouser = await saveCustomerMeasurement(
+      db(),
+      customer.id,
+      versionFor(trouserConfirmed),
+      KEY,
+    );
+    expect(trouser.profileId).not.toBe(shirt.profileId);
+    expect(await listProfiles(db(), customer.id)).toHaveLength(2);
+
+    // The right profile resolves per garment type.
+    expect(await getProfileIdForGarmentType(db(), customer.id, "shirt")).toBe(shirt.profileId);
+    expect(await getProfileIdForGarmentType(db(), customer.id, "trouser")).toBe(trouser.profileId);
+
+    // Saving the same garment type again revises that profile, not a new one.
+    const again = await saveCustomerMeasurement(
+      db(),
+      customer.id,
+      versionFor({ ...trouserConfirmed, inseam: 82 }),
+      KEY,
+    );
+    expect(again.profileId).toBe(trouser.profileId);
+    expect(await listProfiles(db(), customer.id)).toHaveLength(2);
+    expect((await getProfile(db(), customer.id, trouser.profileId, KEY))?.currentVersion).toBe(2);
   });
 
   it("rejects access by a non-owner", async () => {

@@ -10,7 +10,7 @@ import { getMessages } from "@/i18n/messages";
 import { PRIVACY_VERSION, TERMS_VERSION } from "@/legal";
 import { CART_COOKIE, readCart } from "@/server/cart";
 import { getEnv } from "@/server/env";
-import { MEASURE_COOKIE } from "@/server/measurement";
+import { measuredGarmentTypes } from "@/server/measurementStatus";
 import { priceConfigured } from "@/server/pricing";
 
 export const dynamic = "force-dynamic";
@@ -22,21 +22,24 @@ export default async function CheckoutPage({ params }: { params: Promise<{ local
 
   const cookieStore = await cookies();
   const cart = await readCart(cookieStore.get(CART_COOKIE)?.value);
-  const hasMeasurement = Boolean(cookieStore.get(MEASURE_COOKIE)?.value);
   const db = getDb(getEnv().DB);
 
   let total = 0;
   let allValid = cart.lines.length > 0;
+  const garmentTypes: string[] = [];
   for (const line of cart.lines) {
     const priced = await priceConfigured(db, line.handle, locale, line);
     if (!priced || !priced.valid) {
       allValid = false;
       continue;
     }
+    garmentTypes.push(priced.model.garmentType);
     total += priced.breakdown.total;
   }
+  const measured = await measuredGarmentTypes(garmentTypes);
+  const missingTypes = [...new Set(garmentTypes)].filter((gt) => !measured.has(gt));
   const configMissing = !allValid;
-  const measurementMissing = !hasMeasurement;
+  const measurementMissing = missingTypes.length > 0;
   const ready = !configMissing && !measurementMissing;
 
   return (
@@ -58,14 +61,17 @@ export default async function CheckoutPage({ params }: { params: Promise<{ local
           </Link>
         </p>
       )}
-      {measurementMissing && (
-        <p className="mt-2 text-sm text-amber-700">
-          {t.checkout.missingMeasurement}{" "}
-          <Link href={`/${locale}/measure?return=/${locale}/checkout`} className="underline">
+      {missingTypes.map((gt) => (
+        <p key={gt} className="mt-2 text-sm text-amber-700">
+          {t.checkout.missingMeasurement} ({t.garmentNames[gt as "shirt" | "trouser"]}){" "}
+          <Link
+            href={`/${locale}/measure?gt=${gt}&return=/${locale}/checkout`}
+            className="underline"
+          >
             {t.cart.addMeasurement}
           </Link>
         </p>
-      )}
+      ))}
 
       <CheckoutForm
         locale={locale}

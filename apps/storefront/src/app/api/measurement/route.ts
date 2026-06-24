@@ -1,8 +1,7 @@
 import {
   type GarmentMeasurements,
-  type ShirtMeasurements,
   type WizardShortInput,
-  checkShirtOutliers,
+  checkOutliers,
   createProfileVersion,
   estimate,
 } from "@cutura/core";
@@ -22,6 +21,7 @@ export const dynamic = "force-dynamic";
 
 interface MeasurementRequest {
   op?: "estimate" | "confirm";
+  garmentType?: string;
   input?: WizardShortInput;
   method?: "wizard" | "detailed";
   originalInputs?: Partial<GarmentMeasurements>;
@@ -34,12 +34,13 @@ export async function POST(request: Request): Promise<Response> {
   if (!body || typeof body.op !== "string") {
     return Response.json({ error: "bad request" }, { status: 400 });
   }
+  const garmentType = body.garmentType === "trouser" ? "trouser" : "shirt";
 
   if (body.op === "estimate") {
     if (!body.input) return Response.json({ error: "missing input" }, { status: 400 });
     try {
-      // Wizard estimation runs server-side (FR-521).
-      return Response.json(estimate("shirt", body.input));
+      // Wizard estimation runs server-side, dispatched by garment type (FR-521/523).
+      return Response.json(estimate(garmentType, body.input));
     } catch {
       // Graceful degradation: route the customer to the detailed path (FR-522/524).
       return Response.json({ fallback: true });
@@ -50,7 +51,7 @@ export async function POST(request: Request): Promise<Response> {
     if (!body.confirmedValues) {
       return Response.json({ error: "missing confirmedValues" }, { status: 400 });
     }
-    const outlier = checkShirtOutliers(body.confirmedValues as Partial<ShirtMeasurements>);
+    const outlier = checkOutliers(garmentType, body.confirmedValues);
     const version = createProfileVersion({
       method: body.method === "wizard" ? "wizard" : "detailed",
       originalInputs: body.originalInputs ?? {},
@@ -79,7 +80,7 @@ export async function POST(request: Request): Promise<Response> {
     let token = readMeasureToken(request.headers.get("cookie"));
     const isNew = !token;
     if (!token) token = newMeasureToken();
-    await saveMeasurementVersion(token, version);
+    await saveMeasurementVersion(token, garmentType, version);
 
     const headers = new Headers({ "content-type": "application/json" });
     if (isNew) headers.append("set-cookie", measureCookie(token));

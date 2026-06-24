@@ -28,6 +28,7 @@ export * from "./pricing";
 export * from "./profile";
 export * from "./snapshot";
 export * from "./garment";
+export * from "./garmentFields";
 export * from "./supplierSpec";
 export * from "./turnstile";
 export * from "./email";

@@ -14,7 +14,9 @@ import { getEnv } from "./env";
 
 export const MEASURE_COOKIE = "cutura_measure";
 const TTL_SECONDS = 60 * 60 * 24 * 7; // 7 days
-const kvKey = (token: string) => `measure:${token}`;
+// Keyed by garment type: a customer ordering a shirt and trousers provides one
+// measurement per type, and each cart line resolves the matching one.
+const kvKey = (token: string, garmentType: string) => `measure:${token}:${garmentType}`;
 
 export function newMeasureToken(): string {
   return randomToken(18);
@@ -37,27 +39,29 @@ export function clearedMeasureCookie(): string {
   return `${MEASURE_COOKIE}=; Path=/; HttpOnly; SameSite=Lax; Secure; Max-Age=0`;
 }
 
-/** Delete the guest measurement blob from KV (after migrating it to an account). */
-export async function clearMeasurement(token: string): Promise<void> {
-  await getEnv().SESSIONS.delete(kvKey(token));
+/** Delete a guest measurement blob from KV (after migrating it to an account). */
+export async function clearMeasurement(token: string, garmentType: string): Promise<void> {
+  await getEnv().SESSIONS.delete(kvKey(token, garmentType));
 }
 
-/** Encrypt and store a measurement-profile version under the token. */
+/** Encrypt and store a measurement-profile version under the token + garment type. */
 export async function saveMeasurementVersion(
   token: string,
+  garmentType: string,
   version: MeasurementProfileVersion,
 ): Promise<void> {
   const env = getEnv();
   const cipher = await encryptJson(version, env.MEASUREMENT_ENCRYPTION_KEY, "measurement_version");
-  await env.SESSIONS.put(kvKey(token), cipher, { expirationTtl: TTL_SECONDS });
+  await env.SESSIONS.put(kvKey(token, garmentType), cipher, { expirationTtl: TTL_SECONDS });
 }
 
-/** Read and decrypt the measurement-profile version, or null if absent/undecryptable. */
+/** Read and decrypt a garment type's measurement version, or null if absent/undecryptable. */
 export async function readMeasurementVersion(
   token: string,
+  garmentType: string,
 ): Promise<MeasurementProfileVersion | null> {
   const env = getEnv();
-  const cipher = await env.SESSIONS.get(kvKey(token));
+  const cipher = await env.SESSIONS.get(kvKey(token, garmentType));
   if (!cipher) return null;
   try {
     return await decryptJson<MeasurementProfileVersion>(

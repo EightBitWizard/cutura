@@ -9,7 +9,7 @@ import { defaultLocale, isLocale } from "@/i18n/config";
 import { getMessages } from "@/i18n/messages";
 import { CART_COOKIE, readCart } from "@/server/cart";
 import { getEnv } from "@/server/env";
-import { MEASURE_COOKIE } from "@/server/measurement";
+import { measuredGarmentTypes } from "@/server/measurementStatus";
 import { priceConfigured } from "@/server/pricing";
 
 export const dynamic = "force-dynamic";
@@ -21,13 +21,14 @@ export default async function CartPage({ params }: { params: Promise<{ locale: s
 
   const cookieStore = await cookies();
   const cart = await readCart(cookieStore.get(CART_COOKIE)?.value);
-  const hasMeasurement = Boolean(cookieStore.get(MEASURE_COOKIE)?.value);
   const db = getDb(getEnv().DB);
 
   const lines: CartLineView[] = [];
+  const garmentTypes: string[] = [];
   for (const [index, line] of cart.lines.entries()) {
     const priced = await priceConfigured(db, line.handle, locale, line);
     if (!priced) continue; // model withdrawn since add
+    garmentTypes.push(priced.model.garmentType);
     lines.push({
       index,
       handle: line.handle,
@@ -41,6 +42,8 @@ export default async function CartPage({ params }: { params: Promise<{ locale: s
     });
   }
   const total = lines.reduce((sum, l) => sum + l.total, 0);
+  const measured = await measuredGarmentTypes(garmentTypes);
+  const missingTypes = [...new Set(garmentTypes)].filter((gt) => !measured.has(gt));
 
   return (
     <main className="mx-auto max-w-2xl px-6 py-10">
@@ -59,15 +62,22 @@ export default async function CartPage({ params }: { params: Promise<{ locale: s
           <p className="text-xs text-neutral-400">{t.allInclusive}</p>
 
           <div className="mt-6 rounded-lg border border-neutral-200 p-4 text-sm">
-            {hasMeasurement ? (
+            {missingTypes.length === 0 ? (
               <p className="text-neutral-700">{t.cart.measurementProvided}</p>
             ) : (
-              <p className="text-amber-700">
-                {t.cart.measurementMissing}{" "}
-                <Link href={`/${locale}/measure?return=/${locale}/cart`} className="underline">
-                  {t.cart.addMeasurement}
-                </Link>
-              </p>
+              <div className="space-y-1 text-amber-700">
+                {missingTypes.map((gt) => (
+                  <p key={gt}>
+                    {t.cart.measurementMissing} ({t.garmentNames[gt as "shirt" | "trouser"]}){" "}
+                    <Link
+                      href={`/${locale}/measure?gt=${gt}&return=/${locale}/cart`}
+                      className="underline"
+                    >
+                      {t.cart.addMeasurement}
+                    </Link>
+                  </p>
+                ))}
+              </div>
             )}
           </div>
 

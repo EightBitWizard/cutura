@@ -75,8 +75,9 @@ export async function createProfile(
 
 /**
  * Persist a guest's transient measurement into a D1 profile owned by the customer
- * (FR-661). Idempotent: only creates the customer's first profile; returns null if
- * one already exists. Body data is re-encrypted at rest.
+ * (FR-661). Idempotent per garment type: creates a profile only if the customer has
+ * none of that garment type yet; returns null otherwise. Body data is re-encrypted
+ * at rest. A guest who measured a shirt and trousers migrates both, one each.
  */
 export async function migrateGuestMeasurement(
   db: Database,
@@ -85,7 +86,10 @@ export async function migrateGuestMeasurement(
   key: string,
   deps: CustomerClock = {},
 ): Promise<{ profileId: string } | null> {
-  if (await customerHasProfile(db, customerId)) return null;
+  const garmentType = inferGarmentType(
+    version.confirmedValues as unknown as Record<string, unknown>,
+  );
+  if (await getProfileIdForGarmentType(db, customerId, garmentType)) return null;
   return createProfile(db, customerId, version, key, null, deps);
 }
 
@@ -101,6 +105,36 @@ export async function getCustomerProfileId(
       and(eq(measurementProfile.customerId, customerId), isNull(measurementProfile.archivedAt)),
     );
   return row?.id ?? null;
+}
+
+/**
+ * The active profile id matching a garment type (its current version's garment
+ * type), or null. Used to resolve the right body measurement per cart line and to
+ * keep one profile per garment type.
+ */
+export async function getProfileIdForGarmentType(
+  db: Database,
+  customerId: string,
+  garmentType: string,
+): Promise<string | null> {
+  const rows = await db
+    .select({ id: measurementProfile.id })
+    .from(measurementProfile)
+    .innerJoin(
+      measurementVersion,
+      and(
+        eq(measurementVersion.profileId, measurementProfile.id),
+        eq(measurementVersion.version, measurementProfile.currentVersion),
+      ),
+    )
+    .where(
+      and(
+        eq(measurementProfile.customerId, customerId),
+        isNull(measurementProfile.archivedAt),
+        eq(measurementVersion.garmentType, garmentType),
+      ),
+    );
+  return rows[0]?.id ?? null;
 }
 
 export interface ProfileSummary {
@@ -280,7 +314,12 @@ export async function saveCustomerMeasurement(
   key: string,
   deps: CustomerClock = {},
 ): Promise<{ profileId: string }> {
-  const profileId = await getCustomerProfileId(db, customerId);
+  // Revise the profile of the same garment type, or create one for a new type, so a
+  // customer keeps a shirt profile and a trouser profile independently.
+  const garmentType = inferGarmentType(
+    version.confirmedValues as unknown as Record<string, unknown>,
+  );
+  const profileId = await getProfileIdForGarmentType(db, customerId, garmentType);
   if (!profileId) return createProfile(db, customerId, version, key, null, deps);
   await reviseProfile(db, customerId, profileId, version.confirmedValues, key, deps);
   return { profileId };

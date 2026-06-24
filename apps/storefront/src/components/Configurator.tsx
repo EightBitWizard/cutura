@@ -120,7 +120,7 @@ export function Configurator({
         body: JSON.stringify({ handle: model.handle, fabricCode, optionValueCodes, upgradeCodes }),
       });
       if (res.ok) {
-        window.location.href = `/${locale}/measure?return=/${locale}/cart`;
+        window.location.href = `/${locale}/measure?gt=${model.garmentType}&return=/${locale}/cart`;
       }
     } finally {
       setSubmitting(false);

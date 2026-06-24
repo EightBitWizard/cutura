@@ -63,8 +63,10 @@ async function handle(request: Request): Promise<Response> {
     await claimGuestOrders(db, customer.id, payload.email);
     const measureToken = readMeasureToken(request.headers.get("cookie"));
     if (measureToken) {
-      const version = await readMeasurementVersion(measureToken);
-      if (version) {
+      // Migrate each garment type the guest measured into its own profile.
+      for (const garmentType of ["shirt", "trouser"]) {
+        const version = await readMeasurementVersion(measureToken, garmentType);
+        if (!version) continue;
         const migrated = await migrateGuestMeasurement(
           db,
           customer.id,
@@ -72,7 +74,7 @@ async function handle(request: Request): Promise<Response> {
           env.MEASUREMENT_ENCRYPTION_KEY,
         );
         if (migrated) {
-          await clearMeasurement(measureToken);
+          await clearMeasurement(measureToken, garmentType);
           clearMeasure = true;
         }
       }

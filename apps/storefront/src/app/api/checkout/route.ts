@@ -10,10 +10,10 @@ import {
   type OrderItemConfig,
   attachShopifyDraft,
   createGuestOrder,
-  getCustomerProfileId,
   getDb,
   getOrderItemConfigForCustomer,
   getProfile,
+  getProfileIdForGarmentType,
 } from "@cutura/db";
 
 import { defaultLocale, isLocale } from "@/i18n/config";
@@ -45,10 +45,11 @@ async function resolveLineMeasurement(
   customerId: string | null,
   measureToken: string | undefined,
   line: CartLine,
+  garmentType: string,
 ): Promise<ResolvedMeasurement | null> {
   if (line.reorder && customerId) {
     if (line.reorder.mode === "update") {
-      const profileId = await getCustomerProfileId(db, customerId);
+      const profileId = await getProfileIdForGarmentType(db, customerId, garmentType);
       const profile = profileId ? await getProfile(db, customerId, profileId, key) : null;
       if (!profile) return null;
       return {
@@ -73,7 +74,7 @@ async function resolveLineMeasurement(
     };
   }
   if (customerId) {
-    const profileId = await getCustomerProfileId(db, customerId);
+    const profileId = await getProfileIdForGarmentType(db, customerId, garmentType);
     const profile = profileId ? await getProfile(db, customerId, profileId, key) : null;
     if (profile) {
       return {
@@ -85,7 +86,7 @@ async function resolveLineMeasurement(
     }
   }
   if (measureToken) {
-    const m = await readMeasurementVersion(measureToken);
+    const m = await readMeasurementVersion(measureToken, garmentType);
     if (m) {
       return {
         confirmedValues: m.confirmedValues,
@@ -162,7 +163,14 @@ export async function POST(request: Request): Promise<Response> {
     if (!priced || !priced.valid) {
       return Response.json({ error: "invalid line" }, { status: 400 });
     }
-    const m = await resolveLineMeasurement(db, key, customerId, measureToken, line);
+    const m = await resolveLineMeasurement(
+      db,
+      key,
+      customerId,
+      measureToken,
+      line,
+      priced.model.garmentType,
+    );
     if (!m) return Response.json({ error: "missing measurement" }, { status: 400 });
 
     const config: OrderItemConfig = {

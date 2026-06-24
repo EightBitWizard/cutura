@@ -2,28 +2,13 @@
 
 import { useState } from "react";
 
-import type { MeasureMessages, ShirtFieldLabels } from "@/i18n/messages";
+import { garmentFields, wizardBaseFields } from "@cutura/core";
 
-type FieldKey = keyof ShirtFieldLabels;
-const FIELDS: FieldKey[] = [
-  "chest",
-  "waist",
-  "hips",
-  "neck",
-  "shoulder",
-  "sleeveLength",
-  "shirtLength",
-];
-type Confirmed = Record<FieldKey, number>;
-const EMPTY: Confirmed = {
-  chest: 0,
-  waist: 0,
-  hips: 0,
-  neck: 0,
-  shoulder: 0,
-  sleeveLength: 0,
-  shirtLength: 0,
-};
+import type { MeasureMessages, MeasurementFieldLabels } from "@/i18n/messages";
+
+type FieldKey = keyof MeasurementFieldLabels;
+type Confirmed = Record<string, number>;
+type WizBase = "chest" | "waist" | "hips";
 
 type Step = "choose" | "wizard" | "review" | "detailed";
 type Unit = "cm" | "in";
@@ -42,13 +27,19 @@ function fromDisplay(value: string, unit: Unit): number {
 const input = "mt-1 w-full rounded border border-neutral-300 px-2 py-1";
 
 export function MeasurementFlow({
+  garmentType,
   messages: t,
   returnUrl,
 }: {
   locale: string;
+  garmentType: string;
   messages: MeasureMessages;
   returnUrl: string;
 }) {
+  const fields = garmentFields(garmentType) as FieldKey[];
+  const baseInputs = wizardBaseFields(garmentType) as WizBase[];
+  const empty: Confirmed = Object.fromEntries(fields.map((f) => [f, 0]));
+
   const [step, setStep] = useState<Step>("choose");
   const [unit, setUnit] = useState<Unit>("cm");
   const [wiz, setWiz] = useState({
@@ -59,8 +50,8 @@ export function MeasurementFlow({
     hips: 0,
     fit: "regular" as Fit,
   });
-  const [confirmed, setConfirmed] = useState<Confirmed>(EMPTY);
-  const [derived, setDerived] = useState<Partial<Confirmed>>({});
+  const [confirmed, setConfirmed] = useState<Confirmed>(empty);
+  const [derived, setDerived] = useState<Confirmed>({});
   const [confidence, setConfidence] = useState<"high" | "medium" | "low" | null>(null);
   const [warnings, setWarnings] = useState<string[]>([]);
   const [method, setMethod] = useState<"wizard" | "detailed">("wizard");
@@ -84,6 +75,7 @@ export function MeasurementFlow({
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
           op: "estimate",
+          garmentType,
           input: {
             heightCm: wiz.height,
             weightKg: wiz.weight,
@@ -96,7 +88,7 @@ export function MeasurementFlow({
       });
       const data = (await res.json()) as {
         fallback?: boolean;
-        derived?: Partial<Confirmed>;
+        derived?: Confirmed;
         confidenceLevel?: "high" | "medium" | "low";
         warnings?: string[];
       };
@@ -109,16 +101,10 @@ export function MeasurementFlow({
       setDerived(d);
       setConfidence(data.confidenceLevel ?? null);
       setWarnings(data.warnings ?? []);
-      setConfirmed({
-        ...EMPTY,
-        chest: wiz.chest,
-        waist: wiz.waist,
-        hips: wiz.hips,
-        neck: d.neck ?? 0,
-        shoulder: d.shoulder ?? 0,
-        sleeveLength: d.sleeveLength ?? 0,
-        shirtLength: d.shirtLength ?? 0,
-      });
+      // Confirmed = the derived values plus the base inputs the customer entered.
+      const next: Confirmed = { ...empty, ...d };
+      for (const b of baseInputs) next[b] = wiz[b];
+      setConfirmed(next);
       setMethod("wizard");
       setStep("review");
     } finally {
@@ -131,13 +117,14 @@ export function MeasurementFlow({
     try {
       const originalInputs =
         method === "wizard"
-          ? { chest: wiz.chest, waist: wiz.waist, hips: wiz.hips }
+          ? Object.fromEntries(baseInputs.map((b) => [b, wiz[b]]))
           : { ...confirmed };
       const res = await fetch("/api/measurement", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
           op: "confirm",
+          garmentType,
           method,
           originalInputs,
           derivedValues: method === "wizard" ? derived : {},
@@ -189,7 +176,7 @@ export function MeasurementFlow({
   function fieldGrid(canEdit: boolean) {
     return (
       <div className="mt-3 grid grid-cols-2 gap-3">
-        {FIELDS.map((f) => (
+        {fields.map((f) => (
           <label key={f} className="flex flex-col text-sm">
             {t.fields[f]}
             {derived[f] !== undefined && method === "wizard" ? (
@@ -198,7 +185,7 @@ export function MeasurementFlow({
             <input
               type="number"
               inputMode="decimal"
-              value={toDisplay(confirmed[f], unit)}
+              value={toDisplay(confirmed[f] ?? 0, unit)}
               onChange={(e) =>
                 setConfirmed((c) => ({ ...c, [f]: fromDisplay(e.target.value, unit) }))
               }
@@ -231,7 +218,7 @@ export function MeasurementFlow({
             type="button"
             onClick={() => {
               setMethod("detailed");
-              setConfirmed(EMPTY);
+              setConfirmed(empty);
               setStep("detailed");
             }}
             className="rounded-lg border border-neutral-300 p-4 text-left hover:border-neutral-500"
@@ -270,7 +257,7 @@ export function MeasurementFlow({
               className={input}
             />
           </label>
-          {(["chest", "waist", "hips"] as const).map((k) => (
+          {baseInputs.map((k) => (
             <label key={k} className="flex flex-col text-sm">
               {t.fields[k]} (cm)
               <input

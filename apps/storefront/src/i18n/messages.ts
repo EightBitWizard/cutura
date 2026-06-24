@@ -8,7 +8,8 @@ import type { CustomerMilestone } from "@cutura/core";
 
 import type { Locale } from "./config";
 
-export interface ShirtFieldLabels {
+export interface MeasurementFieldLabels {
+  // Shirt
   chest: string;
   waist: string;
   hips: string;
@@ -16,7 +17,17 @@ export interface ShirtFieldLabels {
   shoulder: string;
   sleeveLength: string;
   shirtLength: string;
+  // Trouser
+  inseam: string;
+  outseam: string;
+  thigh: string;
+  knee: string;
+  legOpening: string;
+  rise: string;
 }
+
+/** @deprecated use MeasurementFieldLabels (now covers all garment types). */
+export type ShirtFieldLabels = MeasurementFieldLabels;
 
 export interface MeasureMessages {
   title: string;
@@ -92,7 +103,9 @@ export interface Messages {
   notifyThanks: string;
   materials: string;
   youMightAlsoLike: string;
+  recommendedForYou: string;
   fitGuide: string;
+  garmentNames: { shirt: string; trouser: string };
   consentText: string;
   consentAccept: string;
   consentDecline: string;
@@ -145,7 +158,9 @@ const de: Messages = {
   notifyThanks: "Danke, wir benachrichtigen Sie, sobald es verfügbar ist.",
   materials: "Materialien",
   youMightAlsoLike: "Das könnte Ihnen auch gefallen",
+  recommendedForYou: "Für Sie empfohlen",
   fitGuide: "Passform- und Massleitfaden",
+  garmentNames: { shirt: "Hemd", trouser: "Hose" },
   consentText:
     "Wir verwenden notwendige Cookies. Optionale Analyse-Cookies nur mit Ihrer Zustimmung.",
   consentAccept: "Alle akzeptieren",
@@ -214,6 +229,12 @@ const de: Messages = {
       shoulder: "Schulterbreite",
       sleeveLength: "Ärmellänge",
       shirtLength: "Hemdlänge",
+      inseam: "Schrittlänge",
+      outseam: "Aussenlänge",
+      thigh: "Oberschenkelumfang",
+      knee: "Knieumfang",
+      legOpening: "Beinöffnung",
+      rise: "Schritttiefe",
     },
   },
   cart: {
@@ -261,7 +282,9 @@ const en: Messages = {
   notifyThanks: "Thank you, we will let you know when it is available.",
   materials: "Materials",
   youMightAlsoLike: "You might also like",
+  recommendedForYou: "Recommended for you",
   fitGuide: "Fit and size guide",
+  garmentNames: { shirt: "Shirt", trouser: "Trousers" },
   consentText: "We use necessary cookies. Optional analytics cookies only with your consent.",
   consentAccept: "Accept all",
   consentDecline: "Necessary only",
@@ -328,6 +351,12 @@ const en: Messages = {
       shoulder: "Shoulder width",
       sleeveLength: "Sleeve length",
       shirtLength: "Shirt length",
+      inseam: "Inseam",
+      outseam: "Outseam",
+      thigh: "Thigh",
+      knee: "Knee",
+      legOpening: "Leg opening",
+      rise: "Rise",
     },
   },
   cart: {
@@ -375,7 +404,9 @@ const it: Messages = {
   notifyThanks: "Grazie, ti avviseremo quando sara disponibile.",
   materials: "Materiali",
   youMightAlsoLike: "Potrebbe interessarti anche",
+  recommendedForYou: "Consigliati per te",
   fitGuide: "Guida a vestibilita e misure",
+  garmentNames: { shirt: "Camicia", trouser: "Pantaloni" },
   consentText: "Usiamo cookie necessari. Cookie di analisi opzionali solo con il tuo consenso.",
   consentAccept: "Accetta tutti",
   consentDecline: "Solo necessari",
@@ -443,6 +474,12 @@ const it: Messages = {
       shoulder: "Larghezza spalle",
       sleeveLength: "Lunghezza manica",
       shirtLength: "Lunghezza camicia",
+      inseam: "Cavallo interno",
+      outseam: "Lunghezza esterna",
+      thigh: "Coscia",
+      knee: "Ginocchio",
+      legOpening: "Apertura gamba",
+      rise: "Altezza cavallo",
     },
   },
   cart: {
@@ -490,7 +527,9 @@ const fr: Messages = {
   notifyThanks: "Merci, nous vous previendrons des que disponible.",
   materials: "Matieres",
   youMightAlsoLike: "Vous pourriez aussi aimer",
+  recommendedForYou: "Recommandé pour vous",
   fitGuide: "Guide des tailles et coupes",
+  garmentNames: { shirt: "Chemise", trouser: "Pantalon" },
   consentText:
     "Nous utilisons des cookies necessaires. Cookies d'analyse optionnels seulement avec votre accord.",
   consentAccept: "Tout accepter",
@@ -559,6 +598,12 @@ const fr: Messages = {
       shoulder: "Largeur d epaules",
       sleeveLength: "Longueur de manche",
       shirtLength: "Longueur de chemise",
+      inseam: "Entrejambe",
+      outseam: "Longueur exterieure",
+      thigh: "Cuisse",
+      knee: "Genou",
+      legOpening: "Bas de jambe",
+      rise: "Hauteur d entrejambe",
     },
   },
   cart: {

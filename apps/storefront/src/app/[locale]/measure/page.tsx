@@ -11,12 +11,14 @@ export default async function MeasurePage({
   searchParams,
 }: {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ return?: string }>;
+  searchParams: Promise<{ return?: string; gt?: string }>;
 }) {
   const { locale: raw } = await params;
   const locale = isLocale(raw) ? raw : defaultLocale;
-  const { return: ret } = await searchParams;
+  const { return: ret, gt } = await searchParams;
   const t = getMessages(locale);
+  // Garment type drives the fields + estimator; default to shirt.
+  const garmentType = gt === "trouser" ? "trouser" : "shirt";
   // Only same-origin relative return paths (avoid open redirect).
   const returnUrl =
     typeof ret === "string" && ret.startsWith("/") && !ret.startsWith("//")
@@ -32,7 +34,12 @@ export default async function MeasurePage({
       >
         {t.fitGuide}
       </Link>
-      <MeasurementFlow locale={locale} messages={t.measure} returnUrl={returnUrl} />
+      <MeasurementFlow
+        locale={locale}
+        garmentType={garmentType}
+        messages={t.measure}
+        returnUrl={returnUrl}
+      />
     </main>
   );
 }
