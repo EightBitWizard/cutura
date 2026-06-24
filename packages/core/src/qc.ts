@@ -46,3 +46,17 @@ export function getDefaultQcChecklist(garmentType: GarmentType): QcChecklistTemp
   const template = garmentType === "trouser" ? TROUSER_QC_CHECKLIST : SHIRT_QC_CHECKLIST;
   return template.map((item) => ({ ...item }));
 }
+
+export type QcResult = "pass" | "fail" | "pass_with_notes";
+
+/**
+ * Derive the overall QC result from a checklist. Any failed item makes the whole
+ * record a fail (never silently dropped, FR-872); otherwise a noted-but-passed
+ * item yields pass_with_notes; a clean checklist passes. An empty or
+ * not-fully-checked checklist with no fails still passes only if every item is ok.
+ */
+export function evaluateQcChecklist(items: QcChecklistItem[]): QcResult {
+  if (items.some((i) => i.result === "fail")) return "fail";
+  if (items.some((i) => i.note && i.note.trim() !== "")) return "pass_with_notes";
+  return "pass";
+}

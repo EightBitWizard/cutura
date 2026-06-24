@@ -1,6 +1,35 @@
 import { describe, expect, it } from "vitest";
 
-import { SHIRT_QC_CHECKLIST, TROUSER_QC_CHECKLIST, getDefaultQcChecklist } from "./qc";
+import {
+  type QcChecklistItem,
+  SHIRT_QC_CHECKLIST,
+  TROUSER_QC_CHECKLIST,
+  evaluateQcChecklist,
+  getDefaultQcChecklist,
+} from "./qc";
+
+describe("evaluateQcChecklist", () => {
+  const item = (id: string, result: QcChecklistItem["result"], note?: string): QcChecklistItem => ({
+    id,
+    label: id,
+    result,
+    note,
+  });
+
+  it("fails when any item failed (never silently dropped)", () => {
+    expect(evaluateQcChecklist([item("a", "ok"), item("b", "fail"), item("c", "ok")])).toBe("fail");
+  });
+
+  it("passes with notes when a passing item carries a note", () => {
+    expect(evaluateQcChecklist([item("a", "ok"), item("b", "ok", "small lint")])).toBe(
+      "pass_with_notes",
+    );
+  });
+
+  it("passes a clean checklist", () => {
+    expect(evaluateQcChecklist([item("a", "ok"), item("b", "ok")])).toBe("pass");
+  });
+});
 
 describe("QC checklist templates", () => {
   it("has the expected shirt items in order", () => {
