@@ -10,6 +10,8 @@ import { and, eq, inArray } from "drizzle-orm";
 import type { Database } from "../getDb";
 import {
   type Locale,
+  attributeDefinition,
+  attributeValue,
   baseModel,
   collection,
   collectionMember,
@@ -217,6 +219,84 @@ export async function listPublishedCollections(
         .filter((h): h is string => h !== undefined),
     });
   }
+  return result;
+}
+
+export interface AttributeFacet {
+  key: string;
+  label: string;
+  values: Array<{ value: string; count: number }>;
+}
+
+/** Model-facing attribute facets with per-value model counts, for discovery filters (FR-330). */
+export async function listAttributeFacets(db: Database, locale: Locale): Promise<AttributeFacet[]> {
+  const defs = await db
+    .select()
+    .from(attributeDefinition)
+    .where(eq(attributeDefinition.appliesTo, "model"));
+  const vals = await db.select().from(attributeValue).where(eq(attributeValue.entityType, "model"));
+  return defs.map((d) => {
+    const counts = new Map<string, number>();
+    for (const v of vals) {
+      if (v.attributeDefinitionId === d.id) counts.set(v.value, (counts.get(v.value) ?? 0) + 1);
+    }
+    return {
+      key: d.key,
+      label: localize(d.labelI18n, locale),
+      values: [...counts.entries()]
+        .map(([value, count]) => ({ value, count }))
+        .sort((a, b) => a.value.localeCompare(b.value)),
+    };
+  });
+}
+
+export interface DiscoveryFilter {
+  /** Selected attribute values per definition key (OR within a key, AND across keys). */
+  attributes?: Record<string, string[]>;
+  sort?: "price_asc" | "price_desc" | "name";
+  orderableOnly?: boolean;
+}
+
+/** Published models filtered + sorted by customer-centric attributes (FR-330/331). */
+export async function listPublishedModelsFiltered(
+  db: Database,
+  locale: Locale,
+  filter: DiscoveryFilter = {},
+): Promise<PublishedModelSummary[]> {
+  let result = await listPublishedModels(db, locale);
+  if (filter.orderableOnly) result = result.filter((m) => m.status === "orderable");
+
+  const attrs = filter.attributes ?? {};
+  const activeKeys = Object.keys(attrs).filter((k) => (attrs[k] ?? []).length > 0);
+  if (activeKeys.length > 0) {
+    const defs = await db.select().from(attributeDefinition);
+    const keyById = new Map(defs.map((d) => [d.id, d.key]));
+    const vals = await db
+      .select()
+      .from(attributeValue)
+      .where(eq(attributeValue.entityType, "model"));
+    const modelAttrs = new Map<string, Map<string, Set<string>>>();
+    for (const v of vals) {
+      const key = keyById.get(v.attributeDefinitionId);
+      if (!key) continue;
+      const m = modelAttrs.get(v.entityId) ?? new Map<string, Set<string>>();
+      const set = m.get(key) ?? new Set<string>();
+      set.add(v.value);
+      m.set(key, set);
+      modelAttrs.set(v.entityId, m);
+    }
+    result = result.filter((model) => {
+      const ma = modelAttrs.get(model.id);
+      return activeKeys.every((key) => {
+        const have = ma?.get(key);
+        return have ? (attrs[key] ?? []).some((w) => have.has(w)) : false;
+      });
+    });
+  }
+
+  if (filter.sort === "price_asc") result.sort((a, b) => a.basePriceMinor - b.basePriceMinor);
+  else if (filter.sort === "price_desc") result.sort((a, b) => b.basePriceMinor - a.basePriceMinor);
+  else if (filter.sort === "name") result.sort((a, b) => a.name.localeCompare(b.name));
   return result;
 }
 

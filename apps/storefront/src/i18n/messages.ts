@@ -90,6 +90,15 @@ export interface Messages {
   viewOnlyNotice: string;
   notifyMe: string;
   materials: string;
+  discoverTitle: string;
+  filters: string;
+  sortLabel: string;
+  sortPriceAsc: string;
+  sortPriceDesc: string;
+  sortName: string;
+  orderableOnly: string;
+  apply: string;
+  noResults: string;
   back: string;
   fabric: string;
   options: string;
@@ -118,6 +127,15 @@ const de: Messages = {
   viewOnlyNotice: "Dieses Modell ist derzeit nur zur Ansicht und nicht bestellbar.",
   notifyMe: "Benachrichtigen, wenn verfügbar",
   materials: "Materialien",
+  discoverTitle: "Entdecken",
+  filters: "Filter",
+  sortLabel: "Sortieren",
+  sortPriceAsc: "Preis aufsteigend",
+  sortPriceDesc: "Preis absteigend",
+  sortName: "Name",
+  orderableOnly: "Nur bestellbar",
+  apply: "Anwenden",
+  noResults: "Keine Ergebnisse.",
   back: "Zurück",
   fabric: "Stoff",
   options: "Optionen",
@@ -208,6 +226,15 @@ const en: Messages = {
   viewOnlyNotice: "This model is currently view-only and cannot be ordered.",
   notifyMe: "Notify me when available",
   materials: "Materials",
+  discoverTitle: "Discover",
+  filters: "Filters",
+  sortLabel: "Sort",
+  sortPriceAsc: "Price low to high",
+  sortPriceDesc: "Price high to low",
+  sortName: "Name",
+  orderableOnly: "Orderable only",
+  apply: "Apply",
+  noResults: "No results.",
   back: "Back",
   fabric: "Fabric",
   options: "Options",
@@ -297,6 +324,15 @@ const it: Messages = {
   viewOnlyNotice: "Questo modello e attualmente solo visualizzabile e non ordinabile.",
   notifyMe: "Avvisami quando disponibile",
   materials: "Materiali",
+  discoverTitle: "Scopri",
+  filters: "Filtri",
+  sortLabel: "Ordina",
+  sortPriceAsc: "Prezzo crescente",
+  sortPriceDesc: "Prezzo decrescente",
+  sortName: "Nome",
+  orderableOnly: "Solo ordinabili",
+  apply: "Applica",
+  noResults: "Nessun risultato.",
   back: "Indietro",
   fabric: "Tessuto",
   options: "Opzioni",
@@ -387,6 +423,15 @@ const fr: Messages = {
   viewOnlyNotice: "Ce modele est actuellement en consultation uniquement et non commandable.",
   notifyMe: "Me prevenir quand disponible",
   materials: "Matieres",
+  discoverTitle: "Decouvrir",
+  filters: "Filtres",
+  sortLabel: "Trier",
+  sortPriceAsc: "Prix croissant",
+  sortPriceDesc: "Prix decroissant",
+  sortName: "Nom",
+  orderableOnly: "Commandables uniquement",
+  apply: "Appliquer",
+  noResults: "Aucun resultat.",
   back: "Retour",
   fabric: "Tissu",
   options: "Options",
