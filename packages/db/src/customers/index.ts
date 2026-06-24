@@ -18,3 +18,4 @@ export * from "./addresses";
 export * from "./reorder";
 export * from "./fitReview";
 export * from "./remake";
+export * from "./fitFeedback";
