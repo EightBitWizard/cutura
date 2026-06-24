@@ -4,6 +4,21 @@ All notable changes to this project. Newest first.
 
 ## Unreleased
 
+### Added (M4 - customer accounts and self-service)
+
+- Passwordless magic-link authentication (single-use, hashed, rate-limited, no
+  account enumeration) with KV-backed customer sessions and a gated account area.
+- On registration: prior guest orders are claimed by email and the guest
+  measurement is migrated into a durable, encrypted profile.
+- Measurement-profile management (view, rename, archive, revise), order history
+  with a customer status timeline, a public guest order-tracking page, and
+  address management; the measurement flow is account-aware when logged in.
+- One-click reorder (keep size, update to latest, or per-field override), the
+  fit-review and remake flow (bounded, photos), post-delivery fit feedback, and a
+  minimal admin decision action.
+- Data deletion across all tables (personal data erased, order records scrubbed
+  and retained for accounting, photos removed) and data export.
+
 ### Added (M3 - vertical slice: one shirt orderable end to end)
 
 - Storefront customer flow: home, product page, a configurator with

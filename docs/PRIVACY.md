@@ -17,8 +17,25 @@ by design: minimize, protect, use only for the stated purpose, fully deletable.
 - **Encryption at rest** for body measurements (schema in place now; encryption
   wired in M3).
 - **Full deletion** across all tables, with only documented legal/accounting
-  retention; a customer can always export or delete their data (M4/M7). The data
-  model enumerates every personal-data table so deletion is complete.
+  retention; a customer can always export or delete their data (done M4;
+  `deleteCustomerData`/`exportCustomerData` in `packages/db/src/customers/privacy.ts`).
+
+### Deletion policy (delete vs scrub-and-retain)
+
+Customer-initiated deletion (FR-670/671) does two things:
+
+- **Hard-delete** (rows removed): measurement profiles + all versions, addresses,
+  sessions (D1 + KV), fit reviews + feedback, notify requests, and the R2 photos
+  referenced by QC + fit-review records.
+- **Scrub-and-retain** for Swiss accounting retention (rows kept, PII + body data
+  removed): `order` (clear guest email + tracking token), `order_item` (null
+  `config_enc`), `production_package` (redact `snapshot_enc`), `qc_record` (clear
+  photo keys), `communication_log` (clear recipient), `payment_event` (clear
+  payload). The `customer` row is tombstoned (email replaced, `deletionState =
+deleted`) and kept as the foreign-key target; a tombstoned email cannot log back
+  in. Encrypted body data is actively removed, not merely key-discarded, for
+  provable erasure. The operation is idempotent and covered by a "no PII remains"
+  Workers test.
 - **Retention** windows documented for measurements, orders, and logs (M7).
 - **Consent** banner gating analytics, pixels, and broader profiling; body
   measurements are used only for fit relevance inside CUTURA's boundary, never
