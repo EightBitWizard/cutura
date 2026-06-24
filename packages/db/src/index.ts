@@ -13,6 +13,7 @@ export * from "./crosssell";
 export * from "./kpi";
 export * from "./notify";
 export * from "./ops";
+export * from "./recommend";
 export * from "./redirects";
 export * from "./shipping";
 export * from "./suppliers";

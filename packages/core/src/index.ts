@@ -21,6 +21,7 @@ export * from "./seo";
 export * from "./operationsSettings";
 export * from "./outliers";
 export * from "./estimator";
+export * from "./recommender";
 export * from "./qc";
 export * from "./money";
 export * from "./consent";
