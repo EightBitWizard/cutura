@@ -46,6 +46,13 @@ export default async function DashboardPage() {
           </div>
         ))}
       </div>
+
+      <a
+        href="/api/export/orders"
+        className="mt-6 inline-block rounded border border-neutral-300 px-4 py-2 text-sm"
+      >
+        Export orders (CSV)
+      </a>
     </main>
   );
 }

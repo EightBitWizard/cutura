@@ -91,6 +91,29 @@ export function renderOrderConfirmation(
   };
 }
 
+export type AdminNotificationKind = "new_order" | "needs_review" | "qc_due";
+
+const ADMIN_SUBJECT: Record<AdminNotificationKind, (orderNumber: string) => string> = {
+  new_order: (n) => `Neue Bestellung ${n}`,
+  needs_review: (n) => `Bestellung ${n} wartet auf Freigabe`,
+  qc_due: (n) => `Qualitaetskontrolle faellig fuer ${n}`,
+};
+
+/** Internal admin notification (FR-950); German, operator-facing. */
+export function renderAdminNotification(
+  kind: AdminNotificationKind,
+  input: { to: string; orderNumber: string },
+): EmailMessage {
+  const subject = ADMIN_SUBJECT[kind](input.orderNumber);
+  return {
+    to: input.to,
+    from: FROM,
+    subject,
+    html: `<p>${subject}</p><p>Bitte im CUTURA Admin pruefen.</p>`,
+    text: `${subject}\nBitte im CUTURA Admin pruefen.`,
+  };
+}
+
 export function renderShippedEmail(
   input: { to: string; orderNumber: string; trackingUrl?: string },
   locale: EmailLocale,

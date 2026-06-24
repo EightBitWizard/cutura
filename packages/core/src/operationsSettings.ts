@@ -29,6 +29,8 @@ export const operationsSettingsSchema = z.object({
   leadTimeBufferDays: z.number().int().nonnegative(),
   /** Fraction of the cap at which lead times start to extend (0..1). */
   capacityHighWaterFraction: z.number().min(0).max(1),
+  /** Where admin notifications (new order, needs review, QC due) are sent. Optional. */
+  adminEmail: z.string().nullable().default(null),
 });
 
 export type OperationsSettings = z.infer<typeof operationsSettingsSchema>;
@@ -49,6 +51,7 @@ export const DEFAULT_OPERATIONS_SETTINGS: OperationsSettings = {
   vacationUntil: null,
   leadTimeBufferDays: 7,
   capacityHighWaterFraction: 0.8,
+  adminEmail: null,
 };
 
 /** Parse a stored config value; fall back to safe defaults if missing or invalid. */

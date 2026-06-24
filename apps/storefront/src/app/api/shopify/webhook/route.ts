@@ -4,6 +4,7 @@ import {
   findOrderIdByNumber,
   getDb,
   getOrderById,
+  notifyAdmin,
   processPaidEvent,
   renderOrderConfirmation,
   sendEmailAndLog,
@@ -91,9 +92,11 @@ export async function POST(request: Request): Promise<Response> {
       },
       { measurementKey: env.MEASUREMENT_ENCRYPTION_KEY },
     );
-    // Order confirmation email once, on first processing (FR-790/901).
+    // Order confirmation email + admin notification once, on first processing
+    // (FR-790/901, FR-950).
     if (result.status === "processed") {
       const order = await getOrderById(db, orderId);
+      const provider = new ResendEmailProvider(env.EMAIL_PROVIDER_KEY);
       if (order?.guestEmail) {
         const locale: EmailLocale = isLocale(order.locale) ? order.locale : "de";
         const trackingUrl = order.guestTrackingToken
@@ -101,7 +104,7 @@ export async function POST(request: Request): Promise<Response> {
           : undefined;
         await sendEmailAndLog(
           db,
-          new ResendEmailProvider(env.EMAIL_PROVIDER_KEY),
+          provider,
           renderOrderConfirmation(
             {
               to: order.guestEmail,
@@ -113,6 +116,9 @@ export async function POST(request: Request): Promise<Response> {
           ),
           { orderId, template: "order_confirmation" },
         );
+      }
+      if (order) {
+        await notifyAdmin(db, provider, "new_order", { orderId, orderNumber: order.orderNumber });
       }
     }
     return new Response("ok", { status: 200 });

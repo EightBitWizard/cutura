@@ -1,7 +1,9 @@
 import type { EmailMessage, EmailProvider } from "@cutura/core";
 
+import { getOperationsSettings } from "../config";
 import type { Database } from "../getDb";
 import { communicationLog } from "../schema";
+import { type AdminNotificationKind, renderAdminNotification } from "./templates";
 
 export * from "./provider";
 export * from "./templates";
@@ -32,4 +34,30 @@ export async function sendEmailAndLog(
     createdAt: now(),
   });
   return { status };
+}
+
+/**
+ * Send an admin notification (FR-950) to the configured admin email, if any.
+ * No-op (returns "skipped") when no admin email is configured.
+ */
+export async function notifyAdmin(
+  db: Database,
+  provider: EmailProvider,
+  kind: AdminNotificationKind,
+  meta: { orderId?: string; orderNumber: string },
+  deps: { now?: () => string; newId?: () => string } = {},
+): Promise<{ status: "sent" | "failed" | "skipped" }> {
+  const settings = await getOperationsSettings(db);
+  if (!settings.adminEmail) return { status: "skipped" };
+  const message = renderAdminNotification(kind, {
+    to: settings.adminEmail,
+    orderNumber: meta.orderNumber,
+  });
+  return sendEmailAndLog(
+    db,
+    provider,
+    message,
+    { orderId: meta.orderId, template: `admin_${kind}` },
+    deps,
+  );
 }

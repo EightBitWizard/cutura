@@ -47,6 +47,16 @@ export default async function SettingsPage({
           />
         </label>
 
+        <label className="block text-sm">
+          Admin notification email (new order / needs review / QC due)
+          <input
+            name="adminEmail"
+            type="email"
+            defaultValue={s.adminEmail ?? ""}
+            className={input}
+          />
+        </label>
+
         <div className="grid grid-cols-2 gap-3">
           <label className="block text-sm">
             Vacation from

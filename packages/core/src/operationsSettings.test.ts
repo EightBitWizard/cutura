@@ -31,6 +31,7 @@ describe("operations settings", () => {
       vacationUntil: "2026-07-14",
       leadTimeBufferDays: 10,
       capacityHighWaterFraction: 0.75,
+      adminEmail: "ops@cutura.ch",
     };
     expect(parseOperationsSettings(s)).toEqual(s);
   });
