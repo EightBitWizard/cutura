@@ -36,6 +36,10 @@ deleted`) and kept as the foreign-key target; a tombstoned email cannot log back
   in. Encrypted body data is actively removed, not merely key-discarded, for
   provable erasure. The operation is idempotent and covered by a "no PII remains"
   Workers test.
+- **Back-office access to measurements is audited** (FR-1050): the admin customer
+  view writes a `customer.view` audit row when it decrypts body measurements. The
+  CSV order export carries order/money/dates only - never measurements or customer
+  PII (done M5).
 - **Retention** windows documented for measurements, orders, and logs (M7).
 - **Consent** banner gating analytics, pixels, and broader profiling; body
   measurements are used only for fit relevance inside CUTURA's boundary, never

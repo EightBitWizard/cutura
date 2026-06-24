@@ -4,6 +4,20 @@ All notable changes to this project. Newest first.
 
 ## Unreleased
 
+### Added (M5 - operations and backoffice)
+
+- A status-grouped pipeline board with review/outlier lanes, and outlier warnings
+  that now actually display on the board and the order detail.
+- A fit-review queue with founder decisions, and audited pre-release corrections.
+- Customer management (orders, profile, fit history; measurement views audited)
+  and internal notes + tags on orders and customers.
+- Supplier management with default routing, and shipping zone/method configuration.
+- Capacity cap, vacation/pause mode with a configurable calm message, and
+  capacity-aware lead times; the storefront pauses ordering server-side.
+- A soft-launch KPI dashboard, per-order cost capture with margin, CSV order
+  export (no measurements), admin email notifications, and an audit-log view,
+  behind a shared admin navigation.
+
 ### Added (M4 - customer accounts and self-service)
 
 - Passwordless magic-link authentication (single-use, hashed, rate-limited, no

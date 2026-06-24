@@ -67,7 +67,33 @@ pnpm --filter @cutura/storefront exec wrangler d1 export cutura-production --rem
 
 ## Pausing orders
 
-Built in milestone M5 (capacity cap and vacation mode with a calm message).
+In the admin under **Settings** (`/settings`) you can pause new orders three ways,
+all sharing one storefront gate:
+
+- **Manual pause**: tick "Pause new orders now". The storefront immediately blocks
+  add-to-cart and checkout and shows your message.
+- **Vacation window**: set "Vacation from / until" dates; ordering pauses inside
+  the window automatically.
+- **Capacity cap**: set a maximum number of open (not-yet-shipped) orders. When
+  reached, new orders pause until orders ship. Near the cap, communicated lead
+  times extend by the configured buffer.
+
+Set the customer-facing **pause message** per language (a calm default is used if
+blank). The gate is enforced on the server, so it holds even if the page is stale.
+
+## Operations console
+
+The admin (`/dashboard`, `/orders/board`, `/fit-reviews`, `/customers`,
+`/suppliers`, `/shipping`, `/audit`) runs the operational loop: the pipeline board
+with outlier warnings, the fit-review queue, customer management with notes/tags,
+supplier + shipping configuration, the KPI dashboard with per-order cost capture,
+the audit log, and CSV order export (Dashboard -> Export orders). Set an admin
+notification email in Settings to be emailed on each new paid order.
+
+## Shipping configuration
+
+Under **Shipping** (`/shipping`): define zones (e.g. CH, LI) and methods. Standard
+shipping is included in the displayed price.
 
 ## Reading CI
 

@@ -20,6 +20,11 @@ that delivers them is upcoming.
   scrubs-but-retains order/accounting rows (PII + body data removed), removes R2
   photos, revokes sessions, and tombstones the account; idempotent and covered by
   a "no PII remains" test. Export returns the customer's own data as JSON. [done, M4]
+- **Admin sensitive access is audited**: the back-office customer view decrypts
+  body measurements and writes a `customer.view` audit row (FR-1050); CSV export
+  carries order/money/dates only, never measurements or customer PII. The
+  pause/capacity block is server-authoritative (enforced in `/api/checkout` and
+  `/api/cart`, not just the UI). [done, M5]
 - **Payments**: Shopify-hosted checkout (Draft Order invoiceUrl) only; CUTURA
   never handles card data. The paid webhook is verified with timing-safe HMAC
   (base64) over the raw body and is idempotent on the webhook id; a reconcile job
