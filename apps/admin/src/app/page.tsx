@@ -11,6 +11,9 @@ export default function AdminHome() {
         <Link className="text-neutral-900 underline" href="/garment-types">
           Garment types
         </Link>
+        <Link className="text-neutral-900 underline" href="/base-models">
+          Base models
+        </Link>
         <Link className="text-neutral-900 underline" href="/fabrics">
           Fabrics
         </Link>

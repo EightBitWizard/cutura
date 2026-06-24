@@ -174,6 +174,46 @@ export async function deleteOptionGroup(db: Database, id: string): Promise<void>
   await db.delete(optionGroup).where(eq(optionGroup.id, id));
 }
 
+export interface ModelAllowLists {
+  fabricIds: string[];
+  options: Array<{ optionGroupId: string; required: boolean }>;
+  upgradeIds: string[];
+}
+
+/** The current per-model allow-lists, ordered by position (for the edit form). */
+export async function getModelAllowLists(
+  db: Database,
+  baseModelId: string,
+): Promise<ModelAllowLists> {
+  const byPos = <T extends { position: number }>(rows: T[]) =>
+    [...rows].sort((a, b) => a.position - b.position);
+  const f = await db
+    .select()
+    .from(modelAllowedFabric)
+    .where(eq(modelAllowedFabric.baseModelId, baseModelId));
+  const o = await db
+    .select()
+    .from(modelAllowedOption)
+    .where(eq(modelAllowedOption.baseModelId, baseModelId));
+  const u = await db
+    .select()
+    .from(modelAllowedUpgrade)
+    .where(eq(modelAllowedUpgrade.baseModelId, baseModelId));
+  return {
+    fabricIds: byPos(f).map((r) => r.fabricId),
+    options: byPos(o).map((r) => ({ optionGroupId: r.optionGroupId, required: r.required })),
+    upgradeIds: byPos(u).map((r) => r.upgradeId),
+  };
+}
+
+/** Delete a base model and its allow-list rows from the control database. */
+export async function deleteBaseModel(db: Database, id: string): Promise<void> {
+  await db.delete(modelAllowedFabric).where(eq(modelAllowedFabric.baseModelId, id));
+  await db.delete(modelAllowedOption).where(eq(modelAllowedOption.baseModelId, id));
+  await db.delete(modelAllowedUpgrade).where(eq(modelAllowedUpgrade.baseModelId, id));
+  await db.delete(baseModel).where(eq(baseModel.id, id));
+}
+
 /** Locales whose localized value is missing or blank (surfaces incomplete locales, FR-271). */
 export function incompleteLocales(
   text: Partial<Record<Locale, string>> | null | undefined,
