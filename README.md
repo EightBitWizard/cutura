@@ -46,6 +46,12 @@ staging deploy.
 Built in milestone M2: author an item in the admin as a draft, publish to
 Staging, verify, then publish to Production. (The admin UI is not built yet.)
 
+A new garment type (for example trousers, shipped in M8) is added as catalog data
+plus its estimator module - no measurement-flow or checkout change. The storefront
+also shows recommendations (a content-based + curated baseline) on the home page,
+product pages, cart, post-purchase, and the account; curated cross-sell pairs items
+like a shirt and trousers.
+
 ## Rolling back code
 
 ```bash

@@ -48,6 +48,21 @@ flagged), **Owner** (founder/lawyer/advisor; not a code task).
 | NFR-18 | Bot/abuse protection (account/contact/checkout) | Done              | rate limits on auth/checkout/contact/notify + Turnstile hook                             |
 | NFR-20 | SEO infra: sitemap, structured data, redirects  | Done              | `app/sitemap.ts` + `robots`; product JSON-LD; `redirect` table + middleware              |
 
+## E11 - Recommendations + personalization (M8)
+
+| FR                | Requirement                                             | Status | Evidence / owner                                                                                 |
+| ----------------- | ------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------ |
+| FR-1101           | Content-based + curated recommendations from owned data | Done   | `core/recommender.ts` baseline + `db/recommend` (catalog + attributes + cross-sell + own orders) |
+| FR-1102           | Surface on home, product, cart, post-purchase, account  | Done   | `RecommendedSection` on home, PDP, cart, account, account order detail, guest track              |
+| FR-1110           | Curated cross-sell, tastefully placed                   | Done   | `db/crosssell` (M6), blended first in the baseline; seeded shirt<->trousers                      |
+| FR-1120           | Capture consented signals from the start                | Done   | `recommendation_signal` + `db/signals` + consent-gated `POST /api/signal`; PDP view beacon       |
+| FR-1130           | Swappable recommendation interface                      | Done   | `core/recommender.ts` registry (mirrors the estimator seam); a fake-adapter test                 |
+| FR-1140           | Purpose-clear data; consent-gate broader profiling      | Done   | baseline uses catalog/attributes/own-orders; signals gated by `hasAnalyticsConsent`              |
+| FR-1141           | Measurements only for fit, never cross-customer         | Done   | the recommender takes catalog attributes only; body data is never an input                       |
+| FR-1142           | Delete personalization data with the customer           | Done   | `deleteCustomerData` removes the customer's signals (+ test)                                     |
+| FR-1150           | ML personalization behind the seam                      | Out    | Future (an adapter plugs into the recommender seam)                                              |
+| FR-1160 / FR-1170 | AI try-on / prompt-to-bespoke                           | Out    | Future                                                                                           |
+
 ## Data inventory (purpose per field) - FR-1301
 
 | Data                    | Where                                                     | Purpose                              | Deletion                                                          |
@@ -58,6 +73,7 @@ flagged), **Owner** (founder/lawyer/advisor; not a code task).
 | Marketing consent       | customer.marketingConsent                                 | Lawful marketing                     | Deleted with the customer                                         |
 | Analytics consent       | `cutura_consent` cookie                                   | Gate optional analytics              | Client cookie; no server PII                                      |
 | Accepted legal versions | order                                                     | Traceability of acceptance           | Retained (accounting)                                             |
+| Recommendation signals  | recommendationSignal (consent-gated)                      | Personalization / future ML training | Deleted with the customer; no measurements or order contents      |
 | Payment data            | none stored                                               | -                                    | N/A (Shopify-hosted)                                              |
 
 ## Retention - FR-1340

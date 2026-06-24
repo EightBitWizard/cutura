@@ -27,8 +27,8 @@ by design: minimize, protect, use only for the stated purpose, fully deletable.
 Customer-initiated deletion (FR-670/671) does two things:
 
 - **Hard-delete** (rows removed): measurement profiles + all versions, addresses,
-  sessions (D1 + KV), fit reviews + feedback, notify requests, and the R2 photos
-  referenced by QC + fit-review records.
+  sessions (D1 + KV), fit reviews + feedback, notify requests, recommendation
+  signals, and the R2 photos referenced by QC + fit-review records.
 - **Scrub-and-retain** for Swiss accounting retention (rows kept, PII + body data
   removed): `order` (clear guest email + tracking token), `order_item` (null
   `config_enc`), `production_package` (redact `snapshot_enc`), `qc_record` (clear
@@ -45,9 +45,13 @@ deleted`) and kept as the foreign-key target; a tombstoned email cannot log back
 - **Retention** windows documented for measurements, orders, and logs (done M7;
   see the retention table + data inventory in `docs/COMPLIANCE.md`).
 - **Consent** banner gating analytics, pixels, and broader profiling (done M7;
-  `hasAnalyticsConsent` is the single gate, opt-in, no analytics integrated yet);
-  body measurements are used only for fit relevance inside CUTURA's boundary, never
-  for cross-customer profiling (M7/E11).
+  `hasAnalyticsConsent` is the single gate, opt-in); body measurements are used only
+  for fit relevance inside CUTURA's boundary, never for cross-customer profiling.
+- **Recommendations + signals** (done M8): personalization uses purpose-clear data
+  (catalog, attributes, and a signed-in customer's own orders), never body
+  measurements (FR-1141). Recommendation signals (`recommendationSignal`) are
+  consent-gated by `hasAnalyticsConsent`, hold no measurements or order contents,
+  and are deleted with the customer (FR-1142).
 - **Residency**: measurement data resides in Switzerland or the EU (R2 EU
   jurisdiction; D1 region selection at provisioning).
 

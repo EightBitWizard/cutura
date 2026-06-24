@@ -36,6 +36,9 @@ reserved by `@opennextjs/cloudflare`: `NEXT_INC_CACHE_R2_BUCKET`,
 | Pricing engine (server-authoritative)       | `packages/core/src/pricing.ts`                                                |
 | Money and VAT helpers                       | `packages/core/src/money.ts`                                                  |
 | Measurement estimator seam (swappable)      | `packages/core/src/estimator.ts`                                              |
+| Garment-type fields (measurement flow)      | `packages/core/src/garmentFields.ts`                                          |
+| Recommendation seam + baseline (swappable)  | `packages/core/src/recommender.ts` + `packages/db/src/recommend/`             |
+| Recommendation signal capture               | `packages/db/src/signals/` + storefront `/api/signal` (consent-gated)         |
 | Three-layer profile + versioning            | `packages/core/src/profile.ts`                                                |
 | Immutable order snapshot builder            | `packages/core/src/snapshot.ts`                                               |
 | Status machine + QC override guard          | `packages/core/src/status.ts`                                                 |
@@ -69,7 +72,6 @@ reserved by `@opennextjs/cloudflare`: `NEXT_INC_CACHE_R2_BUCKET`,
 | Contact + redirects + structured data       | `packages/db/src/{contact,redirects}/` + `packages/core/src/productJsonLd.ts` |
 | Maintenance mode                            | `operationsSettings.maintenance` + storefront `[locale]/layout.tsx`           |
 | Compliance evidence map                     | `docs/COMPLIANCE.md` (FR/NFR -> evidence or owner)                            |
-| Recommendation seam                         | future (E11); same pattern as the estimator seam                              |
 
 `packages/core` is pure: no Next, React, or Cloudflare imports (ESLint-enforced).
 Apps never import `drizzle-orm` directly: catalog/order queries + writes go

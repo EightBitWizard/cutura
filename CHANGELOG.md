@@ -4,6 +4,20 @@ All notable changes to this project. Newest first.
 
 ## Unreleased
 
+### Added (M8 - second garment type and recommendations)
+
+- Trousers: a second garment type, added as catalog data plus the existing
+  estimator module. The measurement flow now adapts its fields, estimation, and
+  plausibility checks to the garment type, and measurements are kept separately per
+  garment type so an order can mix a shirt and trousers.
+- Multi-item orders with mixed garment types are produced and quality-checked
+  independently and ship together once every item passes.
+- Recommendations: a content-based and curated baseline behind a swappable
+  interface, shown on the home page, product pages, cart, post-purchase, and the
+  account. Curated cross-sell suggests trousers after a shirt and vice versa.
+- Consent-gated capture of recommendation signals (for a future model), which hold
+  no measurements or order contents and are deleted with the customer.
+
 ### Added (M7 - compliance, trust, and hardening)
 
 - A cookie/tracking consent banner that gates analytics (opt-in; the single gate
