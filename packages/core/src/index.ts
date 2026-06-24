@@ -3,6 +3,7 @@
 // Cloudflare imports (enforced by ESLint). See docs/CONVENTIONS.md.
 
 export * from "./types";
+export * from "./crypto";
 export * from "./status";
 export * from "./outliers";
 export * from "./estimator";

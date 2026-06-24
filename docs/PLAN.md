@@ -321,6 +321,7 @@ Both are documented step by step in the README.
 The plan is vertical-slice-first: prove one shirt fully orderable end to end (M3) before widening. No hour estimates; build in order. Each milestone lists its goal, the main requirement identifiers it satisfies, the key work, and an acceptance gate that must be met with real evidence before moving on.
 
 ### M0. Foundation and quality harness
+**Status:** DONE (2026-06-24, commits 2b16837..c01f00e, merged to main). Code-side complete and gate-green; the live staging deploy + smoke await Cloudflare provisioning (`infra/setup-runbook.md`).
 **Goal:** a deployable skeleton on Cloudflare with the quality gate live from day one.
 **Covers:** NFR-01 to NFR-09, NFR-15, NFR-19; E15 (FR-1501 scaffolding, FR-1520, FR-1530, FR-1531, FR-1540, FR-1550, FR-1560, FR-1570, FR-1580, FR-1590).
 **Key work:**
@@ -333,6 +334,7 @@ The plan is vertical-slice-first: prove one shirt fully orderable end to end (M3
 **Acceptance gate:** both apps deploy to Staging through CI, the deploy smoke test passes against `staging.cutura.ch`, CI blocks a deliberately failing test, and a trivial change can be promoted to Production with the gated workflow and a green smoke test.
 
 ### M1. Data model and ported domain core
+**Status:** DONE (2026-06-24, commits 3534c9b + 49a37f7, merged to main). Full 41-table Drizzle schema + migration + seed; `packages/core` ported and unit-tested (57 tests). Remote migration apply to the three D1 DBs runs in CI once provisioned.
 **Goal:** the schema exists and the safety-critical logic is ported and unit-tested.
 **Covers:** the data model in Section 6; E5 core (FR-501, FR-510, FR-520, FR-521 to FR-524, FR-530, FR-531, FR-540, FR-550, FR-551, FR-570, FR-580 to FR-592); E1 pricing (FR-150 to FR-152); E8 status and snapshot (FR-810, FR-811, FR-820 to FR-822); FR-1501.
 **Key work:**
@@ -344,6 +346,7 @@ The plan is vertical-slice-first: prove one shirt fully orderable end to end (M3
 **Acceptance gate:** migrations apply cleanly to all three databases, the seed populates Staging, and the `core` unit suite is comprehensive and green in CI.
 
 ### M2. Catalog platform and admin control plane
+**Status:** IN PROGRESS (started 2026-06-24). Workstreams: WS-A admin auth + crypto + audit (DONE); WS-B publish routine + Workers test pool; WS-C catalog data-layer; WS-D admin CRUD UI; WS-E R2 image upload; WS-F storefront catalog read API; WS-G docs. Updated as each lands.
 **Goal:** the founder can build the catalog with no code and publish it to an environment.
 **Covers:** E1 (FR-101 to FR-104, FR-110 to FR-112, FR-120 to FR-123, FR-130 to FR-132, FR-140 to FR-143, FR-160, FR-161, FR-170 to FR-172, FR-180, FR-181, FR-190 to FR-192, FR-1A0, FR-1A1, FR-1B0 to FR-1B2, FR-1C0, FR-1D0, FR-1D1); E2 (FR-201 to FR-280, FR-2A0, FR-2A1, FR-2C0, FR-2D0, FR-2E0); FR-260, FR-261, FR-1570.
 **Key work:**

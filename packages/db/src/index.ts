@@ -4,4 +4,5 @@
 export * as schema from "./schema";
 export * from "./schema";
 export * from "./getDb";
+export * from "./audit";
 export * from "./publish";
