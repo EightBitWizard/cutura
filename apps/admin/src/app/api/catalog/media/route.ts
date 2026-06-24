@@ -3,6 +3,7 @@ import { listMedia, media, saveRow, writeAudit } from "@cutura/db";
 import { controlDb } from "@/server/catalog";
 import { getEnv } from "@/server/env";
 import { safePath, seeOther } from "@/server/http";
+import { isAllowedImageType } from "@/server/media";
 
 export const dynamic = "force-dynamic";
 
@@ -16,11 +17,16 @@ export async function POST(request: Request): Promise<Response> {
   if (!(file instanceof File) || file.size === 0 || !entityType || !entityId) {
     return seeOther(`${back}?error=upload`);
   }
+  // Reject anything that is not an allow-listed raster image (no SVG/HTML), so a
+  // script-bearing file can never be stored or later served (XSS defense in depth).
+  if (!isAllowedImageType(file.type)) {
+    return seeOther(`${back}?error=filetype`);
+  }
 
   const id = crypto.randomUUID();
   const key = `media/${entityType}/${entityId}/${id}`;
   await env.MEDIA_CONTROL.put(key, await file.arrayBuffer(), {
-    httpMetadata: { contentType: file.type || "application/octet-stream" },
+    httpMetadata: { contentType: file.type },
   });
 
   const db = controlDb();
