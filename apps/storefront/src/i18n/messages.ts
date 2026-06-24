@@ -99,6 +99,8 @@ export interface Messages {
   orderableOnly: string;
   apply: string;
   noResults: string;
+  searchTitle: string;
+  searchPlaceholder: string;
   back: string;
   fabric: string;
   options: string;
@@ -136,6 +138,8 @@ const de: Messages = {
   orderableOnly: "Nur bestellbar",
   apply: "Anwenden",
   noResults: "Keine Ergebnisse.",
+  searchTitle: "Suche",
+  searchPlaceholder: "Modelle und Inhalte suchen",
   back: "Zurück",
   fabric: "Stoff",
   options: "Optionen",
@@ -235,6 +239,8 @@ const en: Messages = {
   orderableOnly: "Orderable only",
   apply: "Apply",
   noResults: "No results.",
+  searchTitle: "Search",
+  searchPlaceholder: "Search models and content",
   back: "Back",
   fabric: "Fabric",
   options: "Options",
@@ -333,6 +339,8 @@ const it: Messages = {
   orderableOnly: "Solo ordinabili",
   apply: "Applica",
   noResults: "Nessun risultato.",
+  searchTitle: "Cerca",
+  searchPlaceholder: "Cerca modelli e contenuti",
   back: "Indietro",
   fabric: "Tessuto",
   options: "Opzioni",
@@ -432,6 +440,8 @@ const fr: Messages = {
   orderableOnly: "Commandables uniquement",
   apply: "Appliquer",
   noResults: "Aucun resultat.",
+  searchTitle: "Recherche",
+  searchPlaceholder: "Rechercher des modeles et du contenu",
   back: "Retour",
   fabric: "Tissu",
   options: "Options",

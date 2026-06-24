@@ -222,6 +222,52 @@ export async function listPublishedCollections(
   return result;
 }
 
+export interface PublishedCollectionDetail {
+  handle: string;
+  name: string;
+  description: string;
+  bannerMediaId: string | null;
+  models: PublishedModelSummary[];
+}
+
+/** A single published collection by handle, with its ordered (non-draft) members. Null if unknown. */
+export async function getPublishedCollection(
+  db: Database,
+  handle: string,
+  locale: Locale,
+): Promise<PublishedCollectionDetail | null> {
+  const [col] = await db.select().from(collection).where(eq(collection.handle, handle));
+  if (!col) return null;
+  const members = byPosition(
+    await db.select().from(collectionMember).where(eq(collectionMember.collectionId, col.id)),
+  );
+  const ids = members.map((m) => m.baseModelId);
+  const rows = ids.length
+    ? await db.select().from(baseModel).where(inArray(baseModel.id, ids))
+    : [];
+  const byId = new Map(rows.filter((m) => m.status !== "draft").map((m) => [m.id, m]));
+  const models = ids
+    .map((id) => byId.get(id))
+    .filter((m): m is NonNullable<typeof m> => m !== undefined)
+    .map((m) => ({
+      id: m.id,
+      handle: m.handle,
+      name: localize(m.nameI18n, locale),
+      description: localize(m.descriptionI18n, locale),
+      basePriceMinor: m.basePriceMinor,
+      leadTimeMinDays: m.leadTimeMinDays,
+      leadTimeMaxDays: m.leadTimeMaxDays,
+      status: m.status as "view_only" | "orderable",
+    }));
+  return {
+    handle: col.handle,
+    name: localize(col.nameI18n, locale),
+    description: localize(col.descriptionI18n, locale),
+    bannerMediaId: col.bannerMediaId ?? null,
+    models,
+  };
+}
+
 export interface AttributeFacet {
   key: string;
   label: string;
