@@ -1,9 +1,12 @@
 import { type NextRequest, NextResponse } from "next/server";
 
 import { getCloudflareContext } from "@opennextjs/cloudflare";
+import { pickLocale } from "@cutura/core";
 
 import { defaultLocale, locales } from "@/i18n/config";
 import { type KVLike, readSessionCookie, verifyCustomerSession } from "@/server/auth";
+
+export const LOCALE_COOKIE = "cutura_locale";
 
 // Ensure every page route is under a locale prefix, and gate the account area
 // behind a customer session. Static assets and API routes are excluded (matcher).
@@ -13,9 +16,18 @@ export async function middleware(request: NextRequest) {
     (locale) => pathname === `/${locale}` || pathname.startsWith(`/${locale}/`),
   );
   if (!hasLocale) {
+    // Choose the locale from the remembered cookie, else the browser language,
+    // else German (FR-1220/1221/1202).
+    const remembered = request.cookies.get(LOCALE_COOKIE)?.value;
+    const chosen =
+      remembered && (locales as readonly string[]).includes(remembered)
+        ? remembered
+        : pickLocale(request.headers.get("accept-language"), locales, defaultLocale);
     const url = request.nextUrl.clone();
-    url.pathname = `/${defaultLocale}${pathname === "/" ? "" : pathname}`;
-    return NextResponse.redirect(url);
+    url.pathname = `/${chosen}${pathname === "/" ? "" : pathname}`;
+    const res = NextResponse.redirect(url);
+    res.cookies.set(LOCALE_COOKIE, chosen, { path: "/", maxAge: 60 * 60 * 24 * 365 });
+    return res;
   }
 
   const locale = pathname.split("/")[1] ?? defaultLocale;
