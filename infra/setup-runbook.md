@@ -49,16 +49,21 @@ pnpm exec wrangler r2 bucket create cutura-media-production
 pnpm --filter @cutura/storefront exec wrangler secret put SESSION_SECRET --env staging
 pnpm --filter @cutura/storefront exec wrangler secret put MEASUREMENT_ENCRYPTION_KEY --env staging
 pnpm --filter @cutura/storefront exec wrangler secret put EMAIL_PROVIDER_KEY --env staging
+pnpm --filter @cutura/storefront exec wrangler secret put SHOPIFY_ADMIN_API_TOKEN --env staging
+pnpm --filter @cutura/storefront exec wrangler secret put SHOPIFY_WEBHOOK_SECRET --env staging
 # repeat with --env production
 
-# admin worker (no --env): the login password and the session signing secret
+# admin worker (no --env): login + session + the order-ops secrets
 pnpm --filter @cutura/admin exec wrangler secret put ADMIN_AUTH_SECRET
 pnpm --filter @cutura/admin exec wrangler secret put SESSION_SECRET
+pnpm --filter @cutura/admin exec wrangler secret put MEASUREMENT_ENCRYPTION_KEY
+pnpm --filter @cutura/admin exec wrangler secret put EMAIL_PROVIDER_KEY
 ```
 
-Secret names are listed in `.dev.vars.example`. For local admin dev, set
-`ADMIN_AUTH_SECRET` and `SESSION_SECRET` in `.dev.vars`. Shopify secrets are added
-in M3.
+`SHOPIFY_STORE_DOMAIN` + `SHOPIFY_API_VERSION` (= `2026-04`) are non-secret
+[vars] per env in `apps/storefront/wrangler.jsonc`. `MEASUREMENT_ENCRYPTION_KEY`
+must be identical on the storefront and admin workers (admin decrypts snapshots).
+Secret names are listed in `.dev.vars.example`.
 
 ## 5. GitHub Actions secrets, variables, and the production gate
 
@@ -80,10 +85,29 @@ pnpm --filter @cutura/storefront exec wrangler d1 migrations apply cutura-stagin
 pnpm --filter @cutura/storefront exec wrangler d1 migrations apply cutura-production --env production --remote
 ```
 
+## 7. Shopify payment rail + email (M3 live verification)
+
+The M3 code is complete behind fakes; the live order requires:
+
+1. Create a Shopify **custom app** (Admin API) with scopes `write_draft_orders`,
+   `read_orders`, `write_orders`. Copy the Admin API access token into
+   `SHOPIFY_ADMIN_API_TOKEN` and the webhook signing secret into
+   `SHOPIFY_WEBHOOK_SECRET`; set `SHOPIFY_STORE_DOMAIN` ([vars]).
+2. Subscribe webhooks (Admin API version `2026-04`) to `https://<storefront>/api/shopify/webhook`:
+   `orders/paid`, `orders/create`, `orders/cancelled`, `refunds/create`, and the
+   three mandatory compliance topics.
+3. Set the store **tax-inclusive** ("include tax in prices") for CH so VAT 8.1%
+   is extracted from the gross; set the **only shipping zone to CH + LI**; enable
+   Shopify Payments incl. TWINT.
+4. Create a **Resend** account, verify the sending domain, set `EMAIL_PROVIDER_KEY`.
+5. Run the end-to-end Playwright order on Staging (desktop + mobile) and one
+   manual test order; verify TWINT, the supplier PDF with images, and the
+   localized emails. Optionally schedule a cron to POST `/api/shopify/reconcile`
+   (Bearer = `SHOPIFY_WEBHOOK_SECRET`).
+
 ## Deferred (later milestones)
 
 - Move `cutura.ch` DNS to Cloudflare and attach custom domains
   (`staging.cutura.ch`, `cutura.ch`, `www`, `admin.cutura.ch`); update
   `STAGING_URL` / `PRODUCTION_URL` and add `routes` to the wrangler configs.
-- Connect the Shopify custom app and set its secrets (M3).
 - SPF, DKIM, DMARC on the sending domain (M9).

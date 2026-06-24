@@ -4,6 +4,25 @@ All notable changes to this project. Newest first.
 
 ## Unreleased
 
+### Added (M3 - vertical slice: one shirt orderable end to end)
+
+- Storefront customer flow: home, product page, a configurator with
+  server-authoritative live pricing, and the measurement flow (wizard and
+  detailed, three layers, transparent confirmation, outlier gate, cm/inch).
+- A guest cart and a pre-checkout validation gate (complete config, valid
+  measurement, Terms/Privacy version capture); a server-owned KV cart that stores
+  no prices and recomputes at checkout.
+- The Shopify payment rail (Admin GraphQL 2026-04): a draft order with a price
+  override, custom config/measurement attributes, a 0.00 shipping line, and the
+  hosted-checkout redirect; the paid webhook (raw-body HMAC, idempotent) and a
+  reconcile backstop.
+- The order pipeline: an immutable encrypted snapshot per garment, a guarded
+  status machine with audit, a manual approval gate, multi-item rollup and
+  ship-together, and QC with no silent pass and an audited override.
+- A Workers-compatible supplier PDF (pdf-lib) and localized transactional email
+  (Resend, behind a provider interface), plus a minimal admin order-ops surface.
+- Body measurements encrypted at rest (AES-256-GCM via HKDF).
+
 ### Added (M2 - catalog platform and admin control plane)
 
 - Admin authentication (password and a signed KV session, separate from

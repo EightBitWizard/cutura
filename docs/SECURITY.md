@@ -14,14 +14,16 @@ that delivers them is upcoming.
   restricted to same-origin paths (`safePath`). [done, M2] Magic-link/RBAC later.
 - **Customer auth** is magic-link with signed, http-only cookie sessions backed
   by KV; ownership enforced on every customer resource. [planned, M4]
-- **Payments**: Shopify-hosted checkout only; CUTURA never handles card data.
-  Webhooks verified with timing-safe HMAC over the raw body, idempotent on the
-  event id. [planned, M3]
-- **Rate limiting** (KV) on login/magic-link, contact, checkout creation, and
-  webhook-adjacent endpoints. [planned, M3/M4]
-- **Body measurements encrypted at rest**: stored as ciphertext (`_enc` columns
-  / encrypted snapshot blob); the schema enforces the column shape now. [schema
-  done; encryption wired with the measurement flow, M3]
+- **Payments**: Shopify-hosted checkout (Draft Order invoiceUrl) only; CUTURA
+  never handles card data. The paid webhook is verified with timing-safe HMAC
+  (base64) over the raw body and is idempotent on the webhook id; a reconcile job
+  backstops missed events. [done, M3]
+- **Rate limiting** (KV) on login (done). Checkout-creation + webhook-adjacent
+  limits are a follow-up. [partial]
+- **Body measurements encrypted at rest**: AES-256-GCM (HKDF from
+  `MEASUREMENT_ENCRYPTION_KEY`, per-purpose key) for the guest measurement KV
+  blob, the checkout-frozen `order_item.config_enc`, and the production snapshot;
+  the helper is pure and never logs plaintext. [done, M3]
 - **Migrations** are backwards-compatible; a code rollback does not revert D1, so
   recovery uses D1 Time Travel and export. [done]
 - **CI** runs gitleaks secret scanning and an architecture guard. [done]

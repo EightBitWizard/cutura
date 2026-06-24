@@ -31,28 +31,36 @@ reserved by `@opennextjs/cloudflare`: `NEXT_INC_CACHE_R2_BUCKET`,
 
 ## Where the critical subsystems live
 
-| Subsystem                              | Location                                         |
-| -------------------------------------- | ------------------------------------------------ |
-| Pricing engine (server-authoritative)  | `packages/core/src/pricing.ts`                   |
-| Money and VAT helpers                  | `packages/core/src/money.ts`                     |
-| Measurement estimator seam (swappable) | `packages/core/src/estimator.ts`                 |
-| Three-layer profile + versioning       | `packages/core/src/profile.ts`                   |
-| Immutable order snapshot builder       | `packages/core/src/snapshot.ts`                  |
-| Status machine + QC override guard     | `packages/core/src/status.ts`                    |
-| Outlier / review gate                  | `packages/core/src/outliers.ts`                  |
-| QC checklist templates                 | `packages/core/src/qc.ts`                        |
-| DB schema                              | `packages/db/src/schema/*`                       |
-| Per-request DB client                  | `packages/db/src/getDb.ts`                       |
-| Catalog publish routine                | `packages/db/src/publish/` (publish/unpublish)   |
-| Catalog authoring helpers              | `packages/db/src/catalog/` (CRUD, allow-lists)   |
-| Storefront catalog read                | `packages/db/src/catalog/read.ts`                |
-| Admin auth (password + KV session)     | `apps/admin/src/server/auth.ts`                  |
-| Web-Crypto session primitives          | `packages/core/src/crypto.ts`                    |
-| Recommendation seam                    | future (E11); same pattern as the estimator seam |
+| Subsystem                              | Location                                                          |
+| -------------------------------------- | ----------------------------------------------------------------- |
+| Pricing engine (server-authoritative)  | `packages/core/src/pricing.ts`                                    |
+| Money and VAT helpers                  | `packages/core/src/money.ts`                                      |
+| Measurement estimator seam (swappable) | `packages/core/src/estimator.ts`                                  |
+| Three-layer profile + versioning       | `packages/core/src/profile.ts`                                    |
+| Immutable order snapshot builder       | `packages/core/src/snapshot.ts`                                   |
+| Status machine + QC override guard     | `packages/core/src/status.ts`                                     |
+| Outlier / review gate                  | `packages/core/src/outliers.ts`                                   |
+| QC checklist templates                 | `packages/core/src/qc.ts`                                         |
+| DB schema                              | `packages/db/src/schema/*`                                        |
+| Per-request DB client                  | `packages/db/src/getDb.ts`                                        |
+| Catalog publish routine                | `packages/db/src/publish/` (publish/unpublish)                    |
+| Catalog authoring helpers              | `packages/db/src/catalog/` (CRUD, allow-lists)                    |
+| Storefront catalog read                | `packages/db/src/catalog/read.ts`                                 |
+| Admin auth (password + KV session)     | `apps/admin/src/server/auth.ts`                                   |
+| Web-Crypto session primitives          | `packages/core/src/crypto.ts`                                     |
+| Order pipeline (paid -> ship)          | `packages/db/src/orders/`                                         |
+| Measurement encryption (AES-GCM)       | `packages/core/src/measurementCrypto.ts`                          |
+| Shopify payment rail                   | `packages/core/src/shopify.ts` + storefront impl                  |
+| Supplier PDF + transactional email     | `packages/db/src/orders/supplierPdf.ts`, `packages/db/src/email/` |
+| Recommendation seam                    | future (E11); same pattern as the estimator seam                  |
 
 `packages/core` is pure: no Next, React, or Cloudflare imports (ESLint-enforced).
-Apps never import `drizzle-orm` directly: catalog queries/writes go through
-`packages/db` helpers, keeping the ORM encapsulated and Workers-pool-testable.
+Apps never import `drizzle-orm` directly: catalog/order queries + writes go
+through `packages/db` helpers, keeping the ORM encapsulated and
+Workers-pool-testable. The Shopify Admin GraphQL API is pinned to **`2026-04`**
+(`SHOPIFY_API_VERSION`). Body measurements are encrypted at rest (AES-256-GCM,
+HKDF from `MEASUREMENT_ENCRYPTION_KEY`); the helper is pure and never logs
+plaintext or key material.
 
 ## Testing approach (hybrid)
 
@@ -97,4 +105,5 @@ webhook); body measurements encrypted at rest; never the em dash U+2014 (gate:
 ## Pending follow-ups
 
 - Next 16 deprecates `middleware.ts` in favour of `proxy.ts`; rename when convenient.
-- Shopify Admin API version: to be pinned here when the checkout integration lands (M3).
+- Reconcile cron trigger; supplier-PDF fabric/option/upgrade images (model image
+  done); full GDPR webhook handling; checkout-creation rate limit (M3 follow-ups).
