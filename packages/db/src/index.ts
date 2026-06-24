@@ -7,6 +7,7 @@ export * from "./getDb";
 export * from "./audit";
 export * from "./catalog";
 export * from "./config";
+export * from "./contact";
 export * from "./content";
 export * from "./crosssell";
 export * from "./kpi";

@@ -91,4 +91,13 @@ describe("D1 migrations", () => {
       expect(cols.has(col), `cross_sell_rule.${col}`).toBe(true);
     }
   });
+
+  it("apply the M7 contact_message + redirect tables", () => {
+    const db = applyAllMigrations();
+    expect(columnNames(db, "contact_message").has("message")).toBe(true);
+    const redirectCols = columnNames(db, "redirect");
+    for (const col of ["from_path", "to_path", "code"]) {
+      expect(redirectCols.has(col), `redirect.${col}`).toBe(true);
+    }
+  });
 });

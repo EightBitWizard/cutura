@@ -114,6 +114,23 @@ export function renderAdminNotification(
   };
 }
 
+/** Contact-form notification to the admin (German, operator-facing). */
+export function renderContactNotification(
+  to: string,
+  input: { name: string; email: string; message: string },
+): EmailMessage {
+  const subject = `Neue Kontaktanfrage von ${input.name}`;
+  const body = `Von: ${input.name} <${input.email}>\n\n${input.message}`;
+  return {
+    to,
+    from: FROM,
+    subject,
+    html: `<p>${subject}</p><p>${input.email}</p><pre>${input.message}</pre>`,
+    text: body,
+    replyTo: input.email,
+  };
+}
+
 export function renderShippedEmail(
   input: { to: string; orderNumber: string; trackingUrl?: string },
   locale: EmailLocale,

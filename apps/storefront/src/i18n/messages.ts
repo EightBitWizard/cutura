@@ -97,6 +97,11 @@ export interface Messages {
   consentAccept: string;
   consentDecline: string;
   contact: string;
+  contactName: string;
+  contactMessageLabel: string;
+  contactSend: string;
+  contactSent: string;
+  help: string;
   discoverTitle: string;
   filters: string;
   sortLabel: string;
@@ -144,6 +149,11 @@ const de: Messages = {
   consentAccept: "Alle akzeptieren",
   consentDecline: "Nur notwendige",
   contact: "Kontakt",
+  contactName: "Name",
+  contactMessageLabel: "Nachricht",
+  contactSend: "Senden",
+  contactSent: "Danke, wir haben Ihre Nachricht erhalten.",
+  help: "Hilfe und haeufige Fragen",
   discoverTitle: "Entdecken",
   filters: "Filter",
   sortLabel: "Sortieren",
@@ -252,6 +262,11 @@ const en: Messages = {
   consentAccept: "Accept all",
   consentDecline: "Necessary only",
   contact: "Contact",
+  contactName: "Name",
+  contactMessageLabel: "Message",
+  contactSend: "Send",
+  contactSent: "Thank you, we have received your message.",
+  help: "Help and FAQ",
   discoverTitle: "Discover",
   filters: "Filters",
   sortLabel: "Sort",
@@ -359,6 +374,11 @@ const it: Messages = {
   consentAccept: "Accetta tutti",
   consentDecline: "Solo necessari",
   contact: "Contatti",
+  contactName: "Nome",
+  contactMessageLabel: "Messaggio",
+  contactSend: "Invia",
+  contactSent: "Grazie, abbiamo ricevuto il tuo messaggio.",
+  help: "Aiuto e domande frequenti",
   discoverTitle: "Scopri",
   filters: "Filtri",
   sortLabel: "Ordina",
@@ -468,6 +488,11 @@ const fr: Messages = {
   consentAccept: "Tout accepter",
   consentDecline: "Necessaires seulement",
   contact: "Contact",
+  contactName: "Nom",
+  contactMessageLabel: "Message",
+  contactSend: "Envoyer",
+  contactSent: "Merci, nous avons bien recu votre message.",
+  help: "Aide et FAQ",
   discoverTitle: "Decouvrir",
   filters: "Filtres",
   sortLabel: "Trier",

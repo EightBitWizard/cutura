@@ -236,6 +236,26 @@ export const notifyRequest = sqliteTable("notify_request", {
   createdAt: text("created_at").notNull(),
 });
 
+// Contact-form submissions (FR contact form). Stored + emailed to the admin.
+export const contactMessage = sqliteTable("contact_message", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+  message: text("message").notNull(),
+  locale: text("locale").notNull().default("de"),
+  createdAt: text("created_at").notNull(),
+});
+
+// Admin-managed redirects (FR-1370/NFR-20). Checked in the storefront middleware.
+export const redirect = sqliteTable("redirect", {
+  id: text("id").primaryKey(),
+  fromPath: text("from_path").notNull().unique(),
+  toPath: text("to_path").notNull(),
+  code: integer("code").notNull().default(301),
+  createdAt: text("created_at").notNull(),
+  updatedAt: text("updated_at").notNull(),
+});
+
 export const auditLog = sqliteTable("audit_log", {
   id: text("id").primaryKey(),
   actor: text("actor").notNull(),
