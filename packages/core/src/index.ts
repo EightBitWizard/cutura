@@ -22,6 +22,7 @@ export * from "./outliers";
 export * from "./estimator";
 export * from "./qc";
 export * from "./money";
+export * from "./consent";
 export * from "./pricing";
 export * from "./profile";
 export * from "./snapshot";

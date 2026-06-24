@@ -93,6 +93,9 @@ export interface Messages {
   materials: string;
   youMightAlsoLike: string;
   fitGuide: string;
+  consentText: string;
+  consentAccept: string;
+  consentDecline: string;
   discoverTitle: string;
   filters: string;
   sortLabel: string;
@@ -135,6 +138,10 @@ const de: Messages = {
   materials: "Materialien",
   youMightAlsoLike: "Das könnte Ihnen auch gefallen",
   fitGuide: "Passform- und Massleitfaden",
+  consentText:
+    "Wir verwenden notwendige Cookies. Optionale Analyse-Cookies nur mit Ihrer Zustimmung.",
+  consentAccept: "Alle akzeptieren",
+  consentDecline: "Nur notwendige",
   discoverTitle: "Entdecken",
   filters: "Filter",
   sortLabel: "Sortieren",
@@ -239,6 +246,9 @@ const en: Messages = {
   materials: "Materials",
   youMightAlsoLike: "You might also like",
   fitGuide: "Fit and size guide",
+  consentText: "We use necessary cookies. Optional analytics cookies only with your consent.",
+  consentAccept: "Accept all",
+  consentDecline: "Necessary only",
   discoverTitle: "Discover",
   filters: "Filters",
   sortLabel: "Sort",
@@ -342,6 +352,9 @@ const it: Messages = {
   materials: "Materiali",
   youMightAlsoLike: "Potrebbe interessarti anche",
   fitGuide: "Guida a vestibilita e misure",
+  consentText: "Usiamo cookie necessari. Cookie di analisi opzionali solo con il tuo consenso.",
+  consentAccept: "Accetta tutti",
+  consentDecline: "Solo necessari",
   discoverTitle: "Scopri",
   filters: "Filtri",
   sortLabel: "Ordina",
@@ -446,6 +459,10 @@ const fr: Messages = {
   materials: "Matieres",
   youMightAlsoLike: "Vous pourriez aussi aimer",
   fitGuide: "Guide des tailles et coupes",
+  consentText:
+    "Nous utilisons des cookies necessaires. Cookies d'analyse optionnels seulement avec votre accord.",
+  consentAccept: "Tout accepter",
+  consentDecline: "Necessaires seulement",
   discoverTitle: "Decouvrir",
   filters: "Filtres",
   sortLabel: "Trier",
