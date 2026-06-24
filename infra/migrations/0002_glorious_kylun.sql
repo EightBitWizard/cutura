@@ -1,0 +1,1 @@
+ALTER TABLE `measurement_profile` ADD `archived_at` text;

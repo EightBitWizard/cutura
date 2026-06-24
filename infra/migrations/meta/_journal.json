@@ -15,6 +15,13 @@
       "when": 1782291270577,
       "tag": "0001_gray_bloodscream",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1782297516589,
+      "tag": "0002_glorious_kylun",
+      "breakpoints": true
     }
   ]
 }

@@ -47,6 +47,8 @@ export const measurementProfile = sqliteTable("measurement_profile", {
   customerId: text("customer_id"),
   name: text("name"),
   currentVersion: integer("current_version").notNull().default(1),
+  // Soft-archive (FR-630): hide from the active profile list without losing versions.
+  archivedAt: text("archived_at"),
   ...timestamps(),
 });
 

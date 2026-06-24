@@ -7,12 +7,16 @@ import {
   estimate,
 } from "@cutura/core";
 
+import { getDb, saveCustomerMeasurement } from "@cutura/db";
+
+import { getEnv } from "@/server/env";
 import {
   measureCookie,
   newMeasureToken,
   readMeasureToken,
   saveMeasurementVersion,
 } from "@/server/measurement";
+import { getCustomerId } from "@/server/session";
 
 export const dynamic = "force-dynamic";
 
@@ -54,6 +58,23 @@ export async function POST(request: Request): Promise<Response> {
       confirmedValues: body.confirmedValues,
       createdAt: new Date().toISOString(),
     });
+
+    // Logged-in: persist to the customer's durable D1 profile instead of guest KV.
+    const customerId = await getCustomerId();
+    if (customerId) {
+      const env = getEnv();
+      const { profileId } = await saveCustomerMeasurement(
+        getDb(env.DB),
+        customerId,
+        version,
+        env.MEASUREMENT_ENCRYPTION_KEY,
+      );
+      return Response.json({
+        ref: { profileId, version: version.version },
+        isOutlier: outlier.isOutlier,
+        flags: outlier.flags,
+      });
+    }
 
     let token = readMeasureToken(request.headers.get("cookie"));
     const isNew = !token;

@@ -72,4 +72,8 @@ describe("D1 migrations", () => {
     expect(orderCols.has("shopify_draft_id")).toBe(true);
     expect(orderCols.has("invoice_url")).toBe(true);
   });
+
+  it("apply the M4 profile archive column", () => {
+    expect(columnNames(applyAllMigrations(), "measurement_profile").has("archived_at")).toBe(true);
+  });
 });
