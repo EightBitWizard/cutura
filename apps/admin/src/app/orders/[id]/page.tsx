@@ -1,7 +1,12 @@
 import Link from "next/link";
 
-import { type OrderSnapshot, checkOutliers, getDefaultQcChecklist } from "@cutura/core";
-import { getOrderDetail, readSnapshot } from "@cutura/db";
+import {
+  type OrderSnapshot,
+  checkOutliers,
+  getDefaultQcChecklist,
+  marginMinor,
+} from "@cutura/core";
+import { getOrderCost, getOrderDetail, readSnapshot } from "@cutura/db";
 
 import { environmentDb } from "@/server/catalog";
 import { getEnv } from "@/server/env";
@@ -33,6 +38,8 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
 
   const anyInReview = items.some((i) => i.item.status === "in_review");
   const allQcPassed = items.length > 0 && items.every((i) => i.item.status === "qc_passed");
+  const cost = await getOrderCost(db, id);
+  const margin = cost ? marginMinor(detail.order.totalMinor, cost) : null;
 
   return (
     <main className="mx-auto max-w-3xl px-6 py-10">
@@ -92,6 +99,47 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
         >
           Save notes + tags
         </button>
+      </form>
+
+      <form
+        method="post"
+        action={`/api/orders/${id}/cost`}
+        className="mt-6 rounded-lg border border-neutral-200 p-4"
+      >
+        <h2 className="text-sm font-medium uppercase tracking-wide text-neutral-500">
+          Cost capture (Rappen)
+        </h2>
+        <div className="mt-2 grid grid-cols-2 gap-3 sm:grid-cols-4">
+          {(
+            [
+              ["fabricMinor", "Fabric", cost?.fabricMinor],
+              ["productionMinor", "Production", cost?.productionMinor],
+              ["inboundMinor", "Inbound", cost?.inboundMinor],
+              ["feesMinor", "Fees", cost?.feesMinor],
+            ] as const
+          ).map(([name, label, value]) => (
+            <label key={name} className="flex flex-col text-xs">
+              {label}
+              <input
+                name={name}
+                type="number"
+                min={0}
+                defaultValue={value ?? ""}
+                className="mt-1 rounded border border-neutral-300 px-2 py-1"
+              />
+            </label>
+          ))}
+        </div>
+        <div className="mt-3 flex items-center gap-4">
+          <button type="submit" className="rounded border border-neutral-300 px-3 py-1 text-sm">
+            Save cost
+          </button>
+          {margin !== null && (
+            <span className="text-sm text-neutral-600">
+              Margin: {(margin / 100).toFixed(2)} CHF
+            </span>
+          )}
+        </div>
       </form>
 
       {items.map(({ item, pkg, qc, snapshot }) => (
