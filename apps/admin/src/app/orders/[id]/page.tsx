@@ -81,6 +81,20 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
             </p>
           )}
 
+          {item.status === "in_review" && (
+            <form method="post" action={`/api/orders/${id}/correct`} className="mt-3 flex gap-2">
+              <input type="hidden" name="orderItemId" value={item.id} />
+              <input
+                name="note"
+                placeholder="Pre-release correction note (audited)"
+                required
+                className="flex-1 rounded border border-neutral-300 px-2 py-1 text-sm"
+              />
+              <button type="submit" className="rounded border border-neutral-300 px-2 py-1 text-sm">
+                Record correction
+              </button>
+            </form>
+          )}
           {item.status === "arrived_ch" && (
             <QcForm
               orderId={id}
