@@ -9,6 +9,8 @@ import { eq } from "drizzle-orm";
 
 import type { Database } from "../getDb";
 import { type IdTable } from "../publish/upsert";
+
+export * from "./read";
 import {
   LOCALES,
   type Locale,

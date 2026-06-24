@@ -1,0 +1,207 @@
+// Read the published catalog from an environment database for the storefront.
+// Every row in an environment DB is published by construction (it got there via
+// the publish routine), so these queries do not filter on a publish flag; they
+// resolve per-model allow-lists, localize content (German fallback), and respect
+// orderability and fabric availability. See REQUIREMENTS.md E3 (FR-320), E4
+// (FR-420), E12 (FR-1202).
+
+import { eq, inArray } from "drizzle-orm";
+
+import type { Database } from "../getDb";
+import {
+  type Locale,
+  baseModel,
+  collection,
+  collectionMember,
+  fabric,
+  modelAllowedFabric,
+  modelAllowedOption,
+  modelAllowedUpgrade,
+  optionGroup,
+  optionValue,
+  upgrade,
+} from "../schema";
+
+/** Pick the locale's value, falling back to German, then empty. */
+export function localize(
+  text: Partial<Record<Locale, string>> | null | undefined,
+  locale: Locale,
+): string {
+  return text?.[locale] ?? text?.de ?? "";
+}
+
+export interface PublishedModelSummary {
+  id: string;
+  handle: string;
+  name: string;
+  description: string;
+  basePriceMinor: number;
+  leadTimeMinDays: number;
+  leadTimeMaxDays: number;
+  status: "view_only" | "orderable";
+}
+
+export interface PublishedModelDetail extends PublishedModelSummary {
+  fabrics: Array<{ code: string; name: string; surchargeMinor: number; available: boolean }>;
+  optionGroups: Array<{
+    code: string;
+    label: string;
+    required: boolean;
+    values: Array<{ code: string; label: string; surchargeMinor: number }>;
+  }>;
+  upgrades: Array<{ code: string; name: string; priceMinor: number; placement: string | null }>;
+}
+
+function byPosition<T extends { position: number }>(rows: T[]): T[] {
+  return [...rows].sort((a, b) => a.position - b.position);
+}
+
+export async function listPublishedModels(
+  db: Database,
+  locale: Locale,
+): Promise<PublishedModelSummary[]> {
+  const rows = await db.select().from(baseModel);
+  return rows
+    .filter((r) => r.status !== "draft")
+    .map((r) => ({
+      id: r.id,
+      handle: r.handle,
+      name: localize(r.nameI18n, locale),
+      description: localize(r.descriptionI18n, locale),
+      basePriceMinor: r.basePriceMinor,
+      leadTimeMinDays: r.leadTimeMinDays,
+      leadTimeMaxDays: r.leadTimeMaxDays,
+      status: r.status as "view_only" | "orderable",
+    }));
+}
+
+export async function getPublishedModel(
+  db: Database,
+  handle: string,
+  locale: Locale,
+): Promise<PublishedModelDetail | undefined> {
+  const [model] = await db.select().from(baseModel).where(eq(baseModel.handle, handle));
+  if (!model || model.status === "draft") return undefined;
+
+  // Allowed fabrics, in allow-list order, available only.
+  const af = byPosition(
+    await db.select().from(modelAllowedFabric).where(eq(modelAllowedFabric.baseModelId, model.id)),
+  );
+  const fabricIds = af.map((r) => r.fabricId);
+  const fabricRows = fabricIds.length
+    ? await db.select().from(fabric).where(inArray(fabric.id, fabricIds))
+    : [];
+  const fabricById = new Map(fabricRows.map((f) => [f.id, f]));
+  const fabrics = fabricIds
+    .map((id) => fabricById.get(id))
+    .filter((f): f is NonNullable<typeof f> => f !== undefined && f.available)
+    .map((f) => ({
+      code: f.code,
+      name: localize(f.nameI18n, locale),
+      surchargeMinor: f.surchargeMinor,
+      available: f.available,
+    }));
+
+  // Allowed option groups + their values.
+  const ao = byPosition(
+    await db.select().from(modelAllowedOption).where(eq(modelAllowedOption.baseModelId, model.id)),
+  );
+  const groupIds = ao.map((r) => r.optionGroupId);
+  const groupRows = groupIds.length
+    ? await db.select().from(optionGroup).where(inArray(optionGroup.id, groupIds))
+    : [];
+  const valueRows = groupIds.length
+    ? await db.select().from(optionValue).where(inArray(optionValue.optionGroupId, groupIds))
+    : [];
+  const groupById = new Map(groupRows.map((g) => [g.id, g]));
+  const optionGroups = ao
+    .map((r) => {
+      const group = groupById.get(r.optionGroupId);
+      if (!group) return undefined;
+      return {
+        code: group.code,
+        label: localize(group.labelI18n, locale),
+        required: r.required,
+        values: valueRows
+          .filter((v) => v.optionGroupId === group.id)
+          .map((v) => ({
+            code: v.code,
+            label: localize(v.labelI18n, locale),
+            surchargeMinor: v.surchargeMinor,
+          })),
+      };
+    })
+    .filter((g): g is NonNullable<typeof g> => g !== undefined);
+
+  // Allowed upgrades.
+  const au = byPosition(
+    await db
+      .select()
+      .from(modelAllowedUpgrade)
+      .where(eq(modelAllowedUpgrade.baseModelId, model.id)),
+  );
+  const upgradeIds = au.map((r) => r.upgradeId);
+  const upgradeRows = upgradeIds.length
+    ? await db.select().from(upgrade).where(inArray(upgrade.id, upgradeIds))
+    : [];
+  const upgradeById = new Map(upgradeRows.map((u) => [u.id, u]));
+  const upgrades = upgradeIds
+    .map((id) => upgradeById.get(id))
+    .filter((u): u is NonNullable<typeof u> => u !== undefined)
+    .map((u) => ({
+      code: u.code,
+      name: localize(u.nameI18n, locale),
+      priceMinor: u.priceMinor,
+      placement: u.placement,
+    }));
+
+  return {
+    id: model.id,
+    handle: model.handle,
+    name: localize(model.nameI18n, locale),
+    description: localize(model.descriptionI18n, locale),
+    basePriceMinor: model.basePriceMinor,
+    leadTimeMinDays: model.leadTimeMinDays,
+    leadTimeMaxDays: model.leadTimeMaxDays,
+    status: model.status as "view_only" | "orderable",
+    fabrics,
+    optionGroups,
+    upgrades,
+  };
+}
+
+export interface PublishedCollection {
+  handle: string;
+  name: string;
+  description: string;
+  modelHandles: string[];
+}
+
+export async function listPublishedCollections(
+  db: Database,
+  locale: Locale,
+): Promise<PublishedCollection[]> {
+  const collections = await db.select().from(collection);
+  const result: PublishedCollection[] = [];
+  for (const col of collections) {
+    const members = byPosition(
+      await db.select().from(collectionMember).where(eq(collectionMember.collectionId, col.id)),
+    );
+    const modelIds = members.map((m) => m.baseModelId);
+    const models = modelIds.length
+      ? await db.select().from(baseModel).where(inArray(baseModel.id, modelIds))
+      : [];
+    const handleById = new Map(
+      models.filter((m) => m.status !== "draft").map((m) => [m.id, m.handle]),
+    );
+    result.push({
+      handle: col.handle,
+      name: localize(col.nameI18n, locale),
+      description: localize(col.descriptionI18n, locale),
+      modelHandles: modelIds
+        .map((id) => handleById.get(id))
+        .filter((h): h is string => h !== undefined),
+    });
+  }
+  return result;
+}
