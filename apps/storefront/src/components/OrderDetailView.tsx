@@ -1,4 +1,4 @@
-import { CUSTOMER_MILESTONES, formatCHF } from "@cutura/core";
+import { CUSTOMER_MILESTONES, formatCHF, formatDate } from "@cutura/core";
 import type { CustomerOrderDetail } from "@cutura/db";
 
 import type { Locale } from "@/i18n/config";
@@ -50,6 +50,16 @@ export function OrderDetailView({
           </li>
         ))}
       </ul>
+
+      {detail.timeline.length > 0 && (
+        <ul className="mt-6 flex flex-col gap-1 text-sm text-neutral-500">
+          {detail.timeline.map((e, i) => (
+            <li key={`${e.milestone}-${i}`}>
+              {formatDate(e.at, locale)} - {labels[e.milestone]}
+            </li>
+          ))}
+        </ul>
+      )}
 
       <div className="mt-4 text-sm text-neutral-500">{formatCHF(detail.totalMinor)}</div>
     </div>

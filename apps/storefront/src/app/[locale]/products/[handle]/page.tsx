@@ -1,17 +1,35 @@
+import type { Metadata } from "next";
+
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { formatCHF } from "@cutura/core";
+import { buildAlternates, formatCHF } from "@cutura/core";
 import { getDb, getPrimaryMediaId, getPublishedModel } from "@cutura/db";
 
 import { Configurator } from "@/components/Configurator";
 import { MediaImage } from "@/components/MediaImage";
-import { defaultLocale, isLocale } from "@/i18n/config";
+import { defaultLocale, isLocale, locales } from "@/i18n/config";
 import { getMessages } from "@/i18n/messages";
 import { getEnv } from "@/server/env";
 import { getOrderingState, leadTimeFor } from "@/server/ops";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; handle: string }>;
+}): Promise<Metadata> {
+  const { locale: raw, handle } = await params;
+  const locale = isLocale(raw) ? raw : defaultLocale;
+  const model = await getPublishedModel(getDb(getEnv().DB), handle, locale);
+  if (!model) return {};
+  return {
+    title: model.name,
+    description: model.description ?? undefined,
+    alternates: buildAlternates(`/products/${handle}`, locale, locales, defaultLocale),
+  };
+}
 
 export default async function ProductPage({
   params,

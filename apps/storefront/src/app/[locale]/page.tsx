@@ -1,6 +1,8 @@
 import Link from "next/link";
 
-import { formatCHF } from "@cutura/core";
+import type { Metadata } from "next";
+
+import { buildAlternates, formatCHF } from "@cutura/core";
 import {
   getDb,
   listPublishedCollections,
@@ -9,11 +11,26 @@ import {
 } from "@cutura/db";
 
 import { MediaImage } from "@/components/MediaImage";
-import { defaultLocale, isLocale } from "@/i18n/config";
+import { defaultLocale, isLocale, locales } from "@/i18n/config";
 import { getMessages } from "@/i18n/messages";
 import { getEnv } from "@/server/env";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale: raw } = await params;
+  const locale = isLocale(raw) ? raw : defaultLocale;
+  const t = getMessages(locale);
+  return {
+    title: t.brand,
+    description: t.tagline,
+    alternates: buildAlternates("/", locale, locales, defaultLocale),
+  };
+}
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale: raw } = await params;
