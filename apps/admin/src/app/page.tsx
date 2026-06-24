@@ -14,6 +14,9 @@ export default function AdminHome() {
         <Link className="text-neutral-900 underline" href="/fabrics">
           Fabrics
         </Link>
+        <Link className="text-neutral-900 underline" href="/upgrades">
+          Upgrades
+        </Link>
       </nav>
       <form method="post" action="/api/auth/logout" className="mt-10">
         <button type="submit" className="rounded border border-neutral-300 px-3 py-1 text-sm">
