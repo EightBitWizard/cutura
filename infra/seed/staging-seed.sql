@@ -37,6 +37,42 @@ INSERT OR IGNORE INTO model_allowed_fabric (id, base_model_id, fabric_id, positi
 INSERT OR IGNORE INTO model_allowed_fabric (id, base_model_id, fabric_id, position) VALUES ('maf_blue', 'bm_oxford', 'fab_blue', 1);
 INSERT OR IGNORE INTO model_allowed_option (id, base_model_id, option_group_id, required, position) VALUES ('mao_collar', 'bm_oxford', 'og_collar', 1, 0);
 
+-- Garment type: trouser (added as DATA + the registered estimator module; FR-104).
+INSERT OR IGNORE INTO garment_type (id, key, name_i18n, measurement_schema_id, created_at, updated_at)
+VALUES ('gt_trouser', 'trouser', '{"de":"Hose","en":"Trousers","it":"Pantaloni","fr":"Pantalon"}', 'ms_trouser', '2026-06-24T00:00:00Z', '2026-06-24T00:00:00Z');
+
+INSERT OR IGNORE INTO measurement_schema (id, garment_type_id, version, fields, created_at, updated_at)
+VALUES ('ms_trouser', 'gt_trouser', 1, '{"core":["waist","hips","inseam"],"units":"cm"}', '2026-06-24T00:00:00Z', '2026-06-24T00:00:00Z');
+
+-- Base model: classic chino
+INSERT OR IGNORE INTO base_model (id, garment_type_id, handle, name_i18n, base_price_minor, lead_time_min_days, lead_time_max_days, status, created_at, updated_at)
+VALUES ('bm_chino', 'gt_trouser', 'chino-classic', '{"de":"Chino Classic","en":"Chino Classic","it":"Chino Classic","fr":"Chino Classic"}', 14900, 21, 35, 'orderable', '2026-06-24T00:00:00Z', '2026-06-24T00:00:00Z');
+
+-- Trouser fabrics (with fibre composition + care, carried to the PDP + the sewn-in label)
+INSERT OR IGNORE INTO fabric (id, code, name_i18n, fibre_composition, care_data, surcharge_minor, available, created_at, updated_at)
+VALUES ('fab_chino_navy', 'CHN-NAV-01', '{"de":"Chino Marine","en":"Chino Navy","it":"Chino Blu","fr":"Chino Marine"}', '{"cotton":98,"elastane":2}', '["30C","no bleach","iron medium"]', 0, 1, '2026-06-24T00:00:00Z', '2026-06-24T00:00:00Z');
+INSERT OR IGNORE INTO fabric (id, code, name_i18n, fibre_composition, care_data, surcharge_minor, available, created_at, updated_at)
+VALUES ('fab_chino_stone', 'CHN-STN-01', '{"de":"Chino Stein","en":"Chino Stone","it":"Chino Sabbia","fr":"Chino Pierre"}', '{"cotton":100}', '["30C","no bleach","iron medium"]', 1500, 1, '2026-06-24T00:00:00Z', '2026-06-24T00:00:00Z');
+
+-- Option group: pleats
+INSERT OR IGNORE INTO option_group (id, garment_type_id, code, label_i18n, created_at, updated_at)
+VALUES ('og_pleats', 'gt_trouser', 'pleats', '{"de":"Bundfalten","en":"Pleats","it":"Pince","fr":"Pinces"}', '2026-06-24T00:00:00Z', '2026-06-24T00:00:00Z');
+INSERT OR IGNORE INTO option_value (id, option_group_id, code, label_i18n, surcharge_minor, created_at, updated_at)
+VALUES ('ov_flat_front', 'og_pleats', 'flat_front', '{"de":"Ohne Bundfalten","en":"Flat front","it":"Senza pince","fr":"Sans pinces"}', 0, '2026-06-24T00:00:00Z', '2026-06-24T00:00:00Z');
+INSERT OR IGNORE INTO option_value (id, option_group_id, code, label_i18n, surcharge_minor, created_at, updated_at)
+VALUES ('ov_single_pleat', 'og_pleats', 'single_pleat', '{"de":"Eine Bundfalte","en":"Single pleat","it":"Una pince","fr":"Une pince"}', 500, '2026-06-24T00:00:00Z', '2026-06-24T00:00:00Z');
+
+-- Trouser allow-lists
+INSERT OR IGNORE INTO model_allowed_fabric (id, base_model_id, fabric_id, position) VALUES ('maf_chino_navy', 'bm_chino', 'fab_chino_navy', 0);
+INSERT OR IGNORE INTO model_allowed_fabric (id, base_model_id, fabric_id, position) VALUES ('maf_chino_stone', 'bm_chino', 'fab_chino_stone', 1);
+INSERT OR IGNORE INTO model_allowed_option (id, base_model_id, option_group_id, required, position) VALUES ('mao_pleats', 'bm_chino', 'og_pleats', 1, 0);
+
+-- Curated cross-sell: shirt <-> trousers (complete the outfit; FR-1110)
+INSERT OR IGNORE INTO cross_sell_rule (id, source_type, source_key, suggested_model_id, position, created_at, updated_at)
+VALUES ('xsell_shirt_chino', 'model', 'oxford-business', 'bm_chino', 0, '2026-06-24T00:00:00Z', '2026-06-24T00:00:00Z');
+INSERT OR IGNORE INTO cross_sell_rule (id, source_type, source_key, suggested_model_id, position, created_at, updated_at)
+VALUES ('xsell_chino_shirt', 'model', 'chino-classic', 'bm_oxford', 0, '2026-06-24T00:00:00Z', '2026-06-24T00:00:00Z');
+
 -- Shipping (Switzerland and Liechtenstein; standard included in the price)
 INSERT OR IGNORE INTO shipping_zone (id, name, countries, created_at, updated_at)
 VALUES ('sz_ch_li', 'Switzerland and Liechtenstein', '["CH","LI"]', '2026-06-24T00:00:00Z', '2026-06-24T00:00:00Z');

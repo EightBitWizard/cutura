@@ -34,14 +34,31 @@ describe("staging seed", () => {
       .get() as { handle: string; status: string } | undefined;
     expect(model?.handle).toBe("oxford-business");
     expect(model?.status).toBe("orderable");
-    expect(count(db, "fabric")).toBe(2);
-    expect(count(db, "model_allowed_fabric")).toBe(2);
-    expect(count(db, "option_value")).toBe(2);
+    // Two garment types (shirt + trouser), each with its model, fabrics, and option.
+    expect(count(db, "garment_type")).toBe(2);
+    expect(count(db, "base_model")).toBe(2);
+    expect(count(db, "fabric")).toBe(4);
+    expect(count(db, "model_allowed_fabric")).toBe(4);
+    expect(count(db, "option_value")).toBe(4);
+  });
+
+  it("makes the trouser orderable with its own fabrics + allow-list (FR-104)", () => {
+    const db = seededDb();
+    const trouser = db
+      .prepare(
+        "SELECT bm.handle, gt.key FROM base_model bm JOIN garment_type gt ON gt.id = bm.garment_type_id WHERE bm.id = 'bm_chino'",
+      )
+      .get() as { handle: string; key: string } | undefined;
+    expect(trouser?.handle).toBe("chino-classic");
+    expect(trouser?.key).toBe("trouser");
+    const allowed = count(db, "model_allowed_fabric WHERE base_model_id = 'bm_chino'");
+    expect(allowed).toBe(2);
   });
 
   it("is idempotent (re-applying does not duplicate rows)", () => {
     const db = seededDb(true);
-    expect(count(db, "base_model")).toBe(1);
-    expect(count(db, "fabric")).toBe(2);
+    expect(count(db, "base_model")).toBe(2);
+    expect(count(db, "fabric")).toBe(4);
+    expect(count(db, "cross_sell_rule")).toBe(2);
   });
 });
