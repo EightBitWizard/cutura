@@ -38,3 +38,12 @@ database, transactionally and idempotently, with an audit record.
 Mandatory after every deploy. It hits the deployed url and asserts rendered
 content plus a live DB via `/api/health`. Production is not considered released
 unless it passes.
+
+## Order reconciliation (backstop)
+
+A scheduled GitHub Action (`.github/workflows/reconcile.yml`, every 6h) POSTs the
+bearer-guarded `/api/shopify/reconcile` endpoint so a missed or duplicated paid
+webhook is caught against Shopify (the source of truth). It is gated on the
+`PRODUCTION_URL` repo variable (skips until set). The founder sets the repo secret
+`RECONCILE_BEARER` to the storefront worker's `SHOPIFY_WEBHOOK_SECRET`. Trigger it
+manually any time via the Actions tab (Run workflow).

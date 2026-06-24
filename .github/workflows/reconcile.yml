@@ -1,0 +1,30 @@
+name: Reconcile orders
+
+# Backstop reconciliation of recent orders against Shopify (FR-761): catches a paid
+# webhook that was missed or duplicated. Hits the bearer-guarded reconcile endpoint
+# on the production storefront. Gated on the PRODUCTION_URL repo variable so it skips
+# cleanly until Cloudflare provisioning exists. The founder sets:
+#   - repo variable  PRODUCTION_URL     (e.g. https://www.cutura.ch)
+#   - repo secret     RECONCILE_BEARER  (= the storefront worker's SHOPIFY_WEBHOOK_SECRET)
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 */6 * * *" # every 6 hours, offset off the hour
+
+jobs:
+  reconcile:
+    name: Reconcile recent orders
+    if: vars.PRODUCTION_URL != ''
+    runs-on: ubuntu-latest
+    steps:
+      - name: POST the reconcile endpoint
+        env:
+          PRODUCTION_URL: ${{ vars.PRODUCTION_URL }}
+          RECONCILE_BEARER: ${{ secrets.RECONCILE_BEARER }}
+        run: |
+          code=$(curl -sS -o /tmp/reconcile.json -w "%{http_code}" \
+            -X POST "$PRODUCTION_URL/api/shopify/reconcile" \
+            -H "authorization: Bearer $RECONCILE_BEARER")
+          echo "HTTP $code"
+          cat /tmp/reconcile.json || true
+          test "$code" -ge 200 && test "$code" -lt 300
