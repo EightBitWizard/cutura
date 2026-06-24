@@ -44,11 +44,14 @@ export async function generateMetadata({
 
 export default async function ProductPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string; handle: string }>;
+  searchParams: Promise<{ notify?: string }>;
 }) {
   const { locale: raw, handle } = await params;
   const locale = isLocale(raw) ? raw : defaultLocale;
+  const { notify } = await searchParams;
   const t = getMessages(locale);
   const db = getDb(getEnv().DB);
   const model = await getPublishedModel(db, handle, locale);
@@ -105,6 +108,29 @@ export default async function ProductPage({
       {model.status === "view_only" ? (
         <div className="mt-8 rounded-lg border border-neutral-200 bg-neutral-50 p-4">
           <p className="text-neutral-700">{t.viewOnlyNotice}</p>
+          {notify === "ok" ? (
+            <p className="mt-3 text-sm text-green-700">{t.notifyThanks}</p>
+          ) : (
+            <form method="post" action="/api/notify-me" className="mt-3 flex flex-wrap gap-2">
+              <input type="hidden" name="locale" value={locale} />
+              <input type="hidden" name="handle" value={handle} />
+              <input type="hidden" name="entityType" value="model" />
+              <input type="hidden" name="entityId" value={model.id} />
+              <input
+                name="email"
+                type="email"
+                required
+                placeholder="you@example.com"
+                className="rounded border border-neutral-300 px-3 py-2 text-sm"
+              />
+              <button
+                type="submit"
+                className="rounded-md bg-neutral-900 px-4 py-2 text-sm font-medium text-white"
+              >
+                {t.notifyMe}
+              </button>
+            </form>
+          )}
         </div>
       ) : (
         <Configurator

@@ -89,6 +89,7 @@ export interface Messages {
   configure: string;
   viewOnlyNotice: string;
   notifyMe: string;
+  notifyThanks: string;
   materials: string;
   discoverTitle: string;
   filters: string;
@@ -128,6 +129,7 @@ const de: Messages = {
   configure: "Konfigurieren",
   viewOnlyNotice: "Dieses Modell ist derzeit nur zur Ansicht und nicht bestellbar.",
   notifyMe: "Benachrichtigen, wenn verfügbar",
+  notifyThanks: "Danke, wir benachrichtigen Sie, sobald es verfügbar ist.",
   materials: "Materialien",
   discoverTitle: "Entdecken",
   filters: "Filter",
@@ -229,6 +231,7 @@ const en: Messages = {
   configure: "Configure",
   viewOnlyNotice: "This model is currently view-only and cannot be ordered.",
   notifyMe: "Notify me when available",
+  notifyThanks: "Thank you, we will let you know when it is available.",
   materials: "Materials",
   discoverTitle: "Discover",
   filters: "Filters",
@@ -329,6 +332,7 @@ const it: Messages = {
   configure: "Configura",
   viewOnlyNotice: "Questo modello e attualmente solo visualizzabile e non ordinabile.",
   notifyMe: "Avvisami quando disponibile",
+  notifyThanks: "Grazie, ti avviseremo quando sara disponibile.",
   materials: "Materiali",
   discoverTitle: "Scopri",
   filters: "Filtri",
@@ -430,6 +434,7 @@ const fr: Messages = {
   configure: "Configurer",
   viewOnlyNotice: "Ce modele est actuellement en consultation uniquement et non commandable.",
   notifyMe: "Me prevenir quand disponible",
+  notifyThanks: "Merci, nous vous previendrons des que disponible.",
   materials: "Matieres",
   discoverTitle: "Decouvrir",
   filters: "Filtres",

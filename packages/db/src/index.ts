@@ -9,6 +9,7 @@ export * from "./catalog";
 export * from "./config";
 export * from "./content";
 export * from "./kpi";
+export * from "./notify";
 export * from "./ops";
 export * from "./shipping";
 export * from "./suppliers";
