@@ -76,4 +76,12 @@ describe("D1 migrations", () => {
   it("apply the M4 profile archive column", () => {
     expect(columnNames(applyAllMigrations(), "measurement_profile").has("archived_at")).toBe(true);
   });
+
+  it("apply the M5 notes/tags columns on order + customer", () => {
+    const db = applyAllMigrations();
+    for (const col of ["notes", "tags"]) {
+      expect(columnNames(db, "order").has(col), `order.${col}`).toBe(true);
+      expect(columnNames(db, "customer").has(col), `customer.${col}`).toBe(true);
+    }
+  });
 });

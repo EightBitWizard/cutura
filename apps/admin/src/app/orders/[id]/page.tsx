@@ -66,6 +66,34 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
         )}
       </div>
 
+      <form
+        method="post"
+        action={`/api/orders/${id}/notes`}
+        className="mt-6 flex flex-col gap-2 rounded-lg border border-neutral-200 p-4"
+      >
+        <h2 className="text-sm font-medium uppercase tracking-wide text-neutral-500">
+          Internal notes + tags
+        </h2>
+        <textarea
+          name="notes"
+          rows={2}
+          defaultValue={detail.order.notes ?? ""}
+          className="rounded border border-neutral-300 px-2 py-1 text-sm"
+        />
+        <input
+          name="tags"
+          placeholder="Tags (comma-separated)"
+          defaultValue={(detail.order.tags ?? []).join(", ")}
+          className="rounded border border-neutral-300 px-2 py-1 text-sm"
+        />
+        <button
+          type="submit"
+          className="self-start rounded border border-neutral-300 px-3 py-1 text-sm"
+        >
+          Save notes + tags
+        </button>
+      </form>
+
       {items.map(({ item, pkg, qc, snapshot }) => (
         <section key={item.id} className="mt-6 rounded-lg border border-neutral-200 p-4">
           <div className="flex items-center justify-between">

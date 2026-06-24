@@ -18,6 +18,9 @@ export const customer = sqliteTable("customer", {
   deletionState: text("deletion_state", { enum: ["active", "deletion_requested", "deleted"] })
     .notNull()
     .default("active"),
+  // Internal back-office notes + tags (FR-1080); never customer-visible.
+  notes: text("notes"),
+  tags: text("tags", { mode: "json" }).$type<string[]>(),
   ...timestamps(),
 });
 
@@ -90,6 +93,9 @@ export const order = sqliteTable("order", {
   // link-expiry handling (FR-7I0).
   shopifyDraftId: text("shopify_draft_id"),
   invoiceUrl: text("invoice_url"),
+  // Internal back-office notes + tags (FR-1080); never customer-visible.
+  notes: text("notes"),
+  tags: text("tags", { mode: "json" }).$type<string[]>(),
   ...timestamps(),
 });
 

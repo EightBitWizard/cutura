@@ -51,6 +51,8 @@ export async function findOrCreateCustomer(
     locale,
     marketingConsent: false,
     deletionState: "active",
+    notes: null,
+    tags: null,
     createdAt: now(),
     updatedAt: now(),
   };
