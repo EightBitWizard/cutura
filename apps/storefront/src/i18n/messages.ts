@@ -610,6 +610,11 @@ export interface OrderMessages {
   reorderTitle: string;
   reorderKeep: string;
   reorderUpdate: string;
+  reasonLabel: string;
+  photosLabel: string;
+  submit: string;
+  ratingLabel: string;
+  submitted: string;
 }
 
 const orderCatalog: Record<Locale, OrderMessages> = {
@@ -624,6 +629,11 @@ const orderCatalog: Record<Locale, OrderMessages> = {
     reorderTitle: "Erneut bestellen",
     reorderKeep: "Masse wie bestellt",
     reorderUpdate: "Aktuelle Masse verwenden",
+    reasonLabel: "Grund",
+    photosLabel: "Fotos (optional)",
+    submit: "Senden",
+    ratingLabel: "Gesamtbewertung (1-5)",
+    submitted: "Vielen Dank, wir haben Ihre Angaben erhalten.",
   },
   en: {
     ordersTitle: "Orders",
@@ -636,6 +646,11 @@ const orderCatalog: Record<Locale, OrderMessages> = {
     reorderTitle: "Reorder",
     reorderKeep: "Keep size as ordered",
     reorderUpdate: "Use my latest measurements",
+    reasonLabel: "Reason",
+    photosLabel: "Photos (optional)",
+    submit: "Submit",
+    ratingLabel: "Overall rating (1-5)",
+    submitted: "Thank you, we have received your input.",
   },
   it: {
     ordersTitle: "Ordini",
@@ -648,6 +663,11 @@ const orderCatalog: Record<Locale, OrderMessages> = {
     reorderTitle: "Riordina",
     reorderKeep: "Misure come ordinate",
     reorderUpdate: "Usa le mie ultime misure",
+    reasonLabel: "Motivo",
+    photosLabel: "Foto (facoltativo)",
+    submit: "Invia",
+    ratingLabel: "Valutazione complessiva (1-5)",
+    submitted: "Grazie, abbiamo ricevuto i tuoi dati.",
   },
   fr: {
     ordersTitle: "Commandes",
@@ -660,6 +680,11 @@ const orderCatalog: Record<Locale, OrderMessages> = {
     reorderTitle: "Recommander",
     reorderKeep: "Mesures comme commandees",
     reorderUpdate: "Utiliser mes dernieres mesures",
+    reasonLabel: "Motif",
+    photosLabel: "Photos (facultatif)",
+    submit: "Envoyer",
+    ratingLabel: "Note globale (1-5)",
+    submitted: "Merci, nous avons bien recu vos informations.",
   },
 };
 

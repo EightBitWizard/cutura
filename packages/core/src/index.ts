@@ -9,6 +9,7 @@ export * from "./magicLink";
 export * from "./shopify";
 export * from "./status";
 export * from "./customerStatusTimeline";
+export * from "./fitWindow";
 export * from "./outliers";
 export * from "./estimator";
 export * from "./qc";
