@@ -43,14 +43,6 @@ export default async function OptionGroupDetailPage({
       </div>
       <p className="mt-1 text-ink-muted">{group.labelI18n.de}</p>
 
-      <MediaManager
-        entityType="optionGroup"
-        entityId={id}
-        backPath={`/option-groups/${id}`}
-        media={groupMedia}
-        heading="Image for the 'None' choice (optional groups, shown when nothing is selected)"
-      />
-
       <h2 className="mt-8 text-lg font-medium">Values</h2>
       <table className="mt-3 w-full border-collapse text-sm">
         <thead>
@@ -144,10 +136,18 @@ export default async function OptionGroupDetailPage({
         <section className="mt-10">
           <h2 className="text-lg font-medium">Value images (swatches)</h2>
           <p className="mt-1 text-sm text-ink-subtle">
-            Optional thumbnails shown next to each option in the configurator. Publish the group to
+            Thumbnails shown next to each option in the configurator. The None image is used when
+            this group is optional - it appears on the no-selection tile. Publish the group to
             apply.
           </p>
           <div className="mt-2 flex flex-col gap-6">
+            <MediaManager
+              entityType="optionGroup"
+              entityId={id}
+              backPath={`/option-groups/${id}`}
+              media={groupMedia}
+              heading="None (shown when nothing is selected, optional groups only)"
+            />
             {values.map((v) => (
               <MediaManager
                 key={v.id}
