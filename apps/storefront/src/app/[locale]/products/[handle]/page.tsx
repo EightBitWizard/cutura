@@ -7,15 +7,15 @@ import { buildAlternates, buildProductJsonLd } from "@cutura/core";
 import {
   getCrossSellSuggestions,
   getDb,
-  getPrimaryMediaId,
+  getEntityGallery,
   getPublishedModel,
   getRecommendations,
   primaryMediaForEntities,
 } from "@cutura/db";
 
 import { Configurator } from "@/components/Configurator";
-import { MediaImage } from "@/components/MediaImage";
 import { ModelGrid } from "@/components/ModelGrid";
+import { ProductGallery } from "@/components/ProductGallery";
 import { RecommendedSection } from "@/components/RecommendedSection";
 import { ViewSignal } from "@/components/ViewSignal";
 import { Container } from "@/components/ui/Container";
@@ -72,7 +72,7 @@ export default async function ProductPage({
   const model = await getPublishedModel(db, handle, locale);
   if (!model) notFound();
 
-  const mediaId = await getPrimaryMediaId(db, "model", model.id);
+  const gallery = await getEntityGallery(db, "model", model.id);
   const suggestions = await getCrossSellSuggestions(db, locale, {
     id: model.id,
     handle: model.handle,
@@ -122,14 +122,8 @@ export default async function ProductPage({
         </Link>
 
         <div className="mt-6 grid gap-10 lg:grid-cols-2 lg:gap-16">
-          {/* Image, left, carries the page */}
-          <div className="overflow-hidden bg-sunken">
-            <MediaImage
-              mediaId={mediaId}
-              alt={model.name}
-              className="aspect-[4/5] w-full object-cover"
-            />
-          </div>
+          {/* Images, left, carry the page */}
+          <ProductGallery images={gallery} name={model.name} />
 
           {/* Details + configurator, sticky on desktop */}
           <div className="lg:sticky lg:top-24 lg:self-start">

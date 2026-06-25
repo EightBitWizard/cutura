@@ -16,7 +16,7 @@ import {
   upgrade,
 } from "../schema";
 import { publishEntity } from "../publish";
-import { getPublishedModel } from "./read";
+import { getEntityGallery, getPublishedModel } from "./read";
 
 const control = () => getDb(env.CONTROL_TEST_DB);
 const target = () => getDb(env.TARGET_TEST_DB);
@@ -183,5 +183,60 @@ describe("getPublishedModel attaches primary media ids", () => {
       .from(media)
       .where(eq(media.entityType, "optionValue"));
     expect(groupMedia.some((m) => m.id === ids.ovMedia)).toBe(true);
+  });
+});
+
+describe("getEntityGallery", () => {
+  it("returns all images primary-first then by position, with alt passthrough", async () => {
+    const p = crypto.randomUUID().slice(0, 8);
+    const entityId = `m_${p}`;
+    // Insert three images out of order; the primary is NOT the lowest position.
+    await target()
+      .insert(media)
+      .values([
+        {
+          id: `g1_${p}`,
+          r2Key: `media/model/${entityId}/g1`,
+          entityType: "model",
+          entityId,
+          alt: "side",
+          position: 2,
+          isPrimary: false,
+          createdAt: TS,
+          updatedAt: TS,
+        },
+        {
+          id: `g2_${p}`,
+          r2Key: `media/model/${entityId}/g2`,
+          entityType: "model",
+          entityId,
+          alt: "front",
+          position: 1,
+          isPrimary: true,
+          createdAt: TS,
+          updatedAt: TS,
+        },
+        {
+          id: `g3_${p}`,
+          r2Key: `media/model/${entityId}/g3`,
+          entityType: "model",
+          entityId,
+          alt: null,
+          position: 0,
+          isPrimary: false,
+          createdAt: TS,
+          updatedAt: TS,
+        },
+      ]);
+
+    const gallery = await getEntityGallery(target(), "model", entityId);
+    // Primary (g2) first, then remaining by position (g3 pos0, g1 pos2).
+    expect(gallery.map((g) => g.id)).toEqual([`g2_${p}`, `g3_${p}`, `g1_${p}`]);
+    expect(gallery[0]?.alt).toBe("front");
+    expect(gallery[1]?.alt).toBeNull();
+  });
+
+  it("returns an empty array when the entity has no media", async () => {
+    expect(await getEntityGallery(target(), "model", `none_${crypto.randomUUID()}`)).toEqual([]);
   });
 });

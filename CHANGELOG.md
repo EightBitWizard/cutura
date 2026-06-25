@@ -34,6 +34,9 @@ All notable changes to this project. Newest first.
   admin (it had none, which is why it rendered as unstyled HTML), with the brand tokens,
   the Inter typeface, a sticky top navigation with active-section highlighting, and
   consistent buttons, inputs, tables, and muted status colours across every page.
+- A product image gallery: the product page now shows every published image for an item
+  (a main image plus clickable, accessible thumbnails), not only the primary one. Single-
+  image products show just the image; items without a photo keep the branded placeholder.
 
 ### Added (M9 - launch-hardening follow-ups)
 

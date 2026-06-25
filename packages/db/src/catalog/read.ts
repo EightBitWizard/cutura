@@ -408,6 +408,20 @@ export async function getPrimaryMediaId(
   return rows[0]!.id;
 }
 
+/** All images for an entity, ordered primary-first then by position, for a gallery. */
+export async function getEntityGallery(
+  db: Database,
+  entityType: string,
+  entityId: string,
+): Promise<Array<{ id: string; alt: string | null }>> {
+  const rows = await db
+    .select({ id: media.id, alt: media.alt, isPrimary: media.isPrimary, position: media.position })
+    .from(media)
+    .where(and(eq(media.entityType, entityType), eq(media.entityId, entityId)));
+  rows.sort((a, b) => Number(b.isPrimary) - Number(a.isPrimary) || a.position - b.position);
+  return rows.map((r) => ({ id: r.id, alt: r.alt }));
+}
+
 /** Primary media ids for many entities of one type, as a Map (one query). */
 export async function primaryMediaForEntities(
   db: Database,
