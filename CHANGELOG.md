@@ -49,8 +49,9 @@ All notable changes to this project. Newest first.
   the whole photo and the leftover space shows the warm panel (the listing grid keeps its
   uniform filled cards).
 - The storefront can be kept private behind a password: set the `SITE_PASSWORD` secret on
-  staging and the whole site requires HTTP Basic Auth (any username + the password);
-  production leaves it unset and stays public. Health checks and webhooks are unaffected.
+  staging and the whole site is gated by a password **form** with a long-lived signed
+  session cookie (so password managers fill it and it does not re-prompt); production
+  leaves it unset and stays public. Health checks and the Shopify webhook are unaffected.
 - A branded browser-tab icon (favicon) for the storefront and the admin.
 - An editorial landing page: the home page now flows hero -> how it works -> fabric /
   craftsmanship -> a curated model preview (with "view all") -> trust / quality, with

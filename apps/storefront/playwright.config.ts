@@ -10,8 +10,9 @@ if (!baseURL) {
   );
 }
 
-// When the target is gated by the staging password (SITE_PASSWORD set), send HTTP Basic
-// Auth so the live smoke/a11y tests pass; ungated targets ignore the credentials.
+// When the target is gated by the staging password (SITE_PASSWORD set), send the
+// x-site-access header so the live smoke/a11y tests pass the gate; ungated targets
+// ignore it.
 const sitePassword = process.env.SITE_PASSWORD;
 
 export default defineConfig({
@@ -22,7 +23,7 @@ export default defineConfig({
   use: {
     baseURL,
     trace: "on-first-retry",
-    ...(sitePassword ? { httpCredentials: { username: "cutura", password: sitePassword } } : {}),
+    ...(sitePassword ? { extraHTTPHeaders: { "x-site-access": sitePassword } } : {}),
   },
   projects: [
     { name: "desktop", use: { ...devices["Desktop Chrome"] } },

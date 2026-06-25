@@ -2,10 +2,10 @@ import type { D1Database } from "@cloudflare/workers-types";
 import { type NextRequest, NextResponse } from "next/server";
 
 import { getCloudflareContext } from "@opennextjs/cloudflare";
-import { pickLocale } from "@cutura/core";
+import { pickLocale, timingSafeEqual } from "@cutura/core";
 import { getDb, getRedirect } from "@cutura/db";
 
-import { verifyBasicAuth } from "@/server/access";
+import { SITE_ACCESS_COOKIE, hasSiteAccess } from "@/server/access";
 import { defaultLocale, locales } from "@/i18n/config";
 import { type KVLike, readSessionCookie, verifyCustomerSession } from "@/server/auth";
 
@@ -23,17 +23,30 @@ export async function middleware(request: NextRequest) {
     SITE_PASSWORD?: string;
   };
 
-  // Private staging gate: when SITE_PASSWORD is set the whole storefront requires HTTP
-  // Basic Auth; production leaves it unset and stays public. /api + static are excluded
-  // by the matcher, so health checks and webhooks stay reachable.
-  if (
-    env.SITE_PASSWORD &&
-    !verifyBasicAuth(request.headers.get("authorization"), env.SITE_PASSWORD)
-  ) {
-    return new NextResponse("Authentication required", {
-      status: 401,
-      headers: { "WWW-Authenticate": 'Basic realm="CUTURA staging", charset="UTF-8"' },
-    });
+  // Private staging gate: when SITE_PASSWORD is set the whole storefront is behind a
+  // password form backed by a long-lived signed cookie (production leaves it unset and
+  // stays public). /api + static are excluded by the matcher, so health checks and the
+  // Shopify webhook stay reachable. The x-site-access header lets the automated
+  // smoke/a11y tests in (humans use the form).
+  if (env.SITE_PASSWORD) {
+    const onAccessPage = /^\/(?:de|en|it|fr)\/site-access(?:\/|$)/.test(pathname);
+    const headerValue = request.headers.get("x-site-access");
+    const headerOk = headerValue !== null && timingSafeEqual(headerValue, env.SITE_PASSWORD);
+    const cookieOk = await hasSiteAccess(
+      request.cookies.get(SITE_ACCESS_COOKIE)?.value,
+      env.SITE_PASSWORD,
+    );
+    if (!onAccessPage && !headerOk && !cookieOk) {
+      const remembered = request.cookies.get(LOCALE_COOKIE)?.value;
+      const locale =
+        remembered && (locales as readonly string[]).includes(remembered)
+          ? remembered
+          : pickLocale(request.headers.get("accept-language"), locales, defaultLocale);
+      const url = request.nextUrl.clone();
+      url.pathname = `/${locale}/site-access`;
+      url.search = pathname && pathname !== "/" ? `?next=${encodeURIComponent(pathname)}` : "";
+      return NextResponse.redirect(url);
+    }
   }
 
   // Admin-managed redirects (NFR-20): an exact-path match wins before anything else.

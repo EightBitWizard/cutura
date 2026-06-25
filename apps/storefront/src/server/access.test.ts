@@ -1,31 +1,28 @@
 import { describe, expect, it } from "vitest";
 
-import { verifyBasicAuth } from "./access";
+import { checkSitePassword, hasSiteAccess, signSiteAccess } from "./access";
 
-const header = (user: string, pass: string) => `Basic ${btoa(`${user}:${pass}`)}`;
-
-describe("verifyBasicAuth", () => {
-  it("accepts the correct password (username ignored)", () => {
-    expect(verifyBasicAuth(header("cutura", "s3cret"), "s3cret")).toBe(true);
-    expect(verifyBasicAuth(header("anyone", "s3cret"), "s3cret")).toBe(true);
+describe("site access gate", () => {
+  it("checkSitePassword accepts the exact password and rejects others (constant time)", () => {
+    expect(checkSitePassword("s3cret", "s3cret")).toBe(true);
+    expect(checkSitePassword("nope", "s3cret")).toBe(false);
+    expect(checkSitePassword("", "s3cret")).toBe(false);
+    expect(checkSitePassword("s3cret", "")).toBe(false);
   });
 
-  it("rejects a wrong password", () => {
-    expect(verifyBasicAuth(header("cutura", "nope"), "s3cret")).toBe(false);
+  it("signs a cookie token that verifies against the same password", async () => {
+    const token = await signSiteAccess("s3cret");
+    expect(await hasSiteAccess(token, "s3cret")).toBe(true);
   });
 
-  it("rejects a missing or non-Basic header", () => {
-    expect(verifyBasicAuth(null, "s3cret")).toBe(false);
-    expect(verifyBasicAuth("Bearer xyz", "s3cret")).toBe(false);
-    expect(verifyBasicAuth("", "s3cret")).toBe(false);
+  it("rejects a token signed with a different password", async () => {
+    const token = await signSiteAccess("s3cret");
+    expect(await hasSiteAccess(token, "other-password")).toBe(false);
   });
 
-  it("rejects malformed base64 or a missing colon", () => {
-    expect(verifyBasicAuth("Basic !!!not-base64!!!", "s3cret")).toBe(false);
-    expect(verifyBasicAuth(`Basic ${btoa("nocolon")}`, "s3cret")).toBe(false);
-  });
-
-  it("rejects when no password is configured", () => {
-    expect(verifyBasicAuth(header("cutura", ""), "")).toBe(false);
+  it("rejects a missing or malformed token", async () => {
+    expect(await hasSiteAccess(null, "s3cret")).toBe(false);
+    expect(await hasSiteAccess(undefined, "s3cret")).toBe(false);
+    expect(await hasSiteAccess("garbage", "s3cret")).toBe(false);
   });
 });
