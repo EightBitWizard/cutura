@@ -19,6 +19,7 @@ export * from "./parcelCard";
 export * from "./productJsonLd";
 export * from "./seo";
 export * from "./operationsSettings";
+export * from "./landing";
 export * from "./outliers";
 export * from "./estimator";
 export * from "./recommender";

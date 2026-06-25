@@ -962,6 +962,14 @@ export interface HomeMessages {
   heroCta: string;
   processHeading: string;
   steps: { title: string; body: string }[];
+  fabricEyebrow: string;
+  fabricTitle: string;
+  fabricBody: string;
+  trustEyebrow: string;
+  trustTitle: string;
+  trustBody: string;
+  previewHeading: string;
+  viewAll: string;
 }
 
 const homeCatalog: Record<Locale, HomeMessages> = {
@@ -985,6 +993,16 @@ const homeCatalog: Record<Locale, HomeMessages> = {
         body: "Auf Mass gefertigt und zu Ihnen geliefert. Mit Passformgarantie.",
       },
     ],
+    fabricEyebrow: "Material",
+    fabricTitle: "Stoffe mit Charakter",
+    fabricBody:
+      "Wir wählen Stoffe nach Griff, Gewicht und Haltbarkeit. Jedes Detail, von der Naht bis zum Knopf, ist auf Tragekomfort und Langlebigkeit ausgelegt.",
+    trustEyebrow: "Qualität",
+    trustTitle: "Auf Mass gefertigt, in der Schweiz geprüft",
+    trustBody:
+      "Jedes Stück wird nach Ihren Massen gefertigt und vor dem Versand in der Schweiz geprüft. Passt etwas nicht, fertigen wir es neu - das ist unsere Passformgarantie.",
+    previewHeading: "Unsere Modelle",
+    viewAll: "Alle Modelle ansehen",
   },
   en: {
     heroEyebrow: "Made to measure",
@@ -1006,6 +1024,16 @@ const homeCatalog: Record<Locale, HomeMessages> = {
         body: "Handcrafted to your size and delivered to you. With a fit guarantee.",
       },
     ],
+    fabricEyebrow: "Material",
+    fabricTitle: "Cloth with character",
+    fabricBody:
+      "We choose fabrics for their hand, weight, and durability. Every detail, from the seam to the button, is made for comfort and longevity.",
+    trustEyebrow: "Quality",
+    trustTitle: "Made to your measure, checked in Switzerland",
+    trustBody:
+      "Every piece is made to your measurements and quality-checked in Switzerland before it ships. If something is not right, we remake it - that is our fit guarantee.",
+    previewHeading: "Our models",
+    viewAll: "View all models",
   },
   it: {
     heroEyebrow: "Su misura",
@@ -1027,6 +1055,16 @@ const homeCatalog: Record<Locale, HomeMessages> = {
         body: "Confezionato su misura e consegnato a te. Con garanzia di vestibilità.",
       },
     ],
+    fabricEyebrow: "Materiale",
+    fabricTitle: "Tessuti con carattere",
+    fabricBody:
+      "Scegliamo i tessuti per mano, peso e durata. Ogni dettaglio, dalla cucitura al bottone, è pensato per comfort e durata.",
+    trustEyebrow: "Qualità",
+    trustTitle: "Su misura, controllato in Svizzera",
+    trustBody:
+      "Ogni capo è realizzato sulle tue misure e controllato in Svizzera prima della spedizione. Se qualcosa non va, lo rifacciamo: è la nostra garanzia di vestibilità.",
+    previewHeading: "I nostri modelli",
+    viewAll: "Vedi tutti i modelli",
   },
   fr: {
     heroEyebrow: "Sur mesure",
@@ -1048,6 +1086,16 @@ const homeCatalog: Record<Locale, HomeMessages> = {
         body: "Confectionné à vos mesures et livré chez vous. Avec garantie d'ajustement.",
       },
     ],
+    fabricEyebrow: "Matière",
+    fabricTitle: "Des tissus de caractère",
+    fabricBody:
+      "Nous choisissons les tissus pour leur toucher, leur poids et leur durabilité. Chaque détail, de la couture au bouton, vise le confort et la longévité.",
+    trustEyebrow: "Qualité",
+    trustTitle: "À vos mesures, contrôlé en Suisse",
+    trustBody:
+      "Chaque pièce est confectionnée à vos mesures et contrôlée en Suisse avant l'envoi. Si quelque chose ne va pas, nous la refaisons : c'est notre garantie d'ajustement.",
+    previewHeading: "Nos modèles",
+    viewAll: "Voir tous les modèles",
   },
 };
 

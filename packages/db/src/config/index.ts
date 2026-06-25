@@ -1,9 +1,13 @@
 import { eq } from "drizzle-orm";
 
 import {
+  LANDING_CONFIG_KEY,
+  type LandingConfig,
   OPERATIONS_CONFIG_KEY,
   type OperationsSettings,
+  landingConfigSchema,
   operationsSettingsSchema,
+  parseLandingConfig,
   parseOperationsSettings,
 } from "@cutura/core";
 
@@ -71,4 +75,17 @@ export async function setOperationsSettings(
   deps: ConfigClock = {},
 ): Promise<void> {
   await setConfig(db, OPERATIONS_CONFIG_KEY, operationsSettingsSchema.parse(settings), deps);
+}
+
+/** The landing-page editorial text (env-direct), empty-defaulted when unset. */
+export async function getLandingConfig(db: Database): Promise<LandingConfig> {
+  return parseLandingConfig(await getConfig(db, LANDING_CONFIG_KEY));
+}
+
+export async function setLandingConfig(
+  db: Database,
+  landing: LandingConfig,
+  deps: ConfigClock = {},
+): Promise<void> {
+  await setConfig(db, LANDING_CONFIG_KEY, landingConfigSchema.parse(landing), deps);
 }

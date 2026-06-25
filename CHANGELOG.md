@@ -40,6 +40,12 @@ All notable changes to this project. Newest first.
 - Product-page images now show in full, never cropped: the main image and thumbnails fit
   the whole photo and the leftover space shows the warm panel (the listing grid keeps its
   uniform filled cards).
+- An editorial landing page: the home page now flows hero -> how it works -> fabric /
+  craftsmanship -> a curated model preview (with "view all") -> trust / quality, with
+  larger calm sections and better mobile rhythm instead of jumping into a product grid. A
+  simple admin "Landing page" screen lets the founder upload three editorial images (hero,
+  fabric, workshop) and edit the main text sections per language and environment, applied
+  immediately (no publish step). Empty text falls back to built-in defaults.
 
 ### Added (M9 - launch-hardening follow-ups)
 

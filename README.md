@@ -70,6 +70,21 @@ also shows recommendations (a content-based + curated baseline) on the home page
 product pages, cart, post-purchase, and the account; curated cross-sell pairs items
 like a shirt and trousers.
 
+## Landing page (home)
+
+The admin "Landing page" screen controls the home page's editorial content, separate
+from the catalog. Pick the environment (staging or production) at the top; changes apply
+**immediately** to that storefront - there is no publish step (it works like operations
+settings, not like the catalog).
+
+- Three editorial images: hero, fabric / detail, workshop / craft. Upload replaces the
+  current one for that slot (PNG, JPEG, WebP, GIF; SVG rejected).
+- Main text, per language: hero headline and subtext, the fabric-section title and text,
+  and the trust-section title and text. Leave a field blank to use the built-in default.
+
+The how-it-works steps and labels are built-in (not editable). Until you upload an image,
+the home page shows a calm branded placeholder, so it never looks broken.
+
 ## Rolling back code
 
 ```bash

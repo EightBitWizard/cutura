@@ -7,9 +7,11 @@ import { getDb } from "../getDb";
 import {
   getConfig,
   getFeatureFlag,
+  getLandingConfig,
   getOperationsSettings,
   setConfig,
   setFeatureFlag,
+  setLandingConfig,
   setOperationsSettings,
 } from "./index";
 
@@ -47,5 +49,16 @@ describe("config layer", () => {
     expect(got.capacityCap).toBe(20);
     expect(got.paused).toBe(true);
     expect(got.pauseMessage.de).toBe("Pause");
+  });
+
+  it("defaults landing config to empty when unset, then round-trips", async () => {
+    expect(await getLandingConfig(db())).toEqual({});
+    await setLandingConfig(db(), {
+      heroHeadline: { de: "Massgeschneidert", en: "Made to measure" },
+      trustBody: { de: "Schweizer Qualitaet" },
+    });
+    const got = await getLandingConfig(db());
+    expect(got.heroHeadline?.en).toBe("Made to measure");
+    expect(got.trustBody?.de).toBe("Schweizer Qualitaet");
   });
 });
