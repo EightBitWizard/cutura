@@ -41,7 +41,7 @@ export default async function OrderDetailPage({
         <h1 className="text-2xl font-semibold tracking-tight">
           {t.orderNumber} <span className="font-mono">{detail.orderNumber}</span>
         </h1>
-        <Link href={`/${locale}/account/orders`} className="text-sm text-neutral-600 underline">
+        <Link href={`/${locale}/account/orders`} className="text-sm text-ink-muted underline">
           {t.ordersTitle}
         </Link>
       </div>
@@ -49,18 +49,18 @@ export default async function OrderDetailPage({
       <OrderDetailView detail={detail} locale={locale} />
 
       <section className="mt-6">
-        <h2 className="text-sm font-medium uppercase tracking-wide text-neutral-500">
+        <h2 className="text-sm font-medium uppercase tracking-wide text-ink-subtle">
           {t.reorderTitle}
         </h2>
         {detail.items.map((item) => (
           <div key={item.id} className="mt-2 flex flex-wrap items-center gap-2 text-sm">
-            <span className="text-neutral-600">{item.baseModelName}</span>
+            <span className="text-ink-muted">{item.baseModelName}</span>
             {(["keep", "update"] as const).map((mode) => (
               <form key={mode} method="post" action="/api/account/reorder">
                 <input type="hidden" name="orderItemId" value={item.id} />
                 <input type="hidden" name="mode" value={mode} />
                 <input type="hidden" name="locale" value={locale} />
-                <button type="submit" className="rounded border border-neutral-300 px-2 py-1">
+                <button type="submit" className="rounded border border-line-strong px-2 py-1">
                   {mode === "keep" ? t.reorderKeep : t.reorderUpdate}
                 </button>
               </form>

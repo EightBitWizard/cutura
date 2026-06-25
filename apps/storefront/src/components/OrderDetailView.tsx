@@ -25,7 +25,7 @@ export function OrderDetailView({
           <li
             key={m}
             className={`rounded px-3 py-1 ${
-              i <= reached ? "bg-neutral-900 text-white" : "bg-neutral-100 text-neutral-500"
+              i <= reached ? "bg-ink text-paper" : "bg-sunken text-ink-subtle"
             }`}
           >
             {labels[m]}
@@ -33,26 +33,26 @@ export function OrderDetailView({
         ))}
       </ol>
       {detail.milestone === "attention" && (
-        <p className="mt-2 text-sm text-amber-700">{labels.attention}</p>
+        <p className="mt-2 text-sm text-warning">{labels.attention}</p>
       )}
 
       <ul className="mt-6 flex flex-col gap-3">
         {detail.items.map((item) => (
-          <li key={item.id} className="rounded-lg border border-neutral-200 p-4 text-sm">
+          <li key={item.id} className="rounded-lg border border-line p-4 text-sm">
             <div className="flex items-center justify-between">
               <span className="font-medium">{item.baseModelName}</span>
-              <span className="text-neutral-500">{labels[item.milestone]}</span>
+              <span className="text-ink-subtle">{labels[item.milestone]}</span>
             </div>
-            {item.fabricCode && <p className="mt-1 text-neutral-500">{item.fabricCode}</p>}
+            {item.fabricCode && <p className="mt-1 text-ink-subtle">{item.fabricCode}</p>}
             {item.upgrades.length > 0 && (
-              <p className="mt-1 text-neutral-500">{item.upgrades.map((u) => u.code).join(", ")}</p>
+              <p className="mt-1 text-ink-subtle">{item.upgrades.map((u) => u.code).join(", ")}</p>
             )}
           </li>
         ))}
       </ul>
 
       {detail.timeline.length > 0 && (
-        <ul className="mt-6 flex flex-col gap-1 text-sm text-neutral-500">
+        <ul className="mt-6 flex flex-col gap-1 text-sm text-ink-subtle">
           {detail.timeline.map((e, i) => (
             <li key={`${e.milestone}-${i}`}>
               {formatDate(e.at, locale)} - {labels[e.milestone]}
@@ -61,7 +61,7 @@ export function OrderDetailView({
         </ul>
       )}
 
-      <div className="mt-4 text-sm text-neutral-500">{formatCHF(detail.totalMinor)}</div>
+      <div className="mt-4 text-sm text-ink-subtle">{formatCHF(detail.totalMinor)}</div>
     </div>
   );
 }

@@ -2,9 +2,11 @@
 
 import { useState } from "react";
 
+import { buttonClasses } from "@/components/ui/buttonClasses";
 import type { CheckoutMessages } from "@/i18n/messages";
 
-const input = "mt-1 w-full rounded border border-neutral-300 px-2 py-1";
+const input =
+  "mt-1 w-full rounded-sm border border-line-strong bg-surface px-3 py-2 text-ink placeholder:text-ink-subtle focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-paper";
 
 export function CheckoutForm({
   locale,
@@ -74,7 +76,7 @@ export function CheckoutForm({
         void submit();
       }}
     >
-      <label className="flex flex-col text-sm">
+      <label className="flex flex-col gap-1 text-sm font-medium text-ink">
         {t.email}
         <input
           type="email"
@@ -84,21 +86,21 @@ export function CheckoutForm({
           className={input}
         />
       </label>
-      <label className="flex flex-col text-sm">
+      <label className="flex flex-col gap-1 text-sm font-medium text-ink">
         {t.line1}
         <input value={line1} onChange={(e) => setLine1(e.target.value)} className={input} />
       </label>
       <div className="grid grid-cols-3 gap-3">
-        <label className="flex flex-col text-sm">
+        <label className="flex flex-col gap-1 text-sm font-medium text-ink">
           {t.zip}
           <input value={zip} onChange={(e) => setZip(e.target.value)} className={input} />
         </label>
-        <label className="col-span-2 flex flex-col text-sm">
+        <label className="col-span-2 flex flex-col gap-1 text-sm font-medium text-ink">
           {t.city}
           <input value={city} onChange={(e) => setCity(e.target.value)} className={input} />
         </label>
       </div>
-      <label className="flex flex-col text-sm">
+      <label className="flex flex-col gap-1 text-sm font-medium text-ink">
         {t.country}
         <select
           value={country}
@@ -109,26 +111,36 @@ export function CheckoutForm({
           <option value="LI">LI</option>
         </select>
       </label>
-      <label className="flex flex-col text-sm">
+      <label className="flex flex-col gap-1 text-sm font-medium text-ink">
         {t.phoneOptional}
         <input value={phone} onChange={(e) => setPhone(e.target.value)} className={input} />
       </label>
 
-      <label className="mt-2 flex items-center gap-2 text-sm">
-        <input type="checkbox" checked={terms} onChange={(e) => setTerms(e.target.checked)} />
+      <label className="mt-2 flex items-center gap-2 text-sm text-ink">
+        <input
+          type="checkbox"
+          checked={terms}
+          onChange={(e) => setTerms(e.target.checked)}
+          className="h-4 w-4 accent-ink"
+        />
         {t.acceptTerms}
       </label>
-      <label className="flex items-center gap-2 text-sm">
-        <input type="checkbox" checked={privacy} onChange={(e) => setPrivacy(e.target.checked)} />
+      <label className="flex items-center gap-2 text-sm text-ink">
+        <input
+          type="checkbox"
+          checked={privacy}
+          onChange={(e) => setPrivacy(e.target.checked)}
+          className="h-4 w-4 accent-ink"
+        />
         {t.acceptPrivacy}
       </label>
 
-      {error && <p className="text-sm text-red-700">{error}</p>}
+      {error && <p className="text-sm text-accent">{error}</p>}
 
       <button
         type="submit"
         disabled={!canSubmit || submitting}
-        className="mt-2 rounded-md bg-neutral-900 px-4 py-3 font-medium text-white disabled:opacity-40"
+        className={buttonClasses("primary", "lg", "mt-2 w-full")}
       >
         {submitting ? t.redirecting : t.placeOrder}
       </button>

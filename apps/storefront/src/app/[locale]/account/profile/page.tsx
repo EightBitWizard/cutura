@@ -25,7 +25,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ locale
     return (
       <main className="mx-auto max-w-2xl px-6 py-10">
         <h1 className="text-2xl font-semibold tracking-tight">{t.measure.fields.chest}</h1>
-        <p className="mt-4 text-neutral-600">{t.cart.measurementMissing}</p>
+        <p className="mt-4 text-ink-muted">{t.cart.measurementMissing}</p>
         <Link
           href={`/${locale}/measure?return=/${locale}/account/profile`}
           className="mt-4 inline-block underline"
@@ -44,16 +44,16 @@ export default async function ProfilePage({ params }: { params: Promise<{ locale
     <main className="mx-auto max-w-2xl px-6 py-10">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold tracking-tight">{t.measure.title}</h1>
-        <Link href={`/${locale}/account`} className="text-sm text-neutral-600 underline">
+        <Link href={`/${locale}/account`} className="text-sm text-ink-muted underline">
           {t.back}
         </Link>
       </div>
-      <p className="mt-1 text-sm text-neutral-500">{profile?.name ?? "-"}</p>
+      <p className="mt-1 text-sm text-ink-subtle">{profile?.name ?? "-"}</p>
 
       <dl className="mt-6 grid grid-cols-2 gap-3 text-sm">
         {(Object.keys(fields) as Array<keyof typeof fields>).map((f) => (
           <div key={f} className="flex justify-between border-b py-1">
-            <dt className="text-neutral-500">{fields[f]}</dt>
+            <dt className="text-ink-subtle">{fields[f]}</dt>
             <dd>{values[f] ?? "-"} cm</dd>
           </div>
         ))}
@@ -62,7 +62,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ locale
       <div className="mt-6 flex flex-wrap gap-3">
         <Link
           href={`/${locale}/account/profile/edit`}
-          className="rounded-md bg-neutral-900 px-4 py-2 text-sm font-medium text-white"
+          className="rounded-md bg-ink px-4 py-2 text-sm font-medium text-paper"
         >
           {t.measure.confirm}
         </Link>
@@ -77,10 +77,10 @@ export default async function ProfilePage({ params }: { params: Promise<{ locale
           <input
             name="name"
             defaultValue={profile?.name ?? ""}
-            className="mt-1 rounded border border-neutral-300 px-2 py-1"
+            className="mt-1 rounded border border-line-strong px-2 py-1"
           />
         </label>
-        <button type="submit" className="rounded border border-neutral-300 px-3 py-2 text-sm">
+        <button type="submit" className="rounded border border-line-strong px-3 py-2 text-sm">
           {t.measure.confirm}
         </button>
       </form>
@@ -89,7 +89,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ locale
         <input type="hidden" name="action" value="archive" />
         <input type="hidden" name="profileId" value={profileId} />
         <input type="hidden" name="locale" value={locale} />
-        <button type="submit" className="text-sm text-neutral-500 underline">
+        <button type="submit" className="text-sm text-ink-subtle underline">
           {t.cart.remove}
         </button>
       </form>

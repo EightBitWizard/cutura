@@ -46,15 +46,15 @@ export default async function CheckoutPage({ params }: { params: Promise<{ local
     <main className="mx-auto max-w-xl px-6 py-10">
       <h1 className="text-2xl font-semibold tracking-tight">{t.checkout.title}</h1>
 
-      <div className="mt-4 flex items-baseline justify-between border-b pb-3">
-        <span className="text-neutral-500">{t.cart.total}</span>
+      <div className="mt-4 flex items-baseline justify-between border-b border-line pb-3">
+        <span className="text-ink-subtle">{t.cart.total}</span>
         <span className="text-xl font-semibold">{formatCHF(total)}</span>
       </div>
-      <p className="text-xs text-neutral-400">{t.allInclusive}</p>
-      <p className="mt-2 text-sm text-neutral-500">{t.checkout.regionNote}</p>
+      <p className="text-xs text-ink-subtle">{t.allInclusive}</p>
+      <p className="mt-2 text-sm text-ink-subtle">{t.checkout.regionNote}</p>
 
       {configMissing && (
-        <p className="mt-4 text-sm text-amber-700">
+        <p className="mt-4 text-sm text-warning">
           {t.checkout.missingConfig}{" "}
           <Link href={`/${locale}/cart`} className="underline">
             {t.cart.title}
@@ -62,7 +62,7 @@ export default async function CheckoutPage({ params }: { params: Promise<{ local
         </p>
       )}
       {missingTypes.map((gt) => (
-        <p key={gt} className="mt-2 text-sm text-amber-700">
+        <p key={gt} className="mt-2 text-sm text-warning">
           {t.checkout.missingMeasurement} ({t.garmentNames[gt as "shirt" | "trouser"]}){" "}
           <Link
             href={`/${locale}/measure?gt=${gt}&return=/${locale}/checkout`}

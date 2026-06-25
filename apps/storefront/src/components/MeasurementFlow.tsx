@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import { garmentFields, wizardBaseFields } from "@cutura/core";
 
+import { buttonClasses } from "@/components/ui/buttonClasses";
 import type { MeasureMessages, MeasurementFieldLabels } from "@/i18n/messages";
 
 type FieldKey = keyof MeasurementFieldLabels;
@@ -24,7 +25,8 @@ function fromDisplay(value: string, unit: Unit): number {
   return unit === "in" ? Math.round(n * 2.54 * 10) / 10 : n;
 }
 
-const input = "mt-1 w-full rounded border border-neutral-300 px-2 py-1";
+const input =
+  "mt-1 w-full rounded-sm border border-line-strong bg-surface px-3 py-2 text-ink placeholder:text-ink-subtle focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-paper disabled:bg-sunken disabled:text-ink-muted";
 
 export function MeasurementFlow({
   garmentType,
@@ -141,14 +143,14 @@ export function MeasurementFlow({
 
   if (outlier) {
     return (
-      <div className="mt-8 rounded-lg border border-amber-300 bg-amber-50 p-4">
-        <p className="text-amber-800">{t.outlierNotice}</p>
+      <div className="mt-8 rounded-md border border-warning/40 bg-warning/5 p-4">
+        <p className="text-sm text-ink">{t.outlierNotice}</p>
         <button
           type="button"
           onClick={() => {
             window.location.href = returnUrl;
           }}
-          className="mt-4 rounded-md bg-neutral-900 px-4 py-2 font-medium text-white"
+          className={buttonClasses("primary", "md", "mt-4")}
         >
           {t.confirm}
         </button>
@@ -163,8 +165,10 @@ export function MeasurementFlow({
           key={u}
           type="button"
           onClick={() => setUnit(u)}
-          className={`rounded border px-2 py-1 ${
-            unit === u ? "border-neutral-900 bg-neutral-900 text-white" : "border-neutral-300"
+          className={`rounded-sm border px-3 py-1.5 transition-colors ${
+            unit === u
+              ? "border-ink bg-ink text-paper"
+              : "border-line-strong text-ink hover:border-ink"
           }`}
         >
           {u === "cm" ? t.unitCm : t.unitInch}
@@ -177,10 +181,10 @@ export function MeasurementFlow({
     return (
       <div className="mt-3 grid grid-cols-2 gap-3">
         {fields.map((f) => (
-          <label key={f} className="flex flex-col text-sm">
+          <label key={f} className="flex flex-col gap-1 text-sm font-medium text-ink">
             {t.fields[f]}
             {derived[f] !== undefined && method === "wizard" ? (
-              <span className="text-xs text-neutral-400">{confidenceLabel}</span>
+              <span className="text-xs font-normal text-ink-subtle">{confidenceLabel}</span>
             ) : null}
             <input
               type="number"
@@ -201,7 +205,7 @@ export function MeasurementFlow({
   if (step === "choose") {
     return (
       <div className="mt-6">
-        <p className="text-neutral-600">{t.intro}</p>
+        <p className="text-ink-muted">{t.intro}</p>
         <div className="mt-4 grid gap-4 sm:grid-cols-2">
           <button
             type="button"
@@ -209,10 +213,10 @@ export function MeasurementFlow({
               setMethod("wizard");
               setStep("wizard");
             }}
-            className="rounded-lg border border-neutral-300 p-4 text-left hover:border-neutral-500"
+            className="rounded-md border border-line bg-surface p-4 text-left transition-colors hover:border-ink"
           >
-            <span className="font-medium">{t.wizardCard}</span>
-            <span className="mt-1 block text-sm text-neutral-500">{t.wizardDesc}</span>
+            <span className="font-medium text-ink">{t.wizardCard}</span>
+            <span className="mt-1 block text-sm text-ink-subtle">{t.wizardDesc}</span>
           </button>
           <button
             type="button"
@@ -221,10 +225,10 @@ export function MeasurementFlow({
               setConfirmed(empty);
               setStep("detailed");
             }}
-            className="rounded-lg border border-neutral-300 p-4 text-left hover:border-neutral-500"
+            className="rounded-md border border-line bg-surface p-4 text-left transition-colors hover:border-ink"
           >
-            <span className="font-medium">{t.detailedCard}</span>
-            <span className="mt-1 block text-sm text-neutral-500">{t.detailedDesc}</span>
+            <span className="font-medium text-ink">{t.detailedCard}</span>
+            <span className="mt-1 block text-sm text-ink-subtle">{t.detailedDesc}</span>
           </button>
         </div>
       </div>
@@ -235,7 +239,7 @@ export function MeasurementFlow({
     return (
       <div className="mt-6">
         <div className="grid grid-cols-2 gap-3">
-          <label className="flex flex-col text-sm">
+          <label className="flex flex-col gap-1 text-sm font-medium text-ink">
             {t.height} (cm)
             <input
               type="number"
@@ -246,7 +250,7 @@ export function MeasurementFlow({
               className={input}
             />
           </label>
-          <label className="flex flex-col text-sm">
+          <label className="flex flex-col gap-1 text-sm font-medium text-ink">
             {t.weight} (kg)
             <input
               type="number"
@@ -258,7 +262,7 @@ export function MeasurementFlow({
             />
           </label>
           {baseInputs.map((k) => (
-            <label key={k} className="flex flex-col text-sm">
+            <label key={k} className="flex flex-col gap-1 text-sm font-medium text-ink">
               {t.fields[k]} (cm)
               <input
                 type="number"
@@ -270,7 +274,7 @@ export function MeasurementFlow({
               />
             </label>
           ))}
-          <label className="flex flex-col text-sm">
+          <label className="flex flex-col gap-1 text-sm font-medium text-ink">
             {t.fit}
             <select
               value={wiz.fit}
@@ -287,7 +291,7 @@ export function MeasurementFlow({
           <button
             type="button"
             onClick={() => setStep("choose")}
-            className="rounded border border-neutral-300 px-3 py-2 text-sm"
+            className={buttonClasses("secondary", "md")}
           >
             {t.back}
           </button>
@@ -295,7 +299,7 @@ export function MeasurementFlow({
             type="button"
             onClick={runEstimate}
             disabled={saving}
-            className="rounded-md bg-neutral-900 px-4 py-2 font-medium text-white disabled:opacity-40"
+            className={buttonClasses("primary", "md")}
           >
             {saving ? t.saving : t.estimate}
           </button>
@@ -307,11 +311,11 @@ export function MeasurementFlow({
   if (step === "review") {
     return (
       <div className="mt-6">
-        <h2 className="text-lg font-medium">{t.reviewTitle}</h2>
-        <p className="mt-1 text-sm text-neutral-600">{t.reviewIntro}</p>
-        {confidenceLabel && <p className="mt-1 text-sm text-neutral-500">{confidenceLabel}</p>}
+        <h2 className="text-lg font-medium text-ink">{t.reviewTitle}</h2>
+        <p className="mt-1 text-sm text-ink-muted">{t.reviewIntro}</p>
+        {confidenceLabel && <p className="mt-1 text-sm text-ink-subtle">{confidenceLabel}</p>}
         {warnings.map((w, i) => (
-          <p key={i} className="mt-1 text-sm text-amber-700">
+          <p key={i} className="mt-1 text-sm text-warning">
             {w}
           </p>
         ))}
@@ -321,7 +325,7 @@ export function MeasurementFlow({
           <button
             type="button"
             onClick={() => setStep("wizard")}
-            className="rounded border border-neutral-300 px-3 py-2 text-sm"
+            className={buttonClasses("secondary", "md")}
           >
             {t.back}
           </button>
@@ -329,7 +333,7 @@ export function MeasurementFlow({
             type="button"
             onClick={confirm}
             disabled={saving}
-            className="rounded-md bg-neutral-900 px-4 py-2 font-medium text-white disabled:opacity-40"
+            className={buttonClasses("primary", "md")}
           >
             {saving ? t.saving : t.confirm}
           </button>
@@ -341,14 +345,14 @@ export function MeasurementFlow({
   // detailed
   return (
     <div className="mt-6">
-      <h2 className="text-lg font-medium">{t.detailedTitle}</h2>
+      <h2 className="text-lg font-medium text-ink">{t.detailedTitle}</h2>
       {unitToggle}
       {fieldGrid(true)}
       <div className="mt-4 flex gap-2">
         <button
           type="button"
           onClick={() => setStep("choose")}
-          className="rounded border border-neutral-300 px-3 py-2 text-sm"
+          className={buttonClasses("secondary", "md")}
         >
           {t.back}
         </button>
@@ -356,7 +360,7 @@ export function MeasurementFlow({
           type="button"
           onClick={confirm}
           disabled={saving}
-          className="rounded-md bg-neutral-900 px-4 py-2 font-medium text-white disabled:opacity-40"
+          className={buttonClasses("primary", "md")}
         >
           {saving ? t.saving : t.confirm}
         </button>

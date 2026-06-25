@@ -29,7 +29,7 @@ export default async function ProfileEditPage({ params }: { params: Promise<{ lo
   return (
     <main className="mx-auto max-w-xl px-6 py-10">
       <h1 className="text-2xl font-semibold tracking-tight">{t.measure.detailedTitle}</h1>
-      <Link href={`/${locale}/account/profile`} className="text-sm text-neutral-600 underline">
+      <Link href={`/${locale}/account/profile`} className="text-sm text-ink-muted underline">
         {t.back}
       </Link>
       <form method="post" action="/api/account/profile" className="mt-6 grid grid-cols-2 gap-3">
@@ -44,15 +44,12 @@ export default async function ProfileEditPage({ params }: { params: Promise<{ lo
               type="number"
               inputMode="decimal"
               defaultValue={values[f] ?? ""}
-              className="mt-1 rounded border border-neutral-300 px-2 py-1"
+              className="mt-1 rounded border border-line-strong px-2 py-1"
             />
           </label>
         ))}
         <div className="col-span-2">
-          <button
-            type="submit"
-            className="rounded-md bg-neutral-900 px-4 py-2 font-medium text-white"
-          >
+          <button type="submit" className="rounded-md bg-ink px-4 py-2 font-medium text-paper">
             {t.measure.confirm}
           </button>
         </div>

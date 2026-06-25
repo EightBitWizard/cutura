@@ -22,7 +22,7 @@ export default async function AccountPage({ params }: { params: Promise<{ locale
     : [];
 
   const link = (path: string, label: string) => (
-    <Link href={`/${locale}/account/${path}`} className="text-neutral-900 underline">
+    <Link href={`/${locale}/account/${path}`} className="text-ink underline">
       {label}
     </Link>
   );
@@ -37,7 +37,7 @@ export default async function AccountPage({ params }: { params: Promise<{ locale
         {link("privacy", t.navPrivacy)}
       </nav>
       <form method="post" action="/api/auth/logout" className="mt-10">
-        <button type="submit" className="rounded border border-neutral-300 px-3 py-1 text-sm">
+        <button type="submit" className="rounded border border-line-strong px-3 py-1 text-sm">
           {t.signOut}
         </button>
       </form>

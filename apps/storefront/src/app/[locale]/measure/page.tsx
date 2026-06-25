@@ -30,7 +30,7 @@ export default async function MeasurePage({
       <h1 className="text-2xl font-semibold tracking-tight">{t.measure.title}</h1>
       <Link
         href={`/${locale}/content/fit-guide`}
-        className="mt-1 inline-block text-sm text-neutral-500 underline"
+        className="mt-1 inline-block text-sm text-ink-subtle underline"
       >
         {t.fitGuide}
       </Link>

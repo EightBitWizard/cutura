@@ -64,14 +64,14 @@ export default async function SearchPage({
           name="q"
           defaultValue={q}
           placeholder={t.searchPlaceholder}
-          className="w-full max-w-md rounded border border-neutral-300 px-3 py-2"
+          className="w-full max-w-md rounded border border-line-strong px-3 py-2"
         />
       </form>
 
       {q && (
         <div className="mt-6">
           {models.length === 0 && pages.length === 0 ? (
-            <p className="text-neutral-500">{t.noResults}</p>
+            <p className="text-ink-subtle">{t.noResults}</p>
           ) : (
             <>
               {models.length > 0 && (

@@ -10,7 +10,7 @@ import { getCustomerId } from "@/server/session";
 
 export const dynamic = "force-dynamic";
 
-const input = "mt-1 w-full rounded border border-neutral-300 px-2 py-1";
+const input = "mt-1 w-full rounded border border-line-strong px-2 py-1";
 
 export default async function AddressesPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale: raw } = await params;
@@ -26,14 +26,14 @@ export default async function AddressesPage({ params }: { params: Promise<{ loca
     <main className="mx-auto max-w-xl px-6 py-10">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold tracking-tight">{a.navAddresses}</h1>
-        <Link href={`/${locale}/account`} className="text-sm text-neutral-600 underline">
+        <Link href={`/${locale}/account`} className="text-sm text-ink-muted underline">
           {t.back}
         </Link>
       </div>
 
       <ul className="mt-6 flex flex-col gap-3">
         {addresses.map((addr) => (
-          <li key={addr.id} className="rounded-lg border border-neutral-200 p-4 text-sm">
+          <li key={addr.id} className="rounded-lg border border-line p-4 text-sm">
             <div className="flex items-start justify-between">
               <div>
                 <p>{addr.line1}</p>
@@ -41,7 +41,7 @@ export default async function AddressesPage({ params }: { params: Promise<{ loca
                 <p>
                   {addr.zip} {addr.city} ({addr.country})
                 </p>
-                {addr.isDefault && <p className="mt-1 text-neutral-500">{a.defaultLabel}</p>}
+                {addr.isDefault && <p className="mt-1 text-ink-subtle">{a.defaultLabel}</p>}
               </div>
               <div className="flex gap-2">
                 {!addr.isDefault && (
@@ -49,7 +49,7 @@ export default async function AddressesPage({ params }: { params: Promise<{ loca
                     <input type="hidden" name="action" value="default" />
                     <input type="hidden" name="addressId" value={addr.id} />
                     <input type="hidden" name="locale" value={locale} />
-                    <button type="submit" className="rounded border border-neutral-300 px-2 py-1">
+                    <button type="submit" className="rounded border border-line-strong px-2 py-1">
                       {a.makeDefault}
                     </button>
                   </form>
@@ -58,7 +58,7 @@ export default async function AddressesPage({ params }: { params: Promise<{ loca
                   <input type="hidden" name="action" value="delete" />
                   <input type="hidden" name="addressId" value={addr.id} />
                   <input type="hidden" name="locale" value={locale} />
-                  <button type="submit" className="text-neutral-500 underline">
+                  <button type="submit" className="text-ink-subtle underline">
                     {t.cart.remove}
                   </button>
                 </form>
@@ -96,10 +96,7 @@ export default async function AddressesPage({ params }: { params: Promise<{ loca
           {a.defaultLabel}
         </label>
         <div className="col-span-2">
-          <button
-            type="submit"
-            className="rounded-md bg-neutral-900 px-4 py-2 font-medium text-white"
-          >
+          <button type="submit" className="rounded-md bg-ink px-4 py-2 font-medium text-paper">
             {a.addAddress}
           </button>
         </div>

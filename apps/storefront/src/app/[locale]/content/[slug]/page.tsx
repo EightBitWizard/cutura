@@ -37,7 +37,7 @@ export default async function ContentPage({
   return (
     <main className="mx-auto max-w-2xl px-6 py-10">
       <h1 className="text-3xl font-semibold tracking-tight">{page.title}</h1>
-      <div className="mt-6 whitespace-pre-wrap text-neutral-700">{page.body}</div>
+      <div className="mt-6 whitespace-pre-wrap text-ink">{page.body}</div>
     </main>
   );
 }

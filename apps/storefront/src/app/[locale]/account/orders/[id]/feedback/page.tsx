@@ -30,7 +30,7 @@ export default async function FeedbackPage({
             min={1}
             max={5}
             required
-            className="mt-1 w-24 rounded border border-neutral-300 px-2 py-1"
+            className="mt-1 w-24 rounded border border-line-strong px-2 py-1"
           />
         </label>
         <label className="flex flex-col text-sm">
@@ -38,7 +38,7 @@ export default async function FeedbackPage({
           <textarea
             name="notes"
             rows={3}
-            className="mt-1 rounded border border-neutral-300 px-2 py-1"
+            className="mt-1 rounded border border-line-strong px-2 py-1"
           />
         </label>
         <label className="flex items-center gap-2 text-sm">
@@ -47,7 +47,7 @@ export default async function FeedbackPage({
         </label>
         <button
           type="submit"
-          className="self-start rounded-md bg-neutral-900 px-4 py-2 font-medium text-white"
+          className="self-start rounded-md bg-ink px-4 py-2 font-medium text-paper"
         >
           {t.submit}
         </button>

@@ -37,21 +37,21 @@ export function ConsentBanner({
   };
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-50 border-t border-neutral-200 bg-white p-4 shadow">
+    <div className="fixed inset-x-0 bottom-0 z-50 border-t border-line bg-white p-4 shadow">
       <div className="mx-auto flex max-w-5xl flex-col gap-3 text-sm sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-neutral-700">{messages.text}</p>
+        <p className="text-ink">{messages.text}</p>
         <div className="flex shrink-0 gap-2">
           <button
             type="button"
             onClick={() => choose("necessary")}
-            className="rounded border border-neutral-300 px-3 py-1.5"
+            className="rounded border border-line-strong px-3 py-1.5"
           >
             {messages.decline}
           </button>
           <button
             type="button"
             onClick={() => choose("all")}
-            className="rounded bg-neutral-900 px-3 py-1.5 text-white"
+            className="rounded bg-ink px-3 py-1.5 text-paper"
           >
             {messages.accept}
           </button>

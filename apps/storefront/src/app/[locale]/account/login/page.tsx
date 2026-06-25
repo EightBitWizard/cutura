@@ -27,8 +27,8 @@ export default async function LoginPage({
   return (
     <main className="mx-auto max-w-md px-6 py-12">
       <h1 className="text-2xl font-semibold tracking-tight">{t.loginTitle}</h1>
-      <p className="mt-2 text-neutral-600">{t.loginIntro}</p>
-      {errMsg && <p className="mt-4 text-sm text-amber-700">{errMsg}</p>}
+      <p className="mt-2 text-ink-muted">{t.loginIntro}</p>
+      {errMsg && <p className="mt-4 text-sm text-warning">{errMsg}</p>}
       <LoginForm locale={locale} messages={t} />
     </main>
   );

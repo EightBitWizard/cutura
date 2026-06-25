@@ -41,7 +41,7 @@ export default async function LegalPage({
     return (
       <main className="mx-auto max-w-2xl px-6 py-10">
         <h1 className="text-3xl font-semibold tracking-tight">{slug}</h1>
-        <p className="mt-6 text-neutral-500">This page is being finalized.</p>
+        <p className="mt-6 text-ink-subtle">This page is being finalized.</p>
       </main>
     );
   }
@@ -49,7 +49,7 @@ export default async function LegalPage({
   return (
     <main className="mx-auto max-w-2xl px-6 py-10">
       <h1 className="text-3xl font-semibold tracking-tight">{page.title}</h1>
-      <div className="mt-6 whitespace-pre-wrap text-neutral-700">{page.body}</div>
+      <div className="mt-6 whitespace-pre-wrap text-ink">{page.body}</div>
     </main>
   );
 }

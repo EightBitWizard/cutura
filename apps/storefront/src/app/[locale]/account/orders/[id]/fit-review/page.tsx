@@ -29,7 +29,7 @@ export default async function FitReviewPage({
   return (
     <main className="mx-auto max-w-xl px-6 py-10">
       <h1 className="text-2xl font-semibold tracking-tight">{t.fitReview}</h1>
-      {error && <p className="mt-2 text-sm text-amber-700">{ERRORS[error] ?? error}</p>}
+      {error && <p className="mt-2 text-sm text-warning">{ERRORS[error] ?? error}</p>}
       <form
         method="post"
         action="/api/account/fit-review"
@@ -44,7 +44,7 @@ export default async function FitReviewPage({
             name="reason"
             required
             rows={4}
-            className="mt-1 rounded border border-neutral-300 px-2 py-1"
+            className="mt-1 rounded border border-line-strong px-2 py-1"
           />
         </label>
         <label className="flex flex-col text-sm">
@@ -53,7 +53,7 @@ export default async function FitReviewPage({
         </label>
         <button
           type="submit"
-          className="self-start rounded-md bg-neutral-900 px-4 py-2 font-medium text-white"
+          className="self-start rounded-md bg-ink px-4 py-2 font-medium text-paper"
         >
           {t.submit}
         </button>

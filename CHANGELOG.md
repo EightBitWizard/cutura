@@ -27,6 +27,9 @@ All notable changes to this project. Newest first.
   have detail pages, and option groups and option values have image managers, all
   reusing one MediaManager (upload, set primary, delete). Previously only base models
   and collection banners could carry images.
+- The cart, checkout, measurement flow, account, and the remaining content, legal, and
+  status pages are restyled onto the design system (tokens, shared inputs and buttons,
+  muted status colors). No change to cart math, the measurement steps, or checkout.
 
 ### Added (M9 - launch-hardening follow-ups)
 

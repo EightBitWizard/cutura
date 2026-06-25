@@ -2,9 +2,11 @@
 
 import { useState } from "react";
 
+import { buttonClasses } from "@/components/ui/buttonClasses";
 import type { AccountMessages } from "@/i18n/messages";
 
-const input = "mt-1 w-full rounded border border-neutral-300 px-2 py-1";
+const input =
+  "mt-1 w-full rounded-sm border border-line-strong bg-surface px-3 py-2 text-ink placeholder:text-ink-subtle focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-paper";
 
 export function LoginForm({ locale, messages: t }: { locale: string; messages: AccountMessages }) {
   const [email, setEmail] = useState("");
@@ -32,10 +34,10 @@ export function LoginForm({ locale, messages: t }: { locale: string; messages: A
   if (sent) {
     return (
       <div className="mt-6">
-        <p className="text-neutral-700">{t.linkSent}</p>
+        <p className="text-ink">{t.linkSent}</p>
         {devUrl && (
           <p className="mt-3 text-sm">
-            <a href={devUrl} className="underline">
+            <a href={devUrl} className="text-ink underline">
               dev sign-in link
             </a>
           </p>
@@ -46,7 +48,7 @@ export function LoginForm({ locale, messages: t }: { locale: string; messages: A
 
   return (
     <form onSubmit={submit} className="mt-6 max-w-sm">
-      <label className="flex flex-col text-sm">
+      <label className="flex flex-col gap-1 text-sm font-medium text-ink">
         {t.emailLabel}
         <input
           type="email"
@@ -56,11 +58,7 @@ export function LoginForm({ locale, messages: t }: { locale: string; messages: A
           className={input}
         />
       </label>
-      <button
-        type="submit"
-        disabled={busy}
-        className="mt-4 rounded-md bg-neutral-900 px-4 py-2 font-medium text-white disabled:opacity-40"
-      >
+      <button type="submit" disabled={busy} className={buttonClasses("primary", "md", "mt-4")}>
         {t.sendLink}
       </button>
     </form>

@@ -47,7 +47,7 @@ export default async function OccasionPage({
       <h1 className="text-3xl font-semibold capitalize tracking-tight">{value}</h1>
       <div className="mt-6">
         {models.length === 0 ? (
-          <p className="text-neutral-500">{t.noResults}</p>
+          <p className="text-ink-subtle">{t.noResults}</p>
         ) : (
           <ModelGrid
             models={models}

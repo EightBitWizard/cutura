@@ -24,24 +24,24 @@ export default async function OrdersPage({ params }: { params: Promise<{ locale:
     <main className="mx-auto max-w-2xl px-6 py-10">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold tracking-tight">{t.ordersTitle}</h1>
-        <Link href={`/${locale}/account`} className="text-sm text-neutral-600 underline">
+        <Link href={`/${locale}/account`} className="text-sm text-ink-muted underline">
           {t.viewOrder}
         </Link>
       </div>
 
       {orders.length === 0 ? (
-        <p className="mt-6 text-neutral-500">{t.empty}</p>
+        <p className="mt-6 text-ink-subtle">{t.empty}</p>
       ) : (
         <ul className="mt-6 flex flex-col gap-3">
           {orders.map((o) => (
             <li key={o.id}>
               <Link
                 href={`/${locale}/account/orders/${o.id}`}
-                className="flex items-center justify-between rounded-lg border border-neutral-200 p-4 hover:border-neutral-400"
+                className="flex items-center justify-between rounded-lg border border-line p-4 hover:border-line-strong"
               >
                 <span>
                   <span className="font-mono">{o.orderNumber}</span>
-                  <span className="ml-3 text-sm text-neutral-500">
+                  <span className="ml-3 text-sm text-ink-subtle">
                     {milestoneLabels[locale][o.milestone]}
                   </span>
                 </span>

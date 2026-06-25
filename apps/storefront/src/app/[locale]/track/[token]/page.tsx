@@ -33,7 +33,7 @@ export default async function TrackPage({
   return (
     <main className="mx-auto max-w-2xl px-6 py-10">
       <h1 className="text-2xl font-semibold tracking-tight">{t.trackingTitle}</h1>
-      <p className="mt-1 text-sm text-neutral-500">
+      <p className="mt-1 text-sm text-ink-subtle">
         {t.orderNumber} <span className="font-mono">{detail.orderNumber}</span>
       </p>
       <OrderDetailView detail={detail} locale={locale} />

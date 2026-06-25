@@ -21,7 +21,7 @@ export async function generateMetadata({
   };
 }
 
-const input = "mt-1 w-full rounded border border-neutral-300 px-3 py-2";
+const input = "mt-1 w-full rounded border border-line-strong px-3 py-2";
 
 export default async function ContactPage({
   params,
@@ -40,19 +40,19 @@ export default async function ContactPage({
       <h1 className="text-3xl font-semibold tracking-tight">{t.contact}</h1>
       <Link
         href={`/${locale}/content/faq`}
-        className="mt-1 inline-block text-sm text-neutral-500 underline"
+        className="mt-1 inline-block text-sm text-ink-subtle underline"
       >
         {t.help}
       </Link>
 
       {sent ? (
-        <p className="mt-6 rounded-lg border border-green-200 bg-green-50 p-4 text-green-800">
+        <p className="mt-6 rounded-lg border border-success/40 bg-success/10 p-4 text-success">
           {t.contactSent}
         </p>
       ) : (
         <form method="post" action="/api/contact" className="mt-6 flex flex-col gap-3">
           <input type="hidden" name="locale" value={locale} />
-          {error && <p className="text-sm text-amber-700">{t.selectRequired}</p>}
+          {error && <p className="text-sm text-warning">{t.selectRequired}</p>}
           <label className="text-sm">
             {t.contactName}
             <input name="name" required className={input} />
@@ -67,7 +67,7 @@ export default async function ContactPage({
           </label>
           <button
             type="submit"
-            className="self-start rounded-md bg-neutral-900 px-4 py-2 font-medium text-white"
+            className="self-start rounded-md bg-ink px-4 py-2 font-medium text-paper"
           >
             {t.contactSend}
           </button>

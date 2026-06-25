@@ -52,15 +52,15 @@ export default async function CollectionPage({
         <MediaImage
           mediaId={col.bannerMediaId}
           alt={col.name}
-          className="mb-6 aspect-[3/1] w-full rounded-lg bg-neutral-100 object-cover"
+          className="mb-6 aspect-[3/1] w-full rounded-lg bg-sunken object-cover"
         />
       )}
       <h1 className="text-3xl font-semibold tracking-tight">{col.name}</h1>
-      {col.description && <p className="mt-2 text-neutral-600">{col.description}</p>}
+      {col.description && <p className="mt-2 text-ink-muted">{col.description}</p>}
 
       <div className="mt-6">
         {col.models.length === 0 ? (
-          <p className="text-neutral-500">{t.noResults}</p>
+          <p className="text-ink-subtle">{t.noResults}</p>
         ) : (
           <ModelGrid
             models={col.models}

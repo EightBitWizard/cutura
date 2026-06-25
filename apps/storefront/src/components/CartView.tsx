@@ -42,29 +42,33 @@ export function CartView({
   return (
     <ul className="mt-6 flex flex-col gap-4">
       {lines.map((line) => (
-        <li key={line.index} className="rounded-lg border border-neutral-200 p-4">
-          <div className="flex items-start justify-between">
+        <li key={line.index} className="rounded-md border border-line bg-surface p-5">
+          <div className="flex items-start justify-between gap-4">
             <div>
-              <p className="font-medium">{line.name}</p>
-              {line.fabric && <p className="text-sm text-neutral-500">{line.fabric}</p>}
+              <p className="font-medium text-ink">{line.name}</p>
+              {line.fabric && <p className="mt-0.5 text-sm text-ink-subtle">{line.fabric}</p>}
             </div>
-            <p className="text-lg font-semibold">{formatCHF(line.total)}</p>
+            <p className="shrink-0 text-lg font-semibold tabular-nums text-ink">
+              {formatCHF(line.total)}
+            </p>
           </div>
-          <dl className="mt-2 space-y-0.5 text-sm text-neutral-500">
+          <dl className="mt-3 space-y-1 text-sm text-ink-muted">
             <div className="flex justify-between">
               <dt>{labels.base}</dt>
-              <dd>{formatCHF(line.base)}</dd>
+              <dd className="tabular-nums">{formatCHF(line.base)}</dd>
             </div>
             {line.options.map((o, i) => (
               <div key={`o${i}`} className="flex justify-between">
                 <dt>{o.label}</dt>
-                <dd>{o.surcharge > 0 ? `+${formatCHF(o.surcharge)}` : "-"}</dd>
+                <dd className="tabular-nums">
+                  {o.surcharge > 0 ? `+${formatCHF(o.surcharge)}` : "-"}
+                </dd>
               </div>
             ))}
             {line.upgrades.map((u, i) => (
               <div key={`u${i}`} className="flex justify-between">
                 <dt>{u.name}</dt>
-                <dd>{u.price > 0 ? `+${formatCHF(u.price)}` : "-"}</dd>
+                <dd className="tabular-nums">{u.price > 0 ? `+${formatCHF(u.price)}` : "-"}</dd>
               </div>
             ))}
           </dl>
@@ -72,7 +76,7 @@ export function CartView({
             type="button"
             onClick={() => remove(line.index)}
             disabled={busy === line.index}
-            className="mt-3 text-sm text-neutral-500 underline disabled:opacity-40"
+            className="mt-4 text-sm text-ink-subtle underline transition-colors hover:text-ink disabled:opacity-40"
           >
             {labels.remove}
           </button>

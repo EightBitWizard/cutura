@@ -6,6 +6,7 @@ import { getDb, getRecommendations } from "@cutura/db";
 
 import { CartView, type CartLineView } from "@/components/CartView";
 import { RecommendedSection } from "@/components/RecommendedSection";
+import { buttonClasses } from "@/components/ui/buttonClasses";
 import { defaultLocale, isLocale } from "@/i18n/config";
 import { getMessages } from "@/i18n/messages";
 import { CART_COOKIE, readCart } from "@/server/cart";
@@ -62,22 +63,22 @@ export default async function CartPage({ params }: { params: Promise<{ locale: s
       <h1 className="text-2xl font-semibold tracking-tight">{t.cart.title}</h1>
 
       {lines.length === 0 ? (
-        <p className="mt-6 text-neutral-500">{t.cart.empty}</p>
+        <p className="mt-6 text-ink-subtle">{t.cart.empty}</p>
       ) : (
         <>
           <CartView lines={lines} labels={{ remove: t.cart.remove, base: t.cart.base }} />
 
-          <div className="mt-6 flex items-baseline justify-between border-t pt-4">
+          <div className="mt-6 flex items-baseline justify-between border-t border-line pt-4">
             <span className="font-medium">{t.cart.total}</span>
             <span className="text-2xl font-semibold">{formatCHF(total)}</span>
           </div>
-          <p className="text-xs text-neutral-400">{t.allInclusive}</p>
+          <p className="text-xs text-ink-subtle">{t.allInclusive}</p>
 
-          <div className="mt-6 rounded-lg border border-neutral-200 p-4 text-sm">
+          <div className="mt-6 rounded-lg border border-line p-4 text-sm">
             {missingTypes.length === 0 ? (
-              <p className="text-neutral-700">{t.cart.measurementProvided}</p>
+              <p className="text-ink">{t.cart.measurementProvided}</p>
             ) : (
-              <div className="space-y-1 text-amber-700">
+              <div className="space-y-1 text-warning">
                 {missingTypes.map((gt) => (
                   <p key={gt}>
                     {t.cart.measurementMissing} ({t.garmentNames[gt as "shirt" | "trouser"]}){" "}
@@ -95,7 +96,7 @@ export default async function CartPage({ params }: { params: Promise<{ locale: s
 
           <Link
             href={`/${locale}/checkout`}
-            className="mt-6 block rounded-md bg-neutral-900 px-4 py-3 text-center font-medium text-white"
+            className={buttonClasses("primary", "lg", "mt-6 w-full")}
           >
             {t.cart.checkout}
           </Link>
