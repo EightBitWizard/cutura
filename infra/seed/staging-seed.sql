@@ -105,3 +105,56 @@ INSERT OR IGNORE INTO content_page (id, slug, kind, title_i18n, body_i18n, versi
 VALUES ('cp_shipping', 'shipping', 'legal', '{"de":"Versand","en":"Shipping","it":"Spedizione","fr":"Livraison"}', '{"de":"Wir liefern in die Schweiz und nach Liechtenstein. Standardversand ist im angezeigten Preis enthalten. Lieferzeiten stehen beim Produkt.","en":"We ship to Switzerland and Liechtenstein. Standard shipping is included in the displayed price. Lead times are shown on each product.","it":"Spediamo in Svizzera e Liechtenstein. La spedizione standard e inclusa nel prezzo indicato. I tempi di consegna sono indicati su ogni prodotto.","fr":"Nous livrons en Suisse et au Liechtenstein. La livraison standard est incluse dans le prix affiche. Les delais figurent sur chaque produit."}', 1, '2026-06-24T00:00:00Z', '2026-06-24T00:00:00Z');
 INSERT OR IGNORE INTO content_page (id, slug, kind, title_i18n, body_i18n, version, created_at, updated_at)
 VALUES ('cp_fit_guarantee', 'fit-guarantee', 'legal', '{"de":"Passform-Garantie","en":"Fit guarantee","it":"Garanzia di vestibilita","fr":"Garantie d ajustement"}', '{"de":"Stimmt die Passform nicht, fertigen wir das Stueck zuerst neu an. Loest eine Neuanfertigung es nicht, ist eine Rueckerstattung moeglich. Das Original behalten Sie zum Start.","en":"If the fit is not right, we remake the garment first. If a remake does not resolve it, a refund is available. You keep the original at launch.","it":"Se la vestibilita non e corretta, rifacciamo prima il capo. Se il rifacimento non risolve, e possibile un rimborso. Allinizio tieni loriginale.","fr":"Si la coupe ne convient pas, nous refaisons d abord le vetement. Si une refabrication ne resout pas le probleme, un remboursement est possible. Vous gardez l original au lancement."}', 1, '2026-06-24T00:00:00Z', '2026-06-24T00:00:00Z');
+
+-- ---------------------------------------------------------------------------
+-- Additional options (2026-06-25): shirt sleeve; trouser side pockets, back
+-- pockets (optional), and closure; plus a double-pleat value. Idempotent
+-- (INSERT OR IGNORE, fixed ids). Applied to cutura-control AND cutura-staging.
+-- The founder adds a picture per value in the admin, then publishes.
+-- ---------------------------------------------------------------------------
+
+-- Shirt: sleeve (required)
+INSERT OR IGNORE INTO option_group (id, garment_type_id, code, label_i18n, created_at, updated_at)
+VALUES ('og_sleeve', 'gt_shirt', 'sleeve', '{"de":"Ärmel","en":"Sleeve","it":"Manica","fr":"Manche"}', '2026-06-25T00:00:00Z', '2026-06-25T00:00:00Z');
+INSERT OR IGNORE INTO option_value (id, option_group_id, code, label_i18n, surcharge_minor, created_at, updated_at)
+VALUES ('ov_sleeve_long', 'og_sleeve', 'long', '{"de":"Langarm","en":"Long sleeve","it":"Manica lunga","fr":"Manches longues"}', 0, '2026-06-25T00:00:00Z', '2026-06-25T00:00:00Z');
+INSERT OR IGNORE INTO option_value (id, option_group_id, code, label_i18n, surcharge_minor, created_at, updated_at)
+VALUES ('ov_sleeve_short', 'og_sleeve', 'short', '{"de":"Kurzarm","en":"Short sleeve","it":"Manica corta","fr":"Manches courtes"}', 0, '2026-06-25T00:00:00Z', '2026-06-25T00:00:00Z');
+INSERT OR IGNORE INTO model_allowed_option (id, base_model_id, option_group_id, required, position)
+VALUES ('mao_oxford_sleeve', 'bm_oxford', 'og_sleeve', 1, 1);
+
+-- Trouser: side pockets (required)
+INSERT OR IGNORE INTO option_group (id, garment_type_id, code, label_i18n, created_at, updated_at)
+VALUES ('og_side_pockets', 'gt_trouser', 'side_pockets', '{"de":"Seitentaschen","en":"Side pockets","it":"Tasche laterali","fr":"Poches latérales"}', '2026-06-25T00:00:00Z', '2026-06-25T00:00:00Z');
+INSERT OR IGNORE INTO option_value (id, option_group_id, code, label_i18n, surcharge_minor, created_at, updated_at)
+VALUES ('ov_side_slant', 'og_side_pockets', 'slanted', '{"de":"Schräge Tasche","en":"Slanted","it":"Tasca obliqua","fr":"Poche oblique"}', 0, '2026-06-25T00:00:00Z', '2026-06-25T00:00:00Z');
+INSERT OR IGNORE INTO option_value (id, option_group_id, code, label_i18n, surcharge_minor, created_at, updated_at)
+VALUES ('ov_side_straight', 'og_side_pockets', 'straight', '{"de":"Gerade Tasche","en":"Straight","it":"Tasca verticale","fr":"Poche droite"}', 0, '2026-06-25T00:00:00Z', '2026-06-25T00:00:00Z');
+INSERT OR IGNORE INTO model_allowed_option (id, base_model_id, option_group_id, required, position)
+VALUES ('mao_chino_side', 'bm_chino', 'og_side_pockets', 1, 1);
+
+-- Trouser: back pockets (optional; the configurator offers a "None" choice)
+INSERT OR IGNORE INTO option_group (id, garment_type_id, code, label_i18n, created_at, updated_at)
+VALUES ('og_back_pockets', 'gt_trouser', 'back_pockets', '{"de":"Gesässtaschen","en":"Back pockets","it":"Tasche posteriori","fr":"Poches arrière"}', '2026-06-25T00:00:00Z', '2026-06-25T00:00:00Z');
+INSERT OR IGNORE INTO option_value (id, option_group_id, code, label_i18n, surcharge_minor, created_at, updated_at)
+VALUES ('ov_back_welt', 'og_back_pockets', 'welt', '{"de":"Paspeltasche","en":"Welt pocket","it":"Tasca profilata","fr":"Poche passepoilée"}', 0, '2026-06-25T00:00:00Z', '2026-06-25T00:00:00Z');
+INSERT OR IGNORE INTO option_value (id, option_group_id, code, label_i18n, surcharge_minor, created_at, updated_at)
+VALUES ('ov_back_button', 'og_back_pockets', 'button_welt', '{"de":"Paspeltasche mit Knopf","en":"Button-through welt","it":"Tasca con bottone","fr":"Poche à bouton"}', 500, '2026-06-25T00:00:00Z', '2026-06-25T00:00:00Z');
+INSERT OR IGNORE INTO option_value (id, option_group_id, code, label_i18n, surcharge_minor, created_at, updated_at)
+VALUES ('ov_back_patch', 'og_back_pockets', 'patch', '{"de":"Aufgesetzte Tasche","en":"Patch pocket","it":"Tasca applicata","fr":"Poche plaquée"}', 0, '2026-06-25T00:00:00Z', '2026-06-25T00:00:00Z');
+INSERT OR IGNORE INTO model_allowed_option (id, base_model_id, option_group_id, required, position)
+VALUES ('mao_chino_back', 'bm_chino', 'og_back_pockets', 0, 2);
+
+-- Trouser: closure (required)
+INSERT OR IGNORE INTO option_group (id, garment_type_id, code, label_i18n, created_at, updated_at)
+VALUES ('og_closure', 'gt_trouser', 'closure', '{"de":"Verschluss","en":"Closure","it":"Chiusura","fr":"Fermeture"}', '2026-06-25T00:00:00Z', '2026-06-25T00:00:00Z');
+INSERT OR IGNORE INTO option_value (id, option_group_id, code, label_i18n, surcharge_minor, created_at, updated_at)
+VALUES ('ov_closure_zip', 'og_closure', 'zip', '{"de":"Reissverschluss","en":"Zip fly","it":"Cerniera","fr":"Braguette zippée"}', 0, '2026-06-25T00:00:00Z', '2026-06-25T00:00:00Z');
+INSERT OR IGNORE INTO option_value (id, option_group_id, code, label_i18n, surcharge_minor, created_at, updated_at)
+VALUES ('ov_closure_button', 'og_closure', 'button', '{"de":"Knopfleiste","en":"Button fly","it":"Bottoni","fr":"Braguette boutonnée"}', 500, '2026-06-25T00:00:00Z', '2026-06-25T00:00:00Z');
+INSERT OR IGNORE INTO model_allowed_option (id, base_model_id, option_group_id, required, position)
+VALUES ('mao_chino_closure', 'bm_chino', 'og_closure', 1, 3);
+
+-- Trouser: double pleat (two folds), added to the existing pleats group
+INSERT OR IGNORE INTO option_value (id, option_group_id, code, label_i18n, surcharge_minor, created_at, updated_at)
+VALUES ('ov_double_pleat', 'og_pleats', 'double_pleat', '{"de":"Zwei Bundfalten","en":"Double pleat","it":"Due pince","fr":"Deux pinces"}', 1000, '2026-06-25T00:00:00Z', '2026-06-25T00:00:00Z');
