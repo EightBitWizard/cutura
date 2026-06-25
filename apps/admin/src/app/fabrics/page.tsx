@@ -48,6 +48,12 @@ export default async function FabricsPage() {
                   </td>
                   <td className="py-3">
                     <div className="flex gap-2">
+                      <Link
+                        href={`/fabrics/${f.id}`}
+                        className="rounded border border-neutral-300 px-2 py-1"
+                      >
+                        Images
+                      </Link>
                       <form method="post" action="/api/catalog/publish">
                         <input type="hidden" name="entityType" value="fabric" />
                         <input type="hidden" name="entityId" value={f.id} />

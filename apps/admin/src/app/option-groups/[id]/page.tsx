@@ -1,8 +1,9 @@
 import Link from "next/link";
 
 import { formatCHF } from "@cutura/core";
-import { getRow, listOptionValues, optionGroup } from "@cutura/db";
+import { getRow, listMedia, listOptionValues, optionGroup } from "@cutura/db";
 
+import { MediaManager } from "@/components/MediaManager";
 import { controlDb } from "@/server/catalog";
 
 export const dynamic = "force-dynamic";
@@ -26,6 +27,9 @@ export default async function OptionGroupDetailPage({
     );
   }
   const values = await listOptionValues(db, id);
+  const groupMedia = await listMedia(db, "optionGroup", id);
+  const valueMedia = new Map<string, Awaited<ReturnType<typeof listMedia>>>();
+  for (const v of values) valueMedia.set(v.id, await listMedia(db, "optionValue", v.id));
 
   return (
     <main className="mx-auto max-w-3xl px-6 py-10">
@@ -38,6 +42,14 @@ export default async function OptionGroupDetailPage({
         </Link>
       </div>
       <p className="mt-1 text-neutral-600">{group.labelI18n.de}</p>
+
+      <MediaManager
+        entityType="optionGroup"
+        entityId={id}
+        backPath={`/option-groups/${id}`}
+        media={groupMedia}
+        heading="Group image (optional)"
+      />
 
       <h2 className="mt-8 text-lg font-medium">Values</h2>
       <table className="mt-3 w-full border-collapse text-sm">
@@ -130,6 +142,28 @@ export default async function OptionGroupDetailPage({
           </button>
         </div>
       </form>
+
+      {values.length > 0 && (
+        <section className="mt-10">
+          <h2 className="text-lg font-medium">Value images (swatches)</h2>
+          <p className="mt-1 text-sm text-neutral-500">
+            Optional thumbnails shown next to each option in the configurator. Publish the group to
+            apply.
+          </p>
+          <div className="mt-2 flex flex-col gap-6">
+            {values.map((v) => (
+              <MediaManager
+                key={v.id}
+                entityType="optionValue"
+                entityId={v.id}
+                backPath={`/option-groups/${id}`}
+                media={valueMedia.get(v.id) ?? []}
+                heading={`Value: ${v.code}`}
+              />
+            ))}
+          </div>
+        </section>
+      )}
     </main>
   );
 }

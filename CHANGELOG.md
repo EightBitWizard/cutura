@@ -23,6 +23,10 @@ All notable changes to this project. Newest first.
   toggle rows, a cross-fading all-inclusive total, and an ink call-to-action. Fabrics,
   options, and upgrades now show their catalog images once set and published. The
   pricing path is unchanged.
+- Admin image management for the remaining catalog entities: fabrics and upgrades now
+  have detail pages, and option groups and option values have image managers, all
+  reusing one MediaManager (upload, set primary, delete). Previously only base models
+  and collection banners could carry images.
 
 ### Added (M9 - launch-hardening follow-ups)
 

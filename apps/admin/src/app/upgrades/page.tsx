@@ -51,6 +51,12 @@ export default async function UpgradesPage() {
                   </td>
                   <td className="py-3">
                     <div className="flex gap-2">
+                      <Link
+                        href={`/upgrades/${u.id}`}
+                        className="rounded border border-neutral-300 px-2 py-1"
+                      >
+                        Images
+                      </Link>
                       <form method="post" action="/api/catalog/publish">
                         <input type="hidden" name="entityType" value="upgrade" />
                         <input type="hidden" name="entityId" value={u.id} />
