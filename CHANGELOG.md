@@ -30,6 +30,10 @@ All notable changes to this project. Newest first.
 - The cart, checkout, measurement flow, account, and the remaining content, legal, and
   status pages are restyled onto the design system (tokens, shared inputs and buttons,
   muted status colors). No change to cart math, the measurement steps, or checkout.
+- The admin back-office is restyled onto the design system. Tailwind is now wired in the
+  admin (it had none, which is why it rendered as unstyled HTML), with the brand tokens,
+  the Inter typeface, a sticky top navigation with active-section highlighting, and
+  consistent buttons, inputs, tables, and muted status colours across every page.
 
 ### Added (M9 - launch-hardening follow-ups)
 

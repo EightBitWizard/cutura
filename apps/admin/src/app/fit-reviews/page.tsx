@@ -14,28 +14,28 @@ export default async function FitReviewsPage() {
     <main className="mx-auto max-w-3xl px-6 py-10">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold tracking-tight">Fit reviews</h1>
-        <Link href="/" className="text-sm text-neutral-600 underline">
+        <Link href="/" className="text-sm text-ink-muted underline">
           Dashboard
         </Link>
       </div>
-      <p className="mt-1 text-sm text-neutral-500">
+      <p className="mt-1 text-sm text-ink-subtle">
         {open.length} open of {reviews.length}
       </p>
 
       <ul className="mt-6 flex flex-col gap-4">
         {reviews.map((r) => (
-          <li key={r.id} className="rounded-lg border border-neutral-200 p-4 text-sm">
+          <li key={r.id} className="rounded-lg border border-line p-4 text-sm">
             <div className="flex items-center justify-between">
               <Link href={`/orders/${r.orderId}`} className="font-mono underline">
                 {r.orderNumber}
               </Link>
-              <span className="text-neutral-500">
+              <span className="text-ink-subtle">
                 {r.status}
                 {r.decision ? ` (${r.decision})` : ""}
               </span>
             </div>
-            <p className="mt-2 text-neutral-700">{r.reason}</p>
-            <p className="mt-1 text-neutral-400">{r.photoCount} photo(s)</p>
+            <p className="mt-2 text-ink">{r.reason}</p>
+            <p className="mt-1 text-ink-subtle">{r.photoCount} photo(s)</p>
 
             {r.status === "open" && (
               <form
@@ -43,15 +43,12 @@ export default async function FitReviewsPage() {
                 action={`/api/fit-reviews/${r.id}/decide`}
                 className="mt-3 flex items-center gap-2"
               >
-                <select name="decision" className="rounded border border-neutral-300 px-2 py-1">
+                <select name="decision" className="rounded border border-line-strong px-2 py-1">
                   <option value="remake">remake</option>
                   <option value="refund">refund</option>
                   <option value="alteration">alteration</option>
                 </select>
-                <button
-                  type="submit"
-                  className="rounded bg-neutral-900 px-3 py-1 text-sm text-white"
-                >
+                <button type="submit" className="rounded bg-ink px-3 py-1 text-sm text-paper">
                   Decide
                 </button>
               </form>

@@ -16,9 +16,9 @@ export default async function LoginPage({
   return (
     <main className="mx-auto flex min-h-screen max-w-sm flex-col justify-center px-6">
       <h1 className="text-2xl font-semibold tracking-tight">CUTURA Admin</h1>
-      <p className="mt-2 text-sm text-neutral-600">Sign in to manage the catalog.</p>
+      <p className="mt-2 text-sm text-ink-muted">Sign in to manage the catalog.</p>
       {message ? (
-        <p className="mt-4 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{message}</p>
+        <p className="mt-4 rounded-md bg-accent/5 px-3 py-2 text-sm text-accent">{message}</p>
       ) : null}
       <form method="post" action="/api/auth/login" className="mt-6 flex flex-col gap-3">
         <label className="text-sm font-medium" htmlFor="password">
@@ -30,12 +30,9 @@ export default async function LoginPage({
           type="password"
           required
           autoComplete="current-password"
-          className="rounded-md border border-neutral-300 px-3 py-2"
+          className="rounded-md border border-line-strong px-3 py-2"
         />
-        <button
-          type="submit"
-          className="mt-2 rounded-md bg-neutral-900 px-4 py-2 font-medium text-white"
-        >
+        <button type="submit" className="mt-2 rounded-md bg-ink px-4 py-2 font-medium text-paper">
           Sign in
         </button>
       </form>

@@ -26,7 +26,7 @@ export function MediaManager({
     <section className="mt-8">
       <h2 className="text-lg font-medium">{heading}</h2>
       {media.length === 0 ? (
-        <p className="text-sm text-neutral-500">No images yet.</p>
+        <p className="text-sm text-ink-subtle">No images yet.</p>
       ) : (
         <div className="mt-2 flex flex-wrap gap-4">
           {media.map((m) => (
@@ -35,23 +35,23 @@ export function MediaManager({
               <img
                 src={`/api/media/${m.id}`}
                 alt={m.alt ?? ""}
-                className="h-32 w-40 rounded border border-neutral-200 object-cover"
+                className="h-32 w-40 rounded border border-line object-cover"
               />
-              <div className="mt-1 text-neutral-500">{m.isPrimary ? "primary" : ""}</div>
+              <div className="mt-1 text-ink-subtle">{m.isPrimary ? "primary" : ""}</div>
               <div className="mt-1 flex gap-1">
                 {!m.isPrimary && (
                   <form method="post" action={`/api/catalog/media/${m.id}/primary`}>
                     <input type="hidden" name="entityType" value={entityType} />
                     <input type="hidden" name="entityId" value={entityId} />
                     <input type="hidden" name="back" value={backPath} />
-                    <button type="submit" className="rounded border border-neutral-300 px-1">
+                    <button type="submit" className="rounded border border-line-strong px-1">
                       Make primary
                     </button>
                   </form>
                 )}
                 <form method="post" action={`/api/catalog/media/${m.id}/delete`}>
                   <input type="hidden" name="back" value={backPath} />
-                  <button type="submit" className="rounded border border-neutral-300 px-1">
+                  <button type="submit" className="rounded border border-line-strong px-1">
                     Delete
                   </button>
                 </form>
@@ -75,11 +75,11 @@ export function MediaManager({
         </label>
         <label className="flex flex-col text-sm">
           Alt text
-          <input name="alt" className="mt-1 rounded border border-neutral-300 px-2 py-1" />
+          <input name="alt" className="mt-1 rounded border border-line-strong px-2 py-1" />
         </label>
         <button
           type="submit"
-          className="rounded-md bg-neutral-900 px-3 py-2 text-sm font-medium text-white"
+          className="rounded-md bg-ink px-3 py-2 text-sm font-medium text-paper"
         >
           Upload
         </button>

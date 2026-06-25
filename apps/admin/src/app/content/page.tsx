@@ -6,7 +6,7 @@ import { controlDb } from "@/server/catalog";
 
 export const dynamic = "force-dynamic";
 
-const input = "mt-1 w-full rounded border border-neutral-300 px-2 py-1";
+const input = "mt-1 w-full rounded border border-line-strong px-2 py-1";
 
 export default async function ContentListPage() {
   const rows = await listRows(controlDb(), contentPage);
@@ -15,14 +15,14 @@ export default async function ContentListPage() {
     <main className="mx-auto max-w-3xl px-6 py-10">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold tracking-tight">Content + legal pages</h1>
-        <Link href="/" className="text-sm text-neutral-600 underline">
+        <Link href="/" className="text-sm text-ink-muted underline">
           Dashboard
         </Link>
       </div>
 
       <table className="mt-6 w-full text-sm">
         <thead>
-          <tr className="border-b text-left text-neutral-500">
+          <tr className="border-b text-left text-ink-subtle">
             <th className="py-2">Slug</th>
             <th>Kind</th>
             <th>Locales</th>
@@ -40,7 +40,7 @@ export default async function ContentListPage() {
                   </Link>
                 </td>
                 <td>{p.kind}</td>
-                <td className="text-neutral-500">
+                <td className="text-ink-subtle">
                   {missing.length ? `missing ${missing.join(",")}` : "complete"}
                 </td>
                 <td className="flex gap-2 py-2">
@@ -49,12 +49,12 @@ export default async function ContentListPage() {
                     <input type="hidden" name="entityId" value={p.id} />
                     <input type="hidden" name="environment" value="staging" />
                     <input type="hidden" name="back" value="/content" />
-                    <button type="submit" className="rounded bg-neutral-900 px-2 py-1 text-white">
+                    <button type="submit" className="rounded bg-ink px-2 py-1 text-paper">
                       Publish
                     </button>
                   </form>
                   <form method="post" action={`/api/catalog/content/${p.id}/delete`}>
-                    <button type="submit" className="rounded border border-neutral-300 px-2 py-1">
+                    <button type="submit" className="rounded border border-line-strong px-2 py-1">
                       Delete
                     </button>
                   </form>
@@ -64,7 +64,7 @@ export default async function ContentListPage() {
           })}
           {rows.length === 0 && (
             <tr>
-              <td colSpan={4} className="py-6 text-neutral-500">
+              <td colSpan={4} className="py-6 text-ink-subtle">
                 No pages yet.
               </td>
             </tr>
@@ -97,7 +97,7 @@ export default async function ContentListPage() {
         ))}
         <button
           type="submit"
-          className="self-start rounded-md bg-neutral-900 px-4 py-2 font-medium text-white"
+          className="self-start rounded-md bg-ink px-4 py-2 font-medium text-paper"
         >
           Create page
         </button>

@@ -6,7 +6,7 @@ import { controlDb } from "@/server/catalog";
 
 export const dynamic = "force-dynamic";
 
-const inputClass = "mt-1 rounded border border-neutral-300 px-2 py-1";
+const inputClass = "mt-1 rounded border border-line-strong px-2 py-1";
 
 export default async function CollectionDetailPage({
   params,
@@ -35,7 +35,7 @@ export default async function CollectionDetailPage({
         <h1 className="text-2xl font-semibold tracking-tight">
           Collection: <span className="font-mono">{col.handle}</span>
         </h1>
-        <Link href="/collections" className="text-sm text-neutral-600 underline">
+        <Link href="/collections" className="text-sm text-ink-muted underline">
           Back
         </Link>
       </div>
@@ -71,7 +71,7 @@ export default async function CollectionDetailPage({
         <section>
           <h2 className="text-lg font-medium">Members</h2>
           {models.length === 0 ? (
-            <p className="text-sm text-neutral-500">No base models yet.</p>
+            <p className="text-sm text-ink-subtle">No base models yet.</p>
           ) : (
             <div className="mt-2 flex flex-col gap-1">
               {models.map((m) => (
@@ -90,18 +90,15 @@ export default async function CollectionDetailPage({
         </section>
 
         <div>
-          <button
-            type="submit"
-            className="rounded-md bg-neutral-900 px-4 py-2 font-medium text-white"
-          >
+          <button type="submit" className="rounded-md bg-ink px-4 py-2 font-medium text-paper">
             Save collection
           </button>
         </div>
       </form>
 
       <section className="mt-8">
-        <h2 className="text-sm font-medium uppercase tracking-wide text-neutral-500">Banner</h2>
-        <p className="mt-1 text-sm text-neutral-500">
+        <h2 className="text-sm font-medium uppercase tracking-wide text-ink-subtle">Banner</h2>
+        <p className="mt-1 text-sm text-ink-subtle">
           {col.bannerMediaId ? `Current: ${col.bannerMediaId}` : "No banner set."}
         </p>
         <form
@@ -111,7 +108,7 @@ export default async function CollectionDetailPage({
           className="mt-2 flex items-end gap-3"
         >
           <input type="file" name="file" accept="image/*" required className="text-sm" />
-          <button type="submit" className="rounded border border-neutral-300 px-3 py-1 text-sm">
+          <button type="submit" className="rounded border border-line-strong px-3 py-1 text-sm">
             Upload banner
           </button>
         </form>
@@ -122,7 +119,7 @@ export default async function CollectionDetailPage({
         <input type="hidden" name="entityId" value={id} />
         <input type="hidden" name="environment" value="staging" />
         <input type="hidden" name="back" value={`/collections/${id}`} />
-        <button type="submit" className="rounded border border-neutral-300 px-3 py-1 text-sm">
+        <button type="submit" className="rounded border border-line-strong px-3 py-1 text-sm">
           Publish to staging
         </button>
       </form>

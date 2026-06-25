@@ -6,7 +6,7 @@ import { controlDb } from "@/server/catalog";
 
 export const dynamic = "force-dynamic";
 
-const input = "mt-1 w-full rounded border border-neutral-300 px-2 py-1";
+const input = "mt-1 w-full rounded border border-line-strong px-2 py-1";
 
 export default async function ContentEditPage({
   params,
@@ -35,11 +35,11 @@ export default async function ContentEditPage({
     <main className="mx-auto max-w-2xl px-6 py-10">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold tracking-tight">{page.slug}</h1>
-        <Link href="/content" className="text-sm text-neutral-600 underline">
+        <Link href="/content" className="text-sm text-ink-muted underline">
           Back
         </Link>
       </div>
-      {saved && <p className="mt-2 text-sm text-green-700">Saved (version {page.version}).</p>}
+      {saved && <p className="mt-2 text-sm text-success">Saved (version {page.version}).</p>}
 
       <form
         method="post"
@@ -54,7 +54,7 @@ export default async function ContentEditPage({
           </select>
         </label>
         {(["de", "en", "it", "fr"] as const).map((l) => (
-          <div key={l} className="rounded border border-neutral-200 p-3">
+          <div key={l} className="rounded border border-line p-3">
             <p className="text-sm font-medium">{l.toUpperCase()}</p>
             <label className="mt-2 block text-sm">
               Title
@@ -73,7 +73,7 @@ export default async function ContentEditPage({
         ))}
         <button
           type="submit"
-          className="self-start rounded-md bg-neutral-900 px-4 py-2 font-medium text-white"
+          className="self-start rounded-md bg-ink px-4 py-2 font-medium text-paper"
         >
           Save (new version)
         </button>

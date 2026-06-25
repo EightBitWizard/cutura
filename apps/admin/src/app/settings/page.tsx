@@ -6,7 +6,7 @@ import { environmentDb, parseEnvironment } from "@/server/catalog";
 
 export const dynamic = "force-dynamic";
 
-const input = "mt-1 w-full rounded border border-neutral-300 px-2 py-1 text-sm";
+const input = "mt-1 w-full rounded border border-line-strong px-2 py-1 text-sm";
 
 export default async function SettingsPage({
   searchParams,
@@ -21,12 +21,12 @@ export default async function SettingsPage({
     <main className="mx-auto max-w-2xl px-6 py-10">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold tracking-tight">Operations settings</h1>
-        <Link href="/" className="text-sm text-neutral-600 underline">
+        <Link href="/" className="text-sm text-ink-muted underline">
           Dashboard
         </Link>
       </div>
-      <p className="mt-1 text-sm text-neutral-500">Environment: {environment}</p>
-      {saved && <p className="mt-2 text-sm text-green-700">Saved.</p>}
+      <p className="mt-1 text-sm text-ink-subtle">Environment: {environment}</p>
+      {saved && <p className="mt-2 text-sm text-success">Saved.</p>}
 
       <form method="post" action="/api/settings" className="mt-6 flex flex-col gap-5">
         <input type="hidden" name="environment" value={environment} />
@@ -108,7 +108,7 @@ export default async function SettingsPage({
           </label>
         </div>
 
-        <fieldset className="rounded border border-neutral-200 p-3">
+        <fieldset className="rounded border border-line p-3">
           <legend className="px-1 text-sm font-medium">Pause message shown to customers</legend>
           {(["de", "en", "it", "fr"] as const).map((l) => (
             <label key={l} className="mt-2 block text-sm">
@@ -125,7 +125,7 @@ export default async function SettingsPage({
 
         <button
           type="submit"
-          className="self-start rounded-md bg-neutral-900 px-4 py-2 text-sm font-medium text-white"
+          className="self-start rounded-md bg-ink px-4 py-2 text-sm font-medium text-paper"
         >
           Save settings
         </button>

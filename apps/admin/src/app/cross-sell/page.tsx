@@ -6,7 +6,7 @@ import { controlDb } from "@/server/catalog";
 
 export const dynamic = "force-dynamic";
 
-const input = "mt-1 rounded border border-neutral-300 px-2 py-1";
+const input = "mt-1 rounded border border-line-strong px-2 py-1";
 
 export default async function CrossSellPage() {
   const db = controlDb();
@@ -17,11 +17,11 @@ export default async function CrossSellPage() {
     <main className="mx-auto max-w-3xl px-6 py-10">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold tracking-tight">Cross-sell rules</h1>
-        <Link href="/" className="text-sm text-neutral-600 underline">
+        <Link href="/" className="text-sm text-ink-muted underline">
           Dashboard
         </Link>
       </div>
-      <p className="mt-1 text-sm text-neutral-500">
+      <p className="mt-1 text-sm text-ink-subtle">
         Curated suggestions: a source (model handle, or attribute key:value) suggests a model.
       </p>
 
@@ -29,7 +29,7 @@ export default async function CrossSellPage() {
         {rules.map((r) => (
           <li
             key={r.id}
-            className="flex items-center justify-between rounded border border-neutral-200 p-3"
+            className="flex items-center justify-between rounded border border-line p-3"
           >
             <span>
               {r.sourceType} <span className="font-mono">{r.sourceKey}</span> {"->"}{" "}
@@ -41,19 +41,19 @@ export default async function CrossSellPage() {
                 <input type="hidden" name="entityId" value={r.id} />
                 <input type="hidden" name="environment" value="staging" />
                 <input type="hidden" name="back" value="/cross-sell" />
-                <button type="submit" className="rounded bg-neutral-900 px-2 py-1 text-white">
+                <button type="submit" className="rounded bg-ink px-2 py-1 text-paper">
                   Publish
                 </button>
               </form>
               <form method="post" action={`/api/catalog/cross-sell/${r.id}/delete`}>
-                <button type="submit" className="rounded border border-neutral-300 px-2 py-1">
+                <button type="submit" className="rounded border border-line-strong px-2 py-1">
                   Delete
                 </button>
               </form>
             </div>
           </li>
         ))}
-        {rules.length === 0 && <li className="text-neutral-500">No rules yet.</li>}
+        {rules.length === 0 && <li className="text-ink-subtle">No rules yet.</li>}
       </ul>
 
       <h2 className="mt-10 text-lg font-medium">New rule</h2>
@@ -89,7 +89,7 @@ export default async function CrossSellPage() {
         </label>
         <button
           type="submit"
-          className="rounded-md bg-neutral-900 px-4 py-2 text-sm font-medium text-white"
+          className="rounded-md bg-ink px-4 py-2 text-sm font-medium text-paper"
         >
           Create rule
         </button>

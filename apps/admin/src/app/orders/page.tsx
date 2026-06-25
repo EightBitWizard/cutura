@@ -16,14 +16,14 @@ export default async function OrdersPage() {
     <main className="mx-auto max-w-4xl px-6 py-10">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold tracking-tight">Orders (staging)</h1>
-        <Link href="/" className="text-sm text-neutral-600 underline">
+        <Link href="/" className="text-sm text-ink-muted underline">
           Dashboard
         </Link>
       </div>
 
       <table className="mt-6 w-full border-collapse text-sm">
         <thead>
-          <tr className="border-b text-left text-neutral-500">
+          <tr className="border-b text-left text-ink-subtle">
             <th className="py-2">Order</th>
             <th className="py-2">Status</th>
             <th className="py-2">Total</th>
@@ -34,7 +34,7 @@ export default async function OrdersPage() {
         <tbody>
           {orders.length === 0 ? (
             <tr>
-              <td colSpan={5} className="py-6 text-neutral-500">
+              <td colSpan={5} className="py-6 text-ink-subtle">
                 No orders yet.
               </td>
             </tr>
@@ -48,8 +48,8 @@ export default async function OrdersPage() {
                 </td>
                 <td className="py-3">{o.status}</td>
                 <td className="py-3">{formatCHF(o.totalMinor)}</td>
-                <td className="py-3 text-neutral-500">{o.guestEmail ?? "-"}</td>
-                <td className="py-3 text-neutral-500">{o.createdAt.slice(0, 10)}</td>
+                <td className="py-3 text-ink-subtle">{o.guestEmail ?? "-"}</td>
+                <td className="py-3 text-ink-subtle">{o.createdAt.slice(0, 10)}</td>
               </tr>
             ))
           )}

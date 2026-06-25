@@ -36,14 +36,14 @@ export default async function BoardPage() {
     <main className="px-6 py-10">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold tracking-tight">Pipeline board</h1>
-        <Link href="/orders" className="text-sm text-neutral-600 underline">
+        <Link href="/orders" className="text-sm text-ink-muted underline">
           List view
         </Link>
       </div>
-      <p className="mt-1 text-sm text-neutral-500">
+      <p className="mt-1 text-sm text-ink-subtle">
         {board.length} orders (staging)
         {outlierCount > 0 && (
-          <span className="ml-2 rounded bg-amber-100 px-2 py-0.5 text-amber-800">
+          <span className="ml-2 rounded bg-warning/15 px-2 py-0.5 text-warning">
             {outlierCount} need review
           </span>
         )}
@@ -52,7 +52,7 @@ export default async function BoardPage() {
       <div className="mt-6 flex gap-4 overflow-x-auto pb-4">
         {ORDER_STATUSES.map((s) => (
           <section key={s} className="min-w-56 shrink-0">
-            <h2 className="text-sm font-medium uppercase tracking-wide text-neutral-500">
+            <h2 className="text-sm font-medium uppercase tracking-wide text-ink-subtle">
               {LANE_LABELS[s]} ({byStatus[s].length})
             </h2>
             <div className="mt-2 flex flex-col gap-2">
@@ -61,15 +61,15 @@ export default async function BoardPage() {
                   key={o.id}
                   href={`/orders/${o.id}`}
                   className={`block rounded-lg border p-2 text-sm ${
-                    o.outlier ? "border-amber-400 bg-amber-50" : "border-neutral-200"
+                    o.outlier ? "border-warning/50 bg-warning/5" : "border-line"
                   }`}
                 >
                   <div className="font-mono">{o.orderNumber}</div>
-                  <div className="text-neutral-500">
+                  <div className="text-ink-subtle">
                     {o.itemCount} item{o.itemCount === 1 ? "" : "s"}
                   </div>
                   {o.outlier && (
-                    <div className="mt-1 font-medium text-amber-700">Outlier - bitte prüfen</div>
+                    <div className="mt-1 font-medium text-warning">Outlier - bitte prüfen</div>
                   )}
                 </Link>
               ))}

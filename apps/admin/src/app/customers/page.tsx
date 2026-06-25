@@ -13,15 +13,15 @@ export default async function CustomersPage() {
     <main className="mx-auto max-w-3xl px-6 py-10">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold tracking-tight">Customers</h1>
-        <Link href="/" className="text-sm text-neutral-600 underline">
+        <Link href="/" className="text-sm text-ink-muted underline">
           Dashboard
         </Link>
       </div>
-      <p className="mt-1 text-sm text-neutral-500">{customers.length} customers</p>
+      <p className="mt-1 text-sm text-ink-subtle">{customers.length} customers</p>
 
       <table className="mt-6 w-full text-sm">
         <thead>
-          <tr className="border-b text-left text-neutral-500">
+          <tr className="border-b text-left text-ink-subtle">
             <th className="py-2">Email</th>
             <th>Orders</th>
             <th>State</th>
@@ -36,7 +36,7 @@ export default async function CustomersPage() {
                 </Link>
               </td>
               <td>{c.orderCount}</td>
-              <td className="text-neutral-500">{c.deletionState}</td>
+              <td className="text-ink-subtle">{c.deletionState}</td>
             </tr>
           ))}
         </tbody>

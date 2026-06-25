@@ -6,7 +6,7 @@ import { environmentDb } from "@/server/catalog";
 
 export const dynamic = "force-dynamic";
 
-const input = "mt-1 rounded border border-neutral-300 px-2 py-1";
+const input = "mt-1 rounded border border-line-strong px-2 py-1";
 
 export default async function ShippingPage() {
   const zones = await listShipping(environmentDb("staging"));
@@ -15,21 +15,21 @@ export default async function ShippingPage() {
     <main className="mx-auto max-w-3xl px-6 py-10">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold tracking-tight">Shipping</h1>
-        <Link href="/" className="text-sm text-neutral-600 underline">
+        <Link href="/" className="text-sm text-ink-muted underline">
           Dashboard
         </Link>
       </div>
-      <p className="mt-2 text-sm text-neutral-500">
+      <p className="mt-2 text-sm text-ink-subtle">
         Zones and methods. Standard shipping is included in the displayed price.
       </p>
 
       <ul className="mt-6 flex flex-col gap-4">
         {zones.map(({ zone, methods }) => (
-          <li key={zone.id} className="rounded-lg border border-neutral-200 p-4 text-sm">
+          <li key={zone.id} className="rounded-lg border border-line p-4 text-sm">
             <p className="font-medium">
               {zone.name} ({(zone.countries ?? []).join(", ")})
             </p>
-            <ul className="mt-1 text-neutral-600">
+            <ul className="mt-1 text-ink-muted">
               {methods.map((m) => (
                 <li key={m.id}>
                   {m.code} - {m.kind} - {(m.priceMinor / 100).toFixed(2)} CHF
@@ -62,13 +62,13 @@ export default async function ShippingPage() {
                 <input name="includedInPrice" type="checkbox" defaultChecked />
                 Included
               </label>
-              <button type="submit" className="rounded border border-neutral-300 px-2 py-1 text-sm">
+              <button type="submit" className="rounded border border-line-strong px-2 py-1 text-sm">
                 Add method
               </button>
             </form>
           </li>
         ))}
-        {zones.length === 0 && <li className="text-sm text-neutral-500">No zones yet.</li>}
+        {zones.length === 0 && <li className="text-sm text-ink-subtle">No zones yet.</li>}
       </ul>
 
       <h2 className="mt-10 text-lg font-medium">New zone</h2>
@@ -87,7 +87,7 @@ export default async function ShippingPage() {
         </label>
         <button
           type="submit"
-          className="rounded-md bg-neutral-900 px-4 py-2 text-sm font-medium text-white"
+          className="rounded-md bg-ink px-4 py-2 text-sm font-medium text-paper"
         >
           Create zone
         </button>

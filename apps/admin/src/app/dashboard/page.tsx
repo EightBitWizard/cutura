@@ -32,16 +32,16 @@ export default async function DashboardPage() {
     <main className="mx-auto max-w-4xl px-6 py-10">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
-        <Link href="/" className="text-sm text-neutral-600 underline">
+        <Link href="/" className="text-sm text-ink-muted underline">
           Home
         </Link>
       </div>
-      <p className="mt-1 text-sm text-neutral-500">Soft-launch KPIs (staging)</p>
+      <p className="mt-1 text-sm text-ink-subtle">Soft-launch KPIs (staging)</p>
 
       <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3">
         {cards.map((c) => (
-          <div key={c.label} className="rounded-lg border border-neutral-200 p-4">
-            <div className="text-sm text-neutral-500">{c.label}</div>
+          <div key={c.label} className="rounded-lg border border-line p-4">
+            <div className="text-sm text-ink-subtle">{c.label}</div>
             <div className="mt-1 text-2xl font-semibold">{c.value}</div>
           </div>
         ))}
@@ -49,7 +49,7 @@ export default async function DashboardPage() {
 
       <a
         href="/api/export/orders"
-        className="mt-6 inline-block rounded border border-neutral-300 px-4 py-2 text-sm"
+        className="mt-6 inline-block rounded border border-line-strong px-4 py-2 text-sm"
       >
         Export orders (CSV)
       </a>

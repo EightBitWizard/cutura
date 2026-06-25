@@ -37,11 +37,11 @@ export default async function OptionGroupDetailPage({
         <h1 className="text-2xl font-semibold tracking-tight">
           Option group: <span className="font-mono">{group.code}</span>
         </h1>
-        <Link href="/option-groups" className="text-sm text-neutral-600 underline">
+        <Link href="/option-groups" className="text-sm text-ink-muted underline">
           Back
         </Link>
       </div>
-      <p className="mt-1 text-neutral-600">{group.labelI18n.de}</p>
+      <p className="mt-1 text-ink-muted">{group.labelI18n.de}</p>
 
       <MediaManager
         entityType="optionGroup"
@@ -54,7 +54,7 @@ export default async function OptionGroupDetailPage({
       <h2 className="mt-8 text-lg font-medium">Values</h2>
       <table className="mt-3 w-full border-collapse text-sm">
         <thead>
-          <tr className="border-b text-left text-neutral-500">
+          <tr className="border-b text-left text-ink-subtle">
             <th className="py-2">Code</th>
             <th className="py-2">Label (DE)</th>
             <th className="py-2">Surcharge</th>
@@ -64,7 +64,7 @@ export default async function OptionGroupDetailPage({
         <tbody>
           {values.length === 0 ? (
             <tr>
-              <td colSpan={4} className="py-4 text-neutral-500">
+              <td colSpan={4} className="py-4 text-ink-subtle">
                 No values yet.
               </td>
             </tr>
@@ -79,7 +79,7 @@ export default async function OptionGroupDetailPage({
                     method="post"
                     action={`/api/catalog/option-groups/${id}/values/${v.id}/delete`}
                   >
-                    <button type="submit" className="rounded border border-neutral-300 px-2 py-1">
+                    <button type="submit" className="rounded border border-line-strong px-2 py-1">
                       Delete
                     </button>
                   </form>
@@ -101,7 +101,7 @@ export default async function OptionGroupDetailPage({
           <input
             name="code"
             required
-            className="mt-1 rounded border border-neutral-300 px-2 py-1"
+            className="mt-1 rounded border border-line-strong px-2 py-1"
           />
         </label>
         <label className="flex flex-col text-sm">
@@ -110,7 +110,7 @@ export default async function OptionGroupDetailPage({
             name="surchargeMinor"
             type="number"
             defaultValue={0}
-            className="mt-1 rounded border border-neutral-300 px-2 py-1"
+            className="mt-1 rounded border border-line-strong px-2 py-1"
           />
         </label>
         <label className="flex flex-col text-sm">
@@ -118,26 +118,23 @@ export default async function OptionGroupDetailPage({
           <input
             name="label_de"
             required
-            className="mt-1 rounded border border-neutral-300 px-2 py-1"
+            className="mt-1 rounded border border-line-strong px-2 py-1"
           />
         </label>
         <label className="flex flex-col text-sm">
           Label (EN)
-          <input name="label_en" className="mt-1 rounded border border-neutral-300 px-2 py-1" />
+          <input name="label_en" className="mt-1 rounded border border-line-strong px-2 py-1" />
         </label>
         <label className="flex flex-col text-sm">
           Label (IT)
-          <input name="label_it" className="mt-1 rounded border border-neutral-300 px-2 py-1" />
+          <input name="label_it" className="mt-1 rounded border border-line-strong px-2 py-1" />
         </label>
         <label className="flex flex-col text-sm">
           Label (FR)
-          <input name="label_fr" className="mt-1 rounded border border-neutral-300 px-2 py-1" />
+          <input name="label_fr" className="mt-1 rounded border border-line-strong px-2 py-1" />
         </label>
         <div className="col-span-2">
-          <button
-            type="submit"
-            className="rounded-md bg-neutral-900 px-4 py-2 font-medium text-white"
-          >
+          <button type="submit" className="rounded-md bg-ink px-4 py-2 font-medium text-paper">
             Add value
           </button>
         </div>
@@ -146,7 +143,7 @@ export default async function OptionGroupDetailPage({
       {values.length > 0 && (
         <section className="mt-10">
           <h2 className="text-lg font-medium">Value images (swatches)</h2>
-          <p className="mt-1 text-sm text-neutral-500">
+          <p className="mt-1 text-sm text-ink-subtle">
             Optional thumbnails shown next to each option in the configurator. Publish the group to
             apply.
           </p>

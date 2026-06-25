@@ -29,11 +29,11 @@ export default async function UpgradeDetailPage({ params }: { params: Promise<{ 
         <h1 className="text-2xl font-semibold tracking-tight">
           Upgrade: <span className="font-mono">{row.code}</span>
         </h1>
-        <Link href="/upgrades" className="text-sm text-neutral-600 underline">
+        <Link href="/upgrades" className="text-sm text-ink-muted underline">
           Back
         </Link>
       </div>
-      <p className="mt-1 text-neutral-600">{row.nameI18n.de}</p>
+      <p className="mt-1 text-ink-muted">{row.nameI18n.de}</p>
 
       <MediaManager
         entityType="upgrade"
@@ -48,7 +48,7 @@ export default async function UpgradeDetailPage({ params }: { params: Promise<{ 
         <input type="hidden" name="entityId" value={id} />
         <input type="hidden" name="environment" value="staging" />
         <input type="hidden" name="back" value={`/upgrades/${id}`} />
-        <button type="submit" className="rounded border border-neutral-300 px-3 py-1 text-sm">
+        <button type="submit" className="rounded border border-line-strong px-3 py-1 text-sm">
           Publish to staging
         </button>
       </form>

@@ -29,11 +29,11 @@ export default async function CustomerDetailPage({ params }: { params: Promise<{
     <main className="mx-auto max-w-3xl px-6 py-10">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold tracking-tight">{view.customer.email}</h1>
-        <Link href="/customers" className="text-sm text-neutral-600 underline">
+        <Link href="/customers" className="text-sm text-ink-muted underline">
           Back
         </Link>
       </div>
-      <p className="mt-1 text-sm text-neutral-500">
+      <p className="mt-1 text-sm text-ink-subtle">
         {view.customer.locale} - {view.customer.deletionState}
       </p>
 
@@ -48,7 +48,7 @@ export default async function CustomerDetailPage({ params }: { params: Promise<{
             name="notes"
             rows={2}
             defaultValue={view.customer.notes ?? ""}
-            className="mt-1 w-full rounded border border-neutral-300 px-2 py-1 text-sm"
+            className="mt-1 w-full rounded border border-line-strong px-2 py-1 text-sm"
           />
         </label>
         <label className="text-sm">
@@ -56,13 +56,10 @@ export default async function CustomerDetailPage({ params }: { params: Promise<{
           <input
             name="tags"
             defaultValue={(view.customer.tags ?? []).join(", ")}
-            className="mt-1 w-full rounded border border-neutral-300 px-2 py-1 text-sm"
+            className="mt-1 w-full rounded border border-line-strong px-2 py-1 text-sm"
           />
         </label>
-        <button
-          type="submit"
-          className="self-start rounded bg-neutral-900 px-3 py-1 text-sm text-white"
-        >
+        <button type="submit" className="self-start rounded bg-ink px-3 py-1 text-sm text-paper">
           Save notes + tags
         </button>
       </form>
@@ -80,7 +77,7 @@ export default async function CustomerDetailPage({ params }: { params: Promise<{
       </ul>
 
       <h2 className="mt-8 text-lg font-medium">Profiles ({view.profiles.length})</h2>
-      <ul className="mt-2 text-sm text-neutral-600">
+      <ul className="mt-2 text-sm text-ink-muted">
         {view.profiles.map((p) => (
           <li key={p.id}>
             {p.name ?? p.id}: {p.confirmed ? Object.keys(p.confirmed).length : 0} measurements
@@ -89,7 +86,7 @@ export default async function CustomerDetailPage({ params }: { params: Promise<{
       </ul>
 
       <h2 className="mt-8 text-lg font-medium">Fit history ({view.fitReviews.length})</h2>
-      <ul className="mt-2 text-sm text-neutral-600">
+      <ul className="mt-2 text-sm text-ink-muted">
         {view.fitReviews.map((f) => (
           <li key={f.id}>
             {f.status}

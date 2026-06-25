@@ -47,11 +47,11 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
         <h1 className="text-2xl font-semibold tracking-tight">
           Order <span className="font-mono">{detail.order.orderNumber}</span>
         </h1>
-        <Link href="/orders" className="text-sm text-neutral-600 underline">
+        <Link href="/orders" className="text-sm text-ink-muted underline">
           Back
         </Link>
       </div>
-      <p className="mt-1 text-sm text-neutral-500">
+      <p className="mt-1 text-sm text-ink-subtle">
         Status: {detail.order.status} - {detail.order.guestEmail} - Terms{" "}
         {detail.order.acceptedTermsVersion} / Privacy {detail.order.acceptedPrivacyVersion}
       </p>
@@ -59,21 +59,21 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
       <div className="mt-4 flex gap-2">
         {anyInReview && (
           <form method="post" action={`/api/orders/${id}/approve`}>
-            <button type="submit" className="rounded bg-neutral-900 px-3 py-1 text-sm text-white">
+            <button type="submit" className="rounded bg-ink px-3 py-1 text-sm text-paper">
               Approve + send to supplier
             </button>
           </form>
         )}
         {allQcPassed && (
           <form method="post" action={`/api/orders/${id}/ship`}>
-            <button type="submit" className="rounded bg-neutral-900 px-3 py-1 text-sm text-white">
+            <button type="submit" className="rounded bg-ink px-3 py-1 text-sm text-paper">
               Release shipping
             </button>
           </form>
         )}
         <a
           href={`/api/orders/${id}/parcel-card`}
-          className="rounded border border-neutral-300 px-3 py-1 text-sm"
+          className="rounded border border-line-strong px-3 py-1 text-sm"
         >
           Parcel card (PDF)
         </a>
@@ -82,26 +82,26 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
       <form
         method="post"
         action={`/api/orders/${id}/notes`}
-        className="mt-6 flex flex-col gap-2 rounded-lg border border-neutral-200 p-4"
+        className="mt-6 flex flex-col gap-2 rounded-lg border border-line p-4"
       >
-        <h2 className="text-sm font-medium uppercase tracking-wide text-neutral-500">
+        <h2 className="text-sm font-medium uppercase tracking-wide text-ink-subtle">
           Internal notes + tags
         </h2>
         <textarea
           name="notes"
           rows={2}
           defaultValue={detail.order.notes ?? ""}
-          className="rounded border border-neutral-300 px-2 py-1 text-sm"
+          className="rounded border border-line-strong px-2 py-1 text-sm"
         />
         <input
           name="tags"
           placeholder="Tags (comma-separated)"
           defaultValue={(detail.order.tags ?? []).join(", ")}
-          className="rounded border border-neutral-300 px-2 py-1 text-sm"
+          className="rounded border border-line-strong px-2 py-1 text-sm"
         />
         <button
           type="submit"
-          className="self-start rounded border border-neutral-300 px-3 py-1 text-sm"
+          className="self-start rounded border border-line-strong px-3 py-1 text-sm"
         >
           Save notes + tags
         </button>
@@ -110,9 +110,9 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
       <form
         method="post"
         action={`/api/orders/${id}/cost`}
-        className="mt-6 rounded-lg border border-neutral-200 p-4"
+        className="mt-6 rounded-lg border border-line p-4"
       >
-        <h2 className="text-sm font-medium uppercase tracking-wide text-neutral-500">
+        <h2 className="text-sm font-medium uppercase tracking-wide text-ink-subtle">
           Cost capture (Rappen)
         </h2>
         <div className="mt-2 grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -131,28 +131,26 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
                 type="number"
                 min={0}
                 defaultValue={value ?? ""}
-                className="mt-1 rounded border border-neutral-300 px-2 py-1"
+                className="mt-1 rounded border border-line-strong px-2 py-1"
               />
             </label>
           ))}
         </div>
         <div className="mt-3 flex items-center gap-4">
-          <button type="submit" className="rounded border border-neutral-300 px-3 py-1 text-sm">
+          <button type="submit" className="rounded border border-line-strong px-3 py-1 text-sm">
             Save cost
           </button>
           {margin !== null && (
-            <span className="text-sm text-neutral-600">
-              Margin: {(margin / 100).toFixed(2)} CHF
-            </span>
+            <span className="text-sm text-ink-muted">Margin: {(margin / 100).toFixed(2)} CHF</span>
           )}
         </div>
       </form>
 
       {items.map(({ item, pkg, qc, snapshot }) => (
-        <section key={item.id} className="mt-6 rounded-lg border border-neutral-200 p-4">
+        <section key={item.id} className="mt-6 rounded-lg border border-line p-4">
           <div className="flex items-center justify-between">
             <h2 className="font-medium">{snapshot?.baseModelName ?? item.baseModelId}</h2>
-            <span className="text-sm text-neutral-500">{item.status}</span>
+            <span className="text-sm text-ink-subtle">{item.status}</span>
           </div>
           {snapshot && <OutlierWarning snapshot={snapshot} />}
           {snapshot && <SnapshotView snapshot={snapshot} />}
@@ -170,9 +168,9 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
                 name="note"
                 placeholder="Pre-release correction note (audited)"
                 required
-                className="flex-1 rounded border border-neutral-300 px-2 py-1 text-sm"
+                className="flex-1 rounded border border-line-strong px-2 py-1 text-sm"
               />
-              <button type="submit" className="rounded border border-neutral-300 px-2 py-1 text-sm">
+              <button type="submit" className="rounded border border-line-strong px-2 py-1 text-sm">
                 Record correction
               </button>
             </form>
@@ -191,9 +189,9 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
                 name="overrideReason"
                 placeholder="Override reason"
                 required
-                className="rounded border border-neutral-300 px-2 py-1 text-sm"
+                className="rounded border border-line-strong px-2 py-1 text-sm"
               />
-              <button type="submit" className="rounded border border-neutral-300 px-2 py-1 text-sm">
+              <button type="submit" className="rounded border border-line-strong px-2 py-1 text-sm">
                 Override to pass (audited)
               </button>
             </form>
@@ -202,7 +200,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
       ))}
 
       <h2 className="mt-8 text-lg font-medium">Timeline</h2>
-      <ul className="mt-2 text-sm text-neutral-600">
+      <ul className="mt-2 text-sm text-ink-muted">
         {detail.events.map((e) => (
           <li key={e.id}>
             {e.createdAt.slice(0, 19).replace("T", " ")} - {e.fromStatus ?? "-"} {"->"} {e.toStatus}{" "}
@@ -219,7 +217,7 @@ function OutlierWarning({ snapshot }: { snapshot: OrderSnapshot }) {
   const result = checkOutliers(snapshot.garmentType, snapshot.effectiveMeasurements);
   if (!result.isOutlier) return null;
   return (
-    <div className="mt-2 rounded border border-amber-300 bg-amber-50 p-3 text-sm text-amber-800">
+    <div className="mt-2 rounded border border-warning/40 bg-warning/5 p-3 text-sm text-warning">
       <p className="font-medium">Outlier - bitte Masse prüfen</p>
       <ul className="mt-1 list-disc pl-5">
         {result.flags.map((f) => (
@@ -232,7 +230,7 @@ function OutlierWarning({ snapshot }: { snapshot: OrderSnapshot }) {
 
 function SnapshotView({ snapshot }: { snapshot: OrderSnapshot }) {
   return (
-    <dl className="mt-2 grid grid-cols-2 gap-x-4 text-sm text-neutral-600">
+    <dl className="mt-2 grid grid-cols-2 gap-x-4 text-sm text-ink-muted">
       <div className="col-span-2">Fabric: {snapshot.fabricCode}</div>
       {Object.entries(snapshot.configuration).map(([k, v]) => (
         <div key={k}>
@@ -277,12 +275,9 @@ function QcForm({
       <input
         name="notes"
         placeholder="Notes (optional)"
-        className="rounded border border-neutral-300 px-2 py-1 text-sm"
+        className="rounded border border-line-strong px-2 py-1 text-sm"
       />
-      <button
-        type="submit"
-        className="self-start rounded bg-neutral-900 px-3 py-1 text-sm text-white"
-      >
+      <button type="submit" className="self-start rounded bg-ink px-3 py-1 text-sm text-paper">
         Submit QC
       </button>
     </form>

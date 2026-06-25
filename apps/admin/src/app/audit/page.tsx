@@ -10,13 +10,13 @@ export default async function AuditPage() {
   return (
     <main className="mx-auto max-w-4xl px-6 py-10">
       <h1 className="text-2xl font-semibold tracking-tight">Audit log</h1>
-      <p className="mt-1 text-sm text-neutral-500">
+      <p className="mt-1 text-sm text-ink-subtle">
         Status changes, admin operations, and sensitive access (staging, newest first).
       </p>
 
       <table className="mt-6 w-full text-sm">
         <thead>
-          <tr className="border-b text-left text-neutral-500">
+          <tr className="border-b text-left text-ink-subtle">
             <th className="py-2">When</th>
             <th>Actor</th>
             <th>Action</th>
@@ -31,7 +31,7 @@ export default async function AuditPage() {
               </td>
               <td>{r.actor}</td>
               <td>{r.action}</td>
-              <td className="text-neutral-500">
+              <td className="text-ink-subtle">
                 {r.entityType ?? "-"}
                 {r.entityId ? ` ${r.entityId.slice(0, 8)}` : ""}
               </td>
@@ -39,7 +39,7 @@ export default async function AuditPage() {
           ))}
           {rows.length === 0 && (
             <tr>
-              <td colSpan={4} className="py-6 text-neutral-500">
+              <td colSpan={4} className="py-6 text-ink-subtle">
                 No audit entries yet.
               </td>
             </tr>

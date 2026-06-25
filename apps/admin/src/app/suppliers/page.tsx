@@ -6,7 +6,7 @@ import { environmentDb } from "@/server/catalog";
 
 export const dynamic = "force-dynamic";
 
-const input = "mt-1 rounded border border-neutral-300 px-2 py-1";
+const input = "mt-1 rounded border border-line-strong px-2 py-1";
 
 export default async function SuppliersPage() {
   // Suppliers live in the environment DB - the paid pipeline routes to the default here.
@@ -16,35 +16,35 @@ export default async function SuppliersPage() {
     <main className="mx-auto max-w-3xl px-6 py-10">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold tracking-tight">Suppliers</h1>
-        <Link href="/" className="text-sm text-neutral-600 underline">
+        <Link href="/" className="text-sm text-ink-muted underline">
           Dashboard
         </Link>
       </div>
-      <p className="mt-2 text-sm text-neutral-500">
+      <p className="mt-2 text-sm text-ink-subtle">
         One supplier at launch; all production routes to the default (staging). The model supports
         more later.
       </p>
 
       <ul className="mt-6 flex flex-col gap-3">
         {rows.map((s) => (
-          <li key={s.id} className="rounded-lg border border-neutral-200 p-4 text-sm">
+          <li key={s.id} className="rounded-lg border border-line p-4 text-sm">
             <div className="flex items-center justify-between">
               <span className="font-medium">
                 {s.name}
-                {s.isDefault && <span className="ml-2 text-green-700">(default)</span>}
+                {s.isDefault && <span className="ml-2 text-success">(default)</span>}
               </span>
               {!s.isDefault && (
                 <form method="post" action={`/api/suppliers/${s.id}/default`}>
-                  <button type="submit" className="rounded border border-neutral-300 px-2 py-1">
+                  <button type="submit" className="rounded border border-line-strong px-2 py-1">
                     Set default
                   </button>
                 </form>
               )}
             </div>
-            {s.notes && <p className="mt-1 text-neutral-500">{s.notes}</p>}
+            {s.notes && <p className="mt-1 text-ink-subtle">{s.notes}</p>}
           </li>
         ))}
-        {rows.length === 0 && <li className="text-sm text-neutral-500">No suppliers yet.</li>}
+        {rows.length === 0 && <li className="text-sm text-ink-subtle">No suppliers yet.</li>}
       </ul>
 
       <h2 className="mt-10 text-lg font-medium">New supplier</h2>
@@ -66,10 +66,7 @@ export default async function SuppliersPage() {
           Default supplier
         </label>
         <div className="col-span-2">
-          <button
-            type="submit"
-            className="rounded-md bg-neutral-900 px-4 py-2 font-medium text-white"
-          >
+          <button type="submit" className="rounded-md bg-ink px-4 py-2 font-medium text-paper">
             Create supplier
           </button>
         </div>

@@ -18,7 +18,7 @@ import { controlDb } from "@/server/catalog";
 
 export const dynamic = "force-dynamic";
 
-const inputClass = "mt-1 rounded border border-neutral-300 px-2 py-1";
+const inputClass = "mt-1 rounded border border-line-strong px-2 py-1";
 
 export default async function BaseModelDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -54,7 +54,7 @@ export default async function BaseModelDetailPage({ params }: { params: Promise<
         <h1 className="text-2xl font-semibold tracking-tight">
           Base model: <span className="font-mono">{model.handle}</span>
         </h1>
-        <Link href="/base-models" className="text-sm text-neutral-600 underline">
+        <Link href="/base-models" className="text-sm text-ink-muted underline">
           Back
         </Link>
       </div>
@@ -127,7 +127,7 @@ export default async function BaseModelDetailPage({ params }: { params: Promise<
         <section>
           <h2 className="text-lg font-medium">Allowed fabrics</h2>
           {fabrics.length === 0 ? (
-            <p className="text-sm text-neutral-500">No fabrics yet.</p>
+            <p className="text-sm text-ink-subtle">No fabrics yet.</p>
           ) : (
             <div className="mt-2 flex flex-col gap-1">
               {fabrics.map((f) => (
@@ -148,7 +148,7 @@ export default async function BaseModelDetailPage({ params }: { params: Promise<
         <section>
           <h2 className="text-lg font-medium">Allowed option groups</h2>
           {optionGroups.length === 0 ? (
-            <p className="text-sm text-neutral-500">No option groups yet.</p>
+            <p className="text-sm text-ink-subtle">No option groups yet.</p>
           ) : (
             <div className="mt-2 flex flex-col gap-1">
               {optionGroups.map((g) => (
@@ -162,7 +162,7 @@ export default async function BaseModelDetailPage({ params }: { params: Promise<
                     />
                     <span className="font-mono">{g.code}</span> {g.labelI18n.de}
                   </label>
-                  <label className="flex items-center gap-1 text-neutral-500">
+                  <label className="flex items-center gap-1 text-ink-subtle">
                     <input
                       type="checkbox"
                       name={`required_${g.id}`}
@@ -179,7 +179,7 @@ export default async function BaseModelDetailPage({ params }: { params: Promise<
         <section>
           <h2 className="text-lg font-medium">Allowed upgrades</h2>
           {upgrades.length === 0 ? (
-            <p className="text-sm text-neutral-500">No upgrades yet.</p>
+            <p className="text-sm text-ink-subtle">No upgrades yet.</p>
           ) : (
             <div className="mt-2 flex flex-col gap-1">
               {upgrades.map((u) => (
@@ -198,10 +198,7 @@ export default async function BaseModelDetailPage({ params }: { params: Promise<
         </section>
 
         <div>
-          <button
-            type="submit"
-            className="rounded-md bg-neutral-900 px-4 py-2 font-medium text-white"
-          >
+          <button type="submit" className="rounded-md bg-ink px-4 py-2 font-medium text-paper">
             Save model
           </button>
         </div>
@@ -215,11 +212,11 @@ export default async function BaseModelDetailPage({ params }: { params: Promise<
       />
 
       <section className="mt-8">
-        <h2 className="text-sm font-medium uppercase tracking-wide text-neutral-500">
+        <h2 className="text-sm font-medium uppercase tracking-wide text-ink-subtle">
           Attributes (discovery filters)
         </h2>
         {attrDefs.length === 0 && (
-          <p className="mt-2 text-sm text-neutral-500">
+          <p className="mt-2 text-sm text-ink-subtle">
             No model attributes defined yet. Create them under Attributes.
           </p>
         )}
@@ -244,7 +241,7 @@ export default async function BaseModelDetailPage({ params }: { params: Promise<
                   className={inputClass}
                 />
               </label>
-              <button type="submit" className="rounded border border-neutral-300 px-2 py-1">
+              <button type="submit" className="rounded border border-line-strong px-2 py-1">
                 Save
               </button>
             </form>
@@ -257,7 +254,7 @@ export default async function BaseModelDetailPage({ params }: { params: Promise<
         <input type="hidden" name="entityId" value={id} />
         <input type="hidden" name="environment" value="staging" />
         <input type="hidden" name="back" value={`/base-models/${id}`} />
-        <button type="submit" className="rounded border border-neutral-300 px-3 py-1 text-sm">
+        <button type="submit" className="rounded border border-line-strong px-3 py-1 text-sm">
           Publish to staging
         </button>
       </form>

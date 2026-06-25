@@ -63,6 +63,9 @@ importers:
       '@opennextjs/cloudflare':
         specifier: ^1.19.11
         version: 1.19.11(next@16.2.9(@playwright/test@1.61.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(wrangler@4.103.0(@cloudflare/workers-types@4.20260621.1))
+      '@tailwindcss/postcss':
+        specifier: ^4.0.0
+        version: 4.3.1
       '@types/node':
         specifier: ^22.10.5
         version: 22.20.0
@@ -75,6 +78,9 @@ importers:
       eslint-config-next:
         specifier: ^16.2.9
         version: 16.2.9(@typescript-eslint/parser@8.62.0(eslint@9.39.4(jiti@2.7.0))(typescript@5.9.3))(eslint@9.39.4(jiti@2.7.0))(typescript@5.9.3)
+      tailwindcss:
+        specifier: ^4.0.0
+        version: 4.3.1
       typescript:
         specifier: ^5.7.3
         version: 5.9.3

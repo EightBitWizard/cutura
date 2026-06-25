@@ -4,40 +4,40 @@ export default function AdminHome() {
   return (
     <main className="mx-auto max-w-4xl px-6 py-10">
       <h1 className="text-2xl font-semibold tracking-tight">CUTURA Admin</h1>
-      <p className="mt-2 text-neutral-600">
+      <p className="mt-2 text-ink-muted">
         Control plane for the catalog, publishing, and operations.
       </p>
       <nav className="mt-6 flex flex-col gap-2">
-        <Link className="text-neutral-900 underline" href="/orders">
+        <Link className="text-ink underline" href="/orders">
           Orders
         </Link>
-        <Link className="text-neutral-900 underline" href="/garment-types">
+        <Link className="text-ink underline" href="/garment-types">
           Garment types
         </Link>
-        <Link className="text-neutral-900 underline" href="/base-models">
+        <Link className="text-ink underline" href="/base-models">
           Base models
         </Link>
-        <Link className="text-neutral-900 underline" href="/fabrics">
+        <Link className="text-ink underline" href="/fabrics">
           Fabrics
         </Link>
-        <Link className="text-neutral-900 underline" href="/option-groups">
+        <Link className="text-ink underline" href="/option-groups">
           Option groups
         </Link>
-        <Link className="text-neutral-900 underline" href="/upgrades">
+        <Link className="text-ink underline" href="/upgrades">
           Upgrades
         </Link>
-        <Link className="text-neutral-900 underline" href="/collections">
+        <Link className="text-ink underline" href="/collections">
           Collections
         </Link>
-        <Link className="text-neutral-900 underline" href="/attributes">
+        <Link className="text-ink underline" href="/attributes">
           Attributes
         </Link>
-        <Link className="text-neutral-900 underline" href="/suppliers">
+        <Link className="text-ink underline" href="/suppliers">
           Suppliers
         </Link>
       </nav>
       <form method="post" action="/api/auth/logout" className="mt-10">
-        <button type="submit" className="rounded border border-neutral-300 px-3 py-1 text-sm">
+        <button type="submit" className="rounded border border-line-strong px-3 py-1 text-sm">
           Sign out
         </button>
       </form>
