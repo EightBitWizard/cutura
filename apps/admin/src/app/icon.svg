@@ -1,13 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
   <rect width="32" height="32" rx="7" fill="#1F1D1A" />
-  <text
-    x="16"
-    y="16"
-    text-anchor="middle"
-    dominant-baseline="central"
-    fill="#F6F4EF"
-    font-family="Inter, system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif"
-    font-size="20"
-    font-weight="600"
-  >C</text>
+  <path
+    d="M20.8 10.3 A7.5 7.5 0 1 0 20.8 21.7"
+    fill="none"
+    stroke="#F6F4EF"
+    stroke-width="4"
+    stroke-linecap="round"
+  />
 </svg>
