@@ -4,6 +4,17 @@ All notable changes to this project. Newest first.
 
 ## Unreleased
 
+### Added (Batch 10 - visual design system, WS0)
+
+- A storefront visual identity, "Warmed Swiss Method": warm off-white surfaces, deep
+  warm ink, a single restrained red accent, the self-hosted Inter typeface, tight radii,
+  and calm spacing, expressed as Tailwind v4 `@theme` tokens. See
+  docs/DECISIONS/0010-visual-design-system.md.
+- A small storefront UI primitive layer (Button, Card, Section, Container, Price, Field,
+  Input, Badge, Eyebrow) with a unit-tested button-variant helper, and a restyled
+  header (active-section red underline), footer (localized labels), and reduced-motion
+  handling. No change to pricing, measurement, or any product behaviour.
+
 ### Added (M9 - launch-hardening follow-ups)
 
 - A scheduled backstop that reconciles recent orders against Shopify, so a missed or

@@ -887,3 +887,71 @@ const orderCatalog: Record<Locale, OrderMessages> = {
 export function getOrderMessages(locale: Locale): OrderMessages {
   return orderCatalog[locale];
 }
+
+export interface FooterMessages {
+  helpHeading: string;
+  legalHeading: string;
+  about: string;
+  faq: string;
+  contact: string;
+  imprint: string;
+  terms: string;
+  privacy: string;
+  shipping: string;
+  fitGuarantee: string;
+}
+
+const footerCatalog: Record<Locale, FooterMessages> = {
+  de: {
+    helpHeading: "Hilfe",
+    legalHeading: "Rechtliches",
+    about: "Über uns",
+    faq: "Häufige Fragen",
+    contact: "Kontakt",
+    imprint: "Impressum",
+    terms: "AGB",
+    privacy: "Datenschutz",
+    shipping: "Versand",
+    fitGuarantee: "Passformgarantie",
+  },
+  en: {
+    helpHeading: "Help",
+    legalHeading: "Legal",
+    about: "About",
+    faq: "FAQ",
+    contact: "Contact",
+    imprint: "Imprint",
+    terms: "Terms",
+    privacy: "Privacy",
+    shipping: "Shipping",
+    fitGuarantee: "Fit guarantee",
+  },
+  it: {
+    helpHeading: "Assistenza",
+    legalHeading: "Note legali",
+    about: "Chi siamo",
+    faq: "Domande frequenti",
+    contact: "Contatti",
+    imprint: "Note legali",
+    terms: "Condizioni",
+    privacy: "Privacy",
+    shipping: "Spedizione",
+    fitGuarantee: "Garanzia di vestibilità",
+  },
+  fr: {
+    helpHeading: "Aide",
+    legalHeading: "Informations légales",
+    about: "À propos",
+    faq: "FAQ",
+    contact: "Contact",
+    imprint: "Mentions légales",
+    terms: "Conditions générales",
+    privacy: "Confidentialité",
+    shipping: "Livraison",
+    fitGuarantee: "Garantie d'ajustement",
+  },
+};
+
+export function getFooterMessages(locale: Locale): FooterMessages {
+  return footerCatalog[locale];
+}

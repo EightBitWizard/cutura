@@ -141,10 +141,10 @@ Build in the milestone order in `docs/PLAN.md`. Do not start a milestone until t
 
 ## Review subagents
 
-- For any customer-facing change (UX, workflows, onboarding, navigation, forms, settings, errors, loading and empty states, data display, notifications, feature scope), use the product-and-ux-reviewer subagent, especially before implementation and before finalizing the diff. Do not start implementation until customer-visible behaviour and acceptance criteria are clear. If it blocks the plan, revise the plan before coding.
+- Use the product-and-ux-reviewer subagent for customer-facing behaviour, flows, scope, copy, onboarding, navigation, forms, errors, empty states, and acceptance criteria. Use it before implementation when product decisions are unclear or customer-visible behaviour may change.
 - Use the qa-and-test-integrity subagent to review tests. It distrusts green: it checks that tests assert real behaviour, that changed code is covered, and that no test was weakened or skipped to pass.
 - For security, privacy, payment, and measurement changes, perform an adversarial self-review against the security and privacy checklist before committing.
-
+- Use the frontend-design-engineer subagent for customer-facing UI implementation and polish: layout, typography, spacing, color, components, responsive behaviour, interaction states, accessibility, and design-system consistency. Use it after product behaviour and acceptance criteria are clear, and before finalizing UI-heavy diffs.
 ---
 
 ## Test policy

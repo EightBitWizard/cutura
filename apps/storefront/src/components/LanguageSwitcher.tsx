@@ -29,7 +29,11 @@ export function LanguageSwitcher({ current }: { current: string }) {
           onClick={() => {
             document.cookie = `${LOCALE_COOKIE}=${l};path=/;max-age=${60 * 60 * 24 * 365}`;
           }}
-          className={l === current ? "font-semibold text-neutral-900" : "text-neutral-500"}
+          className={
+            l === current
+              ? "font-medium text-ink"
+              : "text-ink-subtle transition-colors hover:text-ink"
+          }
         >
           {l.toUpperCase()}
         </Link>

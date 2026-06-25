@@ -25,6 +25,9 @@ test-results/
 .env.*.local
 infra/.secrets/
 
+# Claude Code local agent + memory state (machine-local; agents still load from disk)
+.claude/
+
 # OS / editor
 .DS_Store
 *.log
