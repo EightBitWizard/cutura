@@ -23,7 +23,7 @@ export function ProductGallery({
         <MediaImage
           mediaId={current?.id ?? null}
           alt={current?.alt || name}
-          className="aspect-[4/5] w-full object-cover"
+          className="aspect-[4/5] w-full object-contain"
         />
       </div>
 
@@ -46,7 +46,7 @@ export function ProductGallery({
                   <MediaImage
                     mediaId={img.id}
                     alt=""
-                    className="h-16 w-16 bg-sunken object-cover"
+                    className="h-16 w-16 bg-sunken object-contain"
                   />
                   <span className="sr-only">
                     {name} image {i + 1}

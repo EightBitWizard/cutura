@@ -37,6 +37,9 @@ All notable changes to this project. Newest first.
 - A product image gallery: the product page now shows every published image for an item
   (a main image plus clickable, accessible thumbnails), not only the primary one. Single-
   image products show just the image; items without a photo keep the branded placeholder.
+- Product-page images now show in full, never cropped: the main image and thumbnails fit
+  the whole photo and the leftover space shows the warm panel (the listing grid keeps its
+  uniform filled cards).
 
 ### Added (M9 - launch-hardening follow-ups)
 
