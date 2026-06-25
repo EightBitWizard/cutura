@@ -5,6 +5,9 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { formatCHF, priceConfiguration } from "@cutura/core";
 import type { PublishedModelDetail } from "@cutura/db";
 
+import { MediaImage } from "@/components/MediaImage";
+import { buttonClasses } from "@/components/ui/buttonClasses";
+
 export interface ConfiguratorMessages {
   fabric: string;
   options: string;
@@ -127,47 +130,67 @@ export function Configurator({
     }
   }
 
+  const groupLabel = "text-eyebrow uppercase text-ink-subtle";
+  const pill = (active: boolean) =>
+    `inline-flex items-center gap-2 rounded-sm border px-3 py-2 text-sm transition-colors ${
+      active ? "border-ink bg-ink text-paper" : "border-line-strong text-ink hover:border-ink"
+    }`;
+
   return (
     <div className="mt-8 flex flex-col gap-8">
       {model.fabrics.length > 0 && (
         <section>
-          <h2 className="text-sm font-medium uppercase tracking-wide text-neutral-500">
-            {t.fabric}
-          </h2>
-          <div className="mt-2 flex flex-wrap gap-2">
-            {model.fabrics.map((f) => (
-              <button
-                key={f.code}
-                type="button"
-                onClick={() => setFabricCode(f.code)}
-                className={`rounded border px-3 py-2 text-sm ${
-                  fabricCode === f.code
-                    ? "border-neutral-900 bg-neutral-900 text-white"
-                    : "border-neutral-300"
-                }`}
-              >
-                {f.name}
-              </button>
-            ))}
+          <h2 className={groupLabel}>{t.fabric}</h2>
+          <div className="mt-3 grid grid-cols-3 gap-3 sm:grid-cols-4">
+            {model.fabrics.map((f) => {
+              const active = fabricCode === f.code;
+              return (
+                <button
+                  key={f.code}
+                  type="button"
+                  aria-pressed={active}
+                  onClick={() => setFabricCode(f.code)}
+                  className={`overflow-hidden rounded-sm border text-left transition-colors ${
+                    active
+                      ? "border-accent ring-1 ring-accent"
+                      : "border-line hover:border-line-strong"
+                  }`}
+                >
+                  <MediaImage
+                    mediaId={f.mediaId}
+                    alt=""
+                    className="aspect-square w-full bg-sunken object-cover"
+                  />
+                  <span className="block px-2 py-1.5">
+                    <span className="block text-xs font-medium text-ink">{f.name}</span>
+                    {f.surchargeMinor > 0 ? (
+                      <span className="block text-xs text-ink-subtle">
+                        +{formatCHF(f.surchargeMinor)}
+                      </span>
+                    ) : null}
+                  </span>
+                </button>
+              );
+            })}
           </div>
         </section>
       )}
 
       {model.optionGroups.map((g) => (
         <section key={g.code}>
-          <h2 className="text-sm font-medium uppercase tracking-wide text-neutral-500">
-            {g.label} {g.required ? <span className="text-neutral-400">({t.required})</span> : null}
+          <h2 className={groupLabel}>
+            {g.label}
+            {g.required ? (
+              <span className="ml-1 lowercase tracking-normal text-ink-subtle">({t.required})</span>
+            ) : null}
           </h2>
-          <div className="mt-2 flex flex-wrap gap-2">
+          <div className="mt-3 flex flex-wrap gap-2">
             {!g.required && (
               <button
                 type="button"
+                aria-pressed={selected[g.code] === ""}
                 onClick={() => setSelected((s) => ({ ...s, [g.code]: "" }))}
-                className={`rounded border px-3 py-2 text-sm ${
-                  selected[g.code] === ""
-                    ? "border-neutral-900 bg-neutral-900 text-white"
-                    : "border-neutral-300"
-                }`}
+                className={pill(selected[g.code] === "")}
               >
                 {t.none}
               </button>
@@ -176,13 +199,17 @@ export function Configurator({
               <button
                 key={v.code}
                 type="button"
+                aria-pressed={selected[g.code] === v.code}
                 onClick={() => setSelected((s) => ({ ...s, [g.code]: v.code }))}
-                className={`rounded border px-3 py-2 text-sm ${
-                  selected[g.code] === v.code
-                    ? "border-neutral-900 bg-neutral-900 text-white"
-                    : "border-neutral-300"
-                }`}
+                className={pill(selected[g.code] === v.code)}
               >
+                {v.mediaId ? (
+                  <MediaImage
+                    mediaId={v.mediaId}
+                    alt=""
+                    className="h-5 w-5 rounded-[2px] object-cover"
+                  />
+                ) : null}
                 {v.label}
                 {v.surchargeMinor > 0 ? ` (+${formatCHF(v.surchargeMinor)})` : ""}
               </button>
@@ -193,45 +220,77 @@ export function Configurator({
 
       {model.upgrades.length > 0 && (
         <section>
-          <h2 className="text-sm font-medium uppercase tracking-wide text-neutral-500">
-            {t.upgrades}
-          </h2>
-          <div className="mt-2 flex flex-col gap-1">
-            {model.upgrades.map((u) => (
-              <label key={u.code} className="flex items-center gap-2 text-sm">
-                <input
-                  type="checkbox"
-                  checked={upgrades.has(u.code)}
-                  onChange={(e) =>
-                    setUpgrades((prev) => {
-                      const next = new Set(prev);
-                      if (e.target.checked) next.add(u.code);
-                      else next.delete(u.code);
-                      return next;
-                    })
-                  }
-                />
-                {u.name}
-                {u.priceMinor > 0 ? ` (+${formatCHF(u.priceMinor)})` : ""}
-              </label>
-            ))}
+          <h2 className={groupLabel}>{t.upgrades}</h2>
+          <div className="mt-3 flex flex-col gap-2">
+            {model.upgrades.map((u) => {
+              const on = upgrades.has(u.code);
+              return (
+                <label
+                  key={u.code}
+                  className={`flex cursor-pointer items-center justify-between gap-3 rounded-sm border px-3 py-2.5 text-sm transition-colors ${
+                    on ? "border-ink bg-sunken" : "border-line hover:border-line-strong"
+                  }`}
+                >
+                  <span className="flex items-center gap-3">
+                    <input
+                      type="checkbox"
+                      checked={on}
+                      onChange={(e) =>
+                        setUpgrades((prev) => {
+                          const next = new Set(prev);
+                          if (e.target.checked) next.add(u.code);
+                          else next.delete(u.code);
+                          return next;
+                        })
+                      }
+                      className="h-4 w-4 accent-ink"
+                    />
+                    {u.mediaId ? (
+                      <MediaImage
+                        mediaId={u.mediaId}
+                        alt=""
+                        className="h-8 w-8 rounded-[2px] object-cover"
+                      />
+                    ) : null}
+                    <span className="text-ink">{u.name}</span>
+                  </span>
+                  {u.priceMinor > 0 ? (
+                    <span className="shrink-0 text-ink-muted">+{formatCHF(u.priceMinor)}</span>
+                  ) : null}
+                </label>
+              );
+            })}
           </div>
         </section>
       )}
 
-      <div className="border-t pt-4">
+      <div className="border-t border-line pt-5">
         <div className="flex items-baseline justify-between">
-          <span className="text-sm text-neutral-500">{t.total}</span>
-          <span className="text-2xl font-semibold">{display}</span>
+          <span className="text-sm text-ink-muted">{t.total}</span>
+          <span
+            className={`text-2xl font-semibold tabular-nums text-ink transition-opacity ${
+              pending ? "opacity-50" : "opacity-100"
+            }`}
+          >
+            {display}
+          </span>
         </div>
-        <p className="text-xs text-neutral-400">{pending ? t.recalculating : t.allInclusive}</p>
-        {!valid && <p className="mt-2 text-sm text-amber-700">{t.selectRequired}</p>}
+        <p className="mt-1 text-eyebrow uppercase text-ink-subtle">
+          {pending ? t.recalculating : t.allInclusive}
+        </p>
+        {!valid && <p className="mt-2 text-sm text-accent">{t.selectRequired}</p>}
         <button
           type="button"
           disabled={!valid || submitting || paused}
           onClick={addToCart}
-          className="mt-4 w-full rounded-md bg-neutral-900 px-4 py-3 font-medium text-white disabled:opacity-40"
+          className={buttonClasses("primary", "lg", "mt-4 w-full")}
         >
+          {submitting ? (
+            <span
+              aria-hidden="true"
+              className="h-4 w-4 animate-spin rounded-full border-2 border-paper/40 border-t-paper"
+            />
+          ) : null}
           {t.addToCart}
         </button>
       </div>

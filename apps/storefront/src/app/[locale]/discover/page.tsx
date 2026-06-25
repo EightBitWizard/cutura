@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
-import { buildAlternates, formatCHF } from "@cutura/core";
+import { buildAlternates } from "@cutura/core";
 import {
   type DiscoveryFilter,
   getDb,
@@ -10,7 +9,10 @@ import {
   primaryMediaForEntities,
 } from "@cutura/db";
 
-import { MediaImage } from "@/components/MediaImage";
+import { ModelGrid } from "@/components/ModelGrid";
+import { buttonClasses } from "@/components/ui/buttonClasses";
+import { Container } from "@/components/ui/Container";
+import { Eyebrow } from "@/components/ui/Eyebrow";
 import { defaultLocale, isLocale, locales } from "@/i18n/config";
 import { getMessages } from "@/i18n/messages";
 import { getEnv } from "@/server/env";
@@ -66,18 +68,20 @@ export default async function DiscoverPage({
     models.map((m) => m.id),
   );
 
-  return (
-    <main className="mx-auto max-w-5xl px-6 py-10">
-      <h1 className="text-3xl font-semibold tracking-tight">{t.discoverTitle}</h1>
+  const checkbox = "h-4 w-4 accent-ink";
 
-      <form method="get" className="mt-6 grid gap-6 sm:grid-cols-[16rem_1fr]">
-        <aside className="flex flex-col gap-4 text-sm">
+  return (
+    <Container className="py-10 sm:py-14">
+      <h1 className="text-3xl font-semibold tracking-tight text-ink">{t.discoverTitle}</h1>
+
+      <form method="get" className="mt-8 grid gap-10 sm:grid-cols-[15rem_1fr]">
+        <aside className="flex flex-col gap-6 text-sm">
           <div>
-            <p className="font-medium">{t.sortLabel}</p>
+            <Eyebrow>{t.sortLabel}</Eyebrow>
             <select
               name="sort"
               defaultValue={sortRaw}
-              className="mt-1 w-full rounded border border-neutral-300 px-2 py-1"
+              className="mt-2 w-full rounded-sm border border-line-strong bg-surface px-3 py-2 text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-paper"
             >
               <option value="">-</option>
               <option value="price_asc">{t.sortPriceAsc}</option>
@@ -85,67 +89,57 @@ export default async function DiscoverPage({
               <option value="name">{t.sortName}</option>
             </select>
           </div>
-          <label className="flex items-center gap-2">
-            <input type="checkbox" name="orderable" value="1" defaultChecked={orderableOnly} />
+
+          <label className="flex items-center gap-2 text-ink">
+            <input
+              type="checkbox"
+              name="orderable"
+              value="1"
+              defaultChecked={orderableOnly}
+              className={checkbox}
+            />
             {t.orderableOnly}
           </label>
 
           {facets.map((f) => (
             <div key={f.key}>
-              <p className="font-medium">{f.label}</p>
-              <div className="mt-1 flex flex-col gap-1">
+              <Eyebrow>{f.label}</Eyebrow>
+              <div className="mt-2 flex flex-col gap-2">
                 {f.values.map((v) => (
-                  <label key={v.value} className="flex items-center gap-2">
+                  <label key={v.value} className="flex items-center gap-2 text-ink">
                     <input
                       type="checkbox"
                       name={f.key}
                       value={v.value}
                       defaultChecked={(attributes[f.key] ?? []).includes(v.value)}
+                      className={checkbox}
                     />
-                    {v.value} ({v.count})
+                    {v.value} <span className="text-ink-subtle">({v.count})</span>
                   </label>
                 ))}
               </div>
             </div>
           ))}
 
-          <button
-            type="submit"
-            className="rounded-md bg-neutral-900 px-4 py-2 font-medium text-white"
-          >
+          <button type="submit" className={buttonClasses("primary", "md", "w-full")}>
             {t.apply}
           </button>
         </aside>
 
         <section>
           {models.length === 0 ? (
-            <p className="text-neutral-500">{t.noResults}</p>
+            <p className="text-ink-muted">{t.noResults}</p>
           ) : (
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-              {models.map((m) => (
-                <Link
-                  key={m.handle}
-                  href={`/${locale}/products/${m.handle}`}
-                  className="flex flex-col rounded-lg border border-neutral-200 p-4 hover:border-neutral-400"
-                >
-                  <MediaImage
-                    mediaId={mediaByModel.get(m.id) ?? null}
-                    alt={m.name}
-                    className="mb-3 aspect-square w-full rounded bg-neutral-100 object-cover"
-                  />
-                  <span className="font-medium">{m.name}</span>
-                  <span className="mt-1 text-sm text-neutral-500">
-                    {t.from} {formatCHF(m.basePriceMinor)}
-                  </span>
-                  {m.status === "view_only" && (
-                    <span className="mt-1 text-xs text-neutral-400">{t.notifyMe}</span>
-                  )}
-                </Link>
-              ))}
-            </div>
+            <ModelGrid
+              models={models}
+              mediaByModel={mediaByModel}
+              locale={locale}
+              fromLabel={t.from}
+              notifyLabel={t.notifyMe}
+            />
           )}
         </section>
       </form>
-    </main>
+    </Container>
   );
 }

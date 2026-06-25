@@ -1,11 +1,8 @@
-import Link from "next/link";
-
-import { formatCHF } from "@cutura/core";
 import type { PublishedModelSummary } from "@cutura/db";
 
-import { MediaImage } from "@/components/MediaImage";
+import { ModelCard } from "@/components/ModelCard";
 
-// Shared product grid for discovery, collections, occasions, and search.
+// Shared product grid for discovery, collections, occasions, search, and recommendations.
 export function ModelGrid({
   models,
   mediaByModel,
@@ -20,26 +17,16 @@ export function ModelGrid({
   notifyLabel: string;
 }) {
   return (
-    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+    <div className="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3">
       {models.map((m) => (
-        <Link
+        <ModelCard
           key={m.handle}
-          href={`/${locale}/products/${m.handle}`}
-          className="flex flex-col rounded-lg border border-neutral-200 p-4 hover:border-neutral-400"
-        >
-          <MediaImage
-            mediaId={mediaByModel.get(m.id) ?? null}
-            alt={m.name}
-            className="mb-3 aspect-square w-full rounded bg-neutral-100 object-cover"
-          />
-          <span className="font-medium">{m.name}</span>
-          <span className="mt-1 text-sm text-neutral-500">
-            {fromLabel} {formatCHF(m.basePriceMinor)}
-          </span>
-          {m.status === "view_only" && (
-            <span className="mt-1 text-xs text-neutral-400">{notifyLabel}</span>
-          )}
-        </Link>
+          locale={locale}
+          model={m}
+          mediaId={mediaByModel.get(m.id) ?? null}
+          fromLabel={fromLabel}
+          notifyLabel={notifyLabel}
+        />
       ))}
     </div>
   );

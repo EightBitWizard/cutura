@@ -955,3 +955,102 @@ const footerCatalog: Record<Locale, FooterMessages> = {
 export function getFooterMessages(locale: Locale): FooterMessages {
   return footerCatalog[locale];
 }
+
+export interface HomeMessages {
+  heroEyebrow: string;
+  heroLead: string;
+  heroCta: string;
+  processHeading: string;
+  steps: { title: string; body: string }[];
+}
+
+const homeCatalog: Record<Locale, HomeMessages> = {
+  de: {
+    heroEyebrow: "Massgeschneidert",
+    heroLead:
+      "Konfigurieren Sie Ihr Kleidungsstück, geben Sie Ihre Masse an, und wir fertigen es für Sie. Alle Preise inklusive MwSt. und Versand.",
+    heroCta: "Modelle entdecken",
+    processHeading: "So funktioniert es",
+    steps: [
+      {
+        title: "Konfigurieren",
+        body: "Wählen Sie Modell, Stoff und Details. Den Preis sehen Sie sofort, inklusive aller Kosten.",
+      },
+      {
+        title: "Masse angeben",
+        body: "Wir führen Sie Schritt für Schritt. Kein Schneider nötig.",
+      },
+      {
+        title: "Gefertigt und geliefert",
+        body: "Auf Mass gefertigt und zu Ihnen geliefert. Mit Passformgarantie.",
+      },
+    ],
+  },
+  en: {
+    heroEyebrow: "Made to measure",
+    heroLead:
+      "Configure your garment, share your measurements, and we tailor it for you. All prices include VAT and shipping.",
+    heroCta: "Discover models",
+    processHeading: "How it works",
+    steps: [
+      {
+        title: "Configure",
+        body: "Choose your model, fabric, and details. See the all-inclusive price as you go.",
+      },
+      {
+        title: "Share measurements",
+        body: "We guide you step by step. No tailor needed.",
+      },
+      {
+        title: "Tailored and delivered",
+        body: "Handcrafted to your size and delivered to you. With a fit guarantee.",
+      },
+    ],
+  },
+  it: {
+    heroEyebrow: "Su misura",
+    heroLead:
+      "Configura il tuo capo, indica le tue misure e lo realizziamo per te. Tutti i prezzi includono IVA e spedizione.",
+    heroCta: "Scopri i modelli",
+    processHeading: "Come funziona",
+    steps: [
+      {
+        title: "Configura",
+        body: "Scegli modello, tessuto e dettagli. Vedi subito il prezzo, tutto incluso.",
+      },
+      {
+        title: "Indica le misure",
+        body: "Ti guidiamo passo dopo passo. Nessun sarto necessario.",
+      },
+      {
+        title: "Realizzato e consegnato",
+        body: "Confezionato su misura e consegnato a te. Con garanzia di vestibilità.",
+      },
+    ],
+  },
+  fr: {
+    heroEyebrow: "Sur mesure",
+    heroLead:
+      "Configurez votre vêtement, indiquez vos mesures, et nous le confectionnons pour vous. Tous les prix comprennent la TVA et la livraison.",
+    heroCta: "Découvrir les modèles",
+    processHeading: "Comment ça marche",
+    steps: [
+      {
+        title: "Configurer",
+        body: "Choisissez le modèle, le tissu et les détails. Le prix tout compris s'affiche au fur et à mesure.",
+      },
+      {
+        title: "Indiquer vos mesures",
+        body: "Nous vous guidons étape par étape. Aucun tailleur nécessaire.",
+      },
+      {
+        title: "Confectionné et livré",
+        body: "Confectionné à vos mesures et livré chez vous. Avec garantie d'ajustement.",
+      },
+    ],
+  },
+};
+
+export function getHomeMessages(locale: Locale): HomeMessages {
+  return homeCatalog[locale];
+}

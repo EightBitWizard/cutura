@@ -14,6 +14,15 @@ All notable changes to this project. Newest first.
   Input, Badge, Eyebrow) with a unit-tested button-variant helper, and a restyled
   header (active-section red underline), footer (localized labels), and reduced-motion
   handling. No change to pricing, measurement, or any product behaviour.
+- A redesigned home page (hero, a numbered "how it works" process band, image-forward
+  collection and model grids) and a redesigned discovery page, on one shared
+  borderless product card. Placeholders now show a calm branded monogram while
+  photography is pending.
+- A redesigned, image-forward product page (two-column, sticky configurator on desktop)
+  and a redesigned configurator: fabric swatch tiles, segmented option pills, upgrade
+  toggle rows, a cross-fading all-inclusive total, and an ink call-to-action. Fabrics,
+  options, and upgrades now show their catalog images once set and published. The
+  pricing path is unchanged.
 
 ### Added (M9 - launch-hardening follow-ups)
 

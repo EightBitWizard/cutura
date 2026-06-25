@@ -27,9 +27,9 @@ export async function RecommendedSection({
     models.map((m) => m.id),
   );
   return (
-    <section className="mt-12">
-      <h2 className="text-xl font-medium">{heading}</h2>
-      <div className="mt-4">
+    <section className="mt-16">
+      <h2 className="text-2xl font-semibold tracking-tight text-ink">{heading}</h2>
+      <div className="mt-8">
         <ModelGrid
           models={models}
           mediaByModel={media}

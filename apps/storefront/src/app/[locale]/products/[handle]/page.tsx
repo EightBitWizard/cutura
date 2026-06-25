@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { buildAlternates, buildProductJsonLd, formatCHF } from "@cutura/core";
+import { buildAlternates, buildProductJsonLd } from "@cutura/core";
 import {
   getCrossSellSuggestions,
   getDb,
@@ -18,6 +18,10 @@ import { MediaImage } from "@/components/MediaImage";
 import { ModelGrid } from "@/components/ModelGrid";
 import { RecommendedSection } from "@/components/RecommendedSection";
 import { ViewSignal } from "@/components/ViewSignal";
+import { Container } from "@/components/ui/Container";
+import { Eyebrow } from "@/components/ui/Eyebrow";
+import { Price } from "@/components/ui/Price";
+import { buttonClasses } from "@/components/ui/buttonClasses";
 import { defaultLocale, isLocale, locales } from "@/i18n/config";
 import { getMessages } from "@/i18n/messages";
 import { getEnv } from "@/server/env";
@@ -87,6 +91,9 @@ export default async function ProductPage({
   });
   const ordering = await getOrderingState(locale);
   const lead = leadTimeFor(ordering, model.leadTimeMinDays, model.leadTimeMaxDays);
+  const garmentName = t.garmentNames[model.garmentType as "shirt" | "trouser"] ?? "";
+
+  const materials = model.fabrics.filter((f) => fibreText(f.fibreComposition));
 
   const jsonLd = buildProductJsonLd({
     name: model.name,
@@ -97,7 +104,7 @@ export default async function ProductPage({
   });
 
   return (
-    <main className="mx-auto max-w-3xl px-6 py-10">
+    <main>
       <script
         type="application/ld+json"
         // Structured data (NFR-20). Catalog-controlled content; "<" is escaped to
@@ -105,117 +112,131 @@ export default async function ProductPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
       />
       <ViewSignal entityId={model.id} />
-      <Link href={`/${locale}`} className="text-sm text-neutral-500 underline">
-        {t.back}
-      </Link>
 
-      <MediaImage
-        mediaId={mediaId}
-        alt={model.name}
-        className="mt-4 aspect-[4/3] w-full rounded-lg bg-neutral-100 object-cover"
-      />
+      <Container className="py-8 sm:py-12">
+        <Link
+          href={`/${locale}`}
+          className="text-sm text-ink-muted transition-colors hover:text-ink"
+        >
+          {t.back}
+        </Link>
 
-      <h1 className="mt-4 text-3xl font-semibold tracking-tight">{model.name}</h1>
-      {model.description && <p className="mt-3 text-neutral-600">{model.description}</p>}
+        <div className="mt-6 grid gap-10 lg:grid-cols-2 lg:gap-16">
+          {/* Image, left, carries the page */}
+          <div className="overflow-hidden bg-sunken">
+            <MediaImage
+              mediaId={mediaId}
+              alt={model.name}
+              className="aspect-[4/5] w-full object-cover"
+            />
+          </div>
 
-      <p className="mt-4 text-lg">
-        {t.from} {formatCHF(model.basePriceMinor)}{" "}
-        <span className="text-sm text-neutral-400">{t.allInclusive}</span>
-      </p>
-      <p className="mt-1 text-sm text-neutral-500">{t.leadTime(lead.minDays, lead.maxDays)}</p>
+          {/* Details + configurator, sticky on desktop */}
+          <div className="lg:sticky lg:top-24 lg:self-start">
+            {garmentName ? <Eyebrow>{garmentName}</Eyebrow> : null}
+            <h1 className="mt-2 text-3xl font-semibold tracking-tight text-ink">{model.name}</h1>
+            {model.description && <p className="mt-3 text-ink-muted">{model.description}</p>}
 
-      {model.fabrics.some((f) => fibreText(f.fibreComposition)) && (
-        <section className="mt-4">
-          <h2 className="text-sm font-medium uppercase tracking-wide text-neutral-500">
-            {t.materials}
-          </h2>
-          <ul className="mt-1 text-sm text-neutral-600">
-            {model.fabrics
-              .filter((f) => fibreText(f.fibreComposition))
-              .map((f) => (
-                <li key={f.code}>
-                  {f.name}: {fibreText(f.fibreComposition)}
-                </li>
-              ))}
-          </ul>
-        </section>
-      )}
+            <p className="mt-5 flex items-baseline gap-2">
+              <span className="text-xl font-semibold text-ink">
+                {t.from} <Price minor={model.basePriceMinor} />
+              </span>
+              <span className="text-eyebrow uppercase text-ink-subtle">{t.allInclusive}</span>
+            </p>
+            <p className="mt-1 text-sm text-ink-subtle">{t.leadTime(lead.minDays, lead.maxDays)}</p>
 
-      {ordering.paused && model.status !== "view_only" && (
-        <div className="mt-6 rounded-lg border border-amber-200 bg-amber-50 p-4">
-          <p className="text-amber-800">{ordering.message}</p>
-        </div>
-      )}
+            {materials.length > 0 && (
+              <section className="mt-6 border-t border-line pt-5">
+                <h2 className="text-eyebrow uppercase text-ink-subtle">{t.materials}</h2>
+                <ul className="mt-2 space-y-1 text-sm text-ink-muted">
+                  {materials.map((f) => (
+                    <li key={f.code}>
+                      {f.name}: {fibreText(f.fibreComposition)}
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
 
-      {model.status === "view_only" ? (
-        <div className="mt-8 rounded-lg border border-neutral-200 bg-neutral-50 p-4">
-          <p className="text-neutral-700">{t.viewOnlyNotice}</p>
-          {notify === "ok" ? (
-            <p className="mt-3 text-sm text-green-700">{t.notifyThanks}</p>
-          ) : (
-            <form method="post" action="/api/notify-me" className="mt-3 flex flex-wrap gap-2">
-              <input type="hidden" name="locale" value={locale} />
-              <input type="hidden" name="handle" value={handle} />
-              <input type="hidden" name="entityType" value="model" />
-              <input type="hidden" name="entityId" value={model.id} />
-              <input
-                name="email"
-                type="email"
-                required
-                placeholder="you@example.com"
-                className="rounded border border-neutral-300 px-3 py-2 text-sm"
+            {ordering.paused && model.status !== "view_only" && (
+              <div className="mt-6 rounded-md border border-line bg-sunken px-4 py-3 text-sm text-ink">
+                {ordering.message}
+              </div>
+            )}
+
+            {model.status === "view_only" ? (
+              <div className="mt-8 rounded-md border border-line bg-surface p-5">
+                <p className="text-ink">{t.viewOnlyNotice}</p>
+                {notify === "ok" ? (
+                  <p className="mt-3 text-sm text-success">{t.notifyThanks}</p>
+                ) : (
+                  <form method="post" action="/api/notify-me" className="mt-4 flex flex-wrap gap-2">
+                    <input type="hidden" name="locale" value={locale} />
+                    <input type="hidden" name="handle" value={handle} />
+                    <input type="hidden" name="entityType" value="model" />
+                    <input type="hidden" name="entityId" value={model.id} />
+                    <input
+                      name="email"
+                      type="email"
+                      required
+                      placeholder="you@example.com"
+                      className="flex-1 rounded-sm border border-line-strong bg-surface px-3 py-2 text-sm text-ink placeholder:text-ink-subtle focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-paper"
+                    />
+                    <button type="submit" className={buttonClasses("primary", "md")}>
+                      {t.notifyMe}
+                    </button>
+                  </form>
+                )}
+              </div>
+            ) : (
+              <Configurator
+                model={model}
+                locale={locale}
+                paused={ordering.paused}
+                messages={{
+                  fabric: t.fabric,
+                  options: t.options,
+                  upgrades: t.upgrades,
+                  required: t.required,
+                  none: t.none,
+                  total: t.total,
+                  allInclusive: t.allInclusive,
+                  selectRequired: t.selectRequired,
+                  addToCart: t.addToCart,
+                  recalculating: t.recalculating,
+                }}
               />
-              <button
-                type="submit"
-                className="rounded-md bg-neutral-900 px-4 py-2 text-sm font-medium text-white"
-              >
-                {t.notifyMe}
-              </button>
-            </form>
-          )}
+            )}
+          </div>
         </div>
-      ) : (
-        <Configurator
-          model={model}
-          locale={locale}
-          paused={ordering.paused}
-          messages={{
-            fabric: t.fabric,
-            options: t.options,
-            upgrades: t.upgrades,
-            required: t.required,
-            none: t.none,
-            total: t.total,
-            allInclusive: t.allInclusive,
-            selectRequired: t.selectRequired,
-            addToCart: t.addToCart,
-            recalculating: t.recalculating,
-          }}
-        />
-      )}
 
-      {suggestions.length > 0 && (
-        <section className="mt-12">
-          <h2 className="text-xl font-medium">{t.youMightAlsoLike}</h2>
+        {suggestions.length > 0 && (
+          <section className="mt-20">
+            <h2 className="text-2xl font-semibold tracking-tight text-ink">{t.youMightAlsoLike}</h2>
+            <div className="mt-8">
+              <ModelGrid
+                models={suggestions}
+                mediaByModel={suggestionMedia}
+                locale={locale}
+                fromLabel={t.from}
+                notifyLabel={t.notifyMe}
+              />
+            </div>
+          </section>
+        )}
+
+        {recommended.length > 0 && (
           <div className="mt-4">
-            <ModelGrid
-              models={suggestions}
-              mediaByModel={suggestionMedia}
+            <RecommendedSection
               locale={locale}
+              heading={t.recommendedForYou}
+              models={recommended}
               fromLabel={t.from}
               notifyLabel={t.notifyMe}
             />
           </div>
-        </section>
-      )}
-
-      <RecommendedSection
-        locale={locale}
-        heading={t.recommendedForYou}
-        models={recommended}
-        fromLabel={t.from}
-        notifyLabel={t.notifyMe}
-      />
+        )}
+      </Container>
     </main>
   );
 }
