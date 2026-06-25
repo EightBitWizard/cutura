@@ -56,14 +56,21 @@ export interface PublishedModelDetail extends PublishedModelSummary {
     surchargeMinor: number;
     available: boolean;
     fibreComposition: unknown;
+    mediaId: string | null;
   }>;
   optionGroups: Array<{
     code: string;
     label: string;
     required: boolean;
-    values: Array<{ code: string; label: string; surchargeMinor: number }>;
+    values: Array<{ code: string; label: string; surchargeMinor: number; mediaId: string | null }>;
   }>;
-  upgrades: Array<{ code: string; name: string; priceMinor: number; placement: string | null }>;
+  upgrades: Array<{
+    code: string;
+    name: string;
+    priceMinor: number;
+    placement: string | null;
+    mediaId: string | null;
+  }>;
 }
 
 function byPosition<T extends { position: number }>(rows: T[]): T[] {
@@ -108,6 +115,7 @@ export async function getPublishedModel(
     ? await db.select().from(fabric).where(inArray(fabric.id, fabricIds))
     : [];
   const fabricById = new Map(fabricRows.map((f) => [f.id, f]));
+  const fabricMedia = await primaryMediaForEntities(db, "fabric", fabricIds);
   const fabrics = fabricIds
     .map((id) => fabricById.get(id))
     .filter((f): f is NonNullable<typeof f> => f !== undefined && f.available)
@@ -117,6 +125,7 @@ export async function getPublishedModel(
       surchargeMinor: f.surchargeMinor,
       available: f.available,
       fibreComposition: f.fibreComposition,
+      mediaId: fabricMedia.get(f.id) ?? null,
     }));
 
   // Allowed option groups + their values.
@@ -131,6 +140,11 @@ export async function getPublishedModel(
     ? await db.select().from(optionValue).where(inArray(optionValue.optionGroupId, groupIds))
     : [];
   const groupById = new Map(groupRows.map((g) => [g.id, g]));
+  const valueMedia = await primaryMediaForEntities(
+    db,
+    "optionValue",
+    valueRows.map((v) => v.id),
+  );
   const optionGroups = ao
     .map((r) => {
       const group = groupById.get(r.optionGroupId);
@@ -145,6 +159,7 @@ export async function getPublishedModel(
             code: v.code,
             label: localize(v.labelI18n, locale),
             surchargeMinor: v.surchargeMinor,
+            mediaId: valueMedia.get(v.id) ?? null,
           })),
       };
     })
@@ -162,6 +177,7 @@ export async function getPublishedModel(
     ? await db.select().from(upgrade).where(inArray(upgrade.id, upgradeIds))
     : [];
   const upgradeById = new Map(upgradeRows.map((u) => [u.id, u]));
+  const upgradeMedia = await primaryMediaForEntities(db, "upgrade", upgradeIds);
   const upgrades = upgradeIds
     .map((id) => upgradeById.get(id))
     .filter((u): u is NonNullable<typeof u> => u !== undefined)
@@ -170,6 +186,7 @@ export async function getPublishedModel(
       name: localize(u.nameI18n, locale),
       priceMinor: u.priceMinor,
       placement: u.placement,
+      mediaId: upgradeMedia.get(u.id) ?? null,
     }));
 
   return {

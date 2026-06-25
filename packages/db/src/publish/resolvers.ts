@@ -96,10 +96,28 @@ export const resolveOptionGroup: Resolver = async (control, target, id) => {
   const [group] = await control.select().from(optionGroup).where(eq(optionGroup.id, id));
   if (!group) throw new EntityNotFoundError("optionGroup", id);
   const values = await control.select().from(optionValue).where(eq(optionValue.optionGroupId, id));
-  return [
+  const groupMedia = await control.select().from(media).where(mediaScope("optionGroup", id));
+  const valueIds = values.map((v) => v.id);
+  const valueMedia = valueIds.length
+    ? await control
+        .select()
+        .from(media)
+        .where(and(eq(media.entityType, "optionValue"), inArray(media.entityId, valueIds)))
+    : [];
+  const stmts: BatchItem<"sqlite">[] = [
     ...copyById(target, optionGroup, [group]),
     ...replaceChildren(target, optionValue, eq(optionValue.optionGroupId, id), values),
+    ...replaceChildren(target, media, mediaScope("optionGroup", id), groupMedia),
   ];
+  // Option-value images (swatch thumbnails): scoped replace so removed images disappear.
+  if (valueIds.length) {
+    const valueScope = and(
+      eq(media.entityType, "optionValue"),
+      inArray(media.entityId, valueIds),
+    ) as SQL;
+    stmts.push(...replaceChildren(target, media, valueScope, valueMedia));
+  }
+  return stmts;
 };
 
 export const resolveUpgrade: Resolver = async (control, target, id) => {
