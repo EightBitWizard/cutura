@@ -34,6 +34,10 @@ All notable changes to this project. Newest first.
   admin (it had none, which is why it rendered as unstyled HTML), with the brand tokens,
   the Inter typeface, a sticky top navigation with active-section highlighting, and
   consistent buttons, inputs, tables, and muted status colours across every page.
+- Configurator swatch tiles are now uniform height with their images aligned (a fixed
+  text block, two-line labels, and a reserved surcharge line), so varying label lengths or
+  prices no longer push images out of line. The "None" choice of an optional group can now
+  carry its own picture (uploaded as the option group's image in the admin).
 - Option pictures: the admin option-groups list now has an "Images" link (so per-value
   images, e.g. collar styles, are easy to find and add), and the configurator renders an
   option group whose values carry images as visual swatch tiles instead of a tiny

@@ -28,6 +28,20 @@ interface PriceResponse {
   missingRequired: string[];
 }
 
+// Uniform caption block for swatch tiles: a fixed-height area with a two-line-clamped
+// label and an always-present surcharge line, so every tile is the same height and the
+// images line up regardless of label length or whether there is a surcharge.
+function SwatchCaption({ label, surchargeMinor = 0 }: { label: string; surchargeMinor?: number }) {
+  return (
+    <span className="flex min-h-[3.5rem] flex-col gap-0.5 px-2 py-1.5">
+      <span className="line-clamp-2 text-xs font-medium leading-tight text-ink">{label}</span>
+      <span className="text-xs leading-tight text-ink-subtle">
+        {surchargeMinor > 0 ? `+${formatCHF(surchargeMinor)}` : " "}
+      </span>
+    </span>
+  );
+}
+
 export function Configurator({
   model,
   locale,
@@ -135,8 +149,10 @@ export function Configurator({
     `inline-flex items-center gap-2 rounded-sm border px-3 py-2 text-sm transition-colors ${
       active ? "border-ink bg-ink text-paper" : "border-line-strong text-ink hover:border-ink"
     }`;
+  // flex flex-col keeps the image top-aligned (a button centers its content by default,
+  // which otherwise pushes shorter tiles' images down out of line).
   const tile = (active: boolean) =>
-    `overflow-hidden rounded-sm border text-left transition-colors ${
+    `flex flex-col overflow-hidden rounded-sm border text-left transition-colors ${
       active ? "border-accent ring-1 ring-accent" : "border-line hover:border-line-strong"
     }`;
 
@@ -154,25 +170,14 @@ export function Configurator({
                   type="button"
                   aria-pressed={active}
                   onClick={() => setFabricCode(f.code)}
-                  className={`overflow-hidden rounded-sm border text-left transition-colors ${
-                    active
-                      ? "border-accent ring-1 ring-accent"
-                      : "border-line hover:border-line-strong"
-                  }`}
+                  className={tile(active)}
                 >
                   <MediaImage
                     mediaId={f.mediaId}
                     alt=""
                     className="aspect-square w-full bg-sunken object-cover"
                   />
-                  <span className="block px-2 py-1.5">
-                    <span className="block text-xs font-medium text-ink">{f.name}</span>
-                    {f.surchargeMinor > 0 ? (
-                      <span className="block text-xs text-ink-subtle">
-                        +{formatCHF(f.surchargeMinor)}
-                      </span>
-                    ) : null}
-                  </span>
+                  <SwatchCaption label={f.name} surchargeMinor={f.surchargeMinor} />
                 </button>
               );
             })}
@@ -204,8 +209,12 @@ export function Configurator({
                     onClick={() => setSelected((s) => ({ ...s, [g.code]: "" }))}
                     className={tile(selected[g.code] === "")}
                   >
-                    <span className="block aspect-square w-full bg-sunken" aria-hidden="true" />
-                    <span className="block px-2 py-1.5 text-xs font-medium text-ink">{t.none}</span>
+                    <MediaImage
+                      mediaId={g.noneMediaId}
+                      alt=""
+                      className="aspect-square w-full bg-sunken object-cover"
+                    />
+                    <SwatchCaption label={t.none} />
                   </button>
                 )}
                 {g.values.map((v) => (
@@ -221,14 +230,7 @@ export function Configurator({
                       alt=""
                       className="aspect-square w-full bg-sunken object-cover"
                     />
-                    <span className="block px-2 py-1.5">
-                      <span className="block text-xs font-medium text-ink">{v.label}</span>
-                      {v.surchargeMinor > 0 ? (
-                        <span className="block text-xs text-ink-subtle">
-                          +{formatCHF(v.surchargeMinor)}
-                        </span>
-                      ) : null}
-                    </span>
+                    <SwatchCaption label={v.label} surchargeMinor={v.surchargeMinor} />
                   </button>
                 ))}
               </div>

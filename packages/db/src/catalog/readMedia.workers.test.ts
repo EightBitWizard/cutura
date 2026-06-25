@@ -38,6 +38,7 @@ async function seedWithMedia() {
     mf2: `mf2_${p}`,
     fMedia: `med_f_${p}`,
     ovMedia: `med_ov_${p}`,
+    ogMedia: `med_og_${p}`,
     upMedia: `med_up_${p}`,
   };
   const c = control();
@@ -112,6 +113,16 @@ async function seedWithMedia() {
       updatedAt: TS,
     },
     {
+      id: ids.ogMedia,
+      r2Key: `media/optionGroup/${ids.og}/${ids.ogMedia}`,
+      entityType: "optionGroup",
+      entityId: ids.og,
+      position: 0,
+      isPrimary: true,
+      createdAt: TS,
+      updatedAt: TS,
+    },
+    {
       id: ids.upMedia,
       r2Key: `media/upgrade/${ids.up}/${ids.upMedia}`,
       entityType: "upgrade",
@@ -165,6 +176,7 @@ describe("getPublishedModel attaches primary media ids", () => {
     expect(model).toBeDefined();
     expect(model?.fabrics[0]?.mediaId).toBe(ids.fMedia);
     expect(model?.optionGroups[0]?.values[0]?.mediaId).toBe(ids.ovMedia);
+    expect(model?.optionGroups[0]?.noneMediaId).toBe(ids.ogMedia);
     expect(model?.upgrades[0]?.mediaId).toBe(ids.upMedia);
   });
 

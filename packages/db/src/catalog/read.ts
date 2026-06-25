@@ -62,6 +62,8 @@ export interface PublishedModelDetail extends PublishedModelSummary {
     code: string;
     label: string;
     required: boolean;
+    /** The group's image, used as the picture for the "None" choice on optional groups. */
+    noneMediaId: string | null;
     values: Array<{ code: string; label: string; surchargeMinor: number; mediaId: string | null }>;
   }>;
   upgrades: Array<{
@@ -145,6 +147,7 @@ export async function getPublishedModel(
     "optionValue",
     valueRows.map((v) => v.id),
   );
+  const groupMedia = await primaryMediaForEntities(db, "optionGroup", groupIds);
   const optionGroups = ao
     .map((r) => {
       const group = groupById.get(r.optionGroupId);
@@ -153,6 +156,7 @@ export async function getPublishedModel(
         code: group.code,
         label: localize(group.labelI18n, locale),
         required: r.required,
+        noneMediaId: groupMedia.get(group.id) ?? null,
         values: valueRows
           .filter((v) => v.optionGroupId === group.id)
           .map((v) => ({

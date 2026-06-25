@@ -34,12 +34,15 @@ describe("staging seed", () => {
       .get() as { handle: string; status: string } | undefined;
     expect(model?.handle).toBe("oxford-business");
     expect(model?.status).toBe("orderable");
-    // Two garment types (shirt + trouser), each with its model, fabrics, and option.
+    // Two garment types (shirt + trouser), each with its model, fabrics, and options.
     expect(count(db, "garment_type")).toBe(2);
     expect(count(db, "base_model")).toBe(2);
     expect(count(db, "fabric")).toBe(4);
     expect(count(db, "model_allowed_fabric")).toBe(4);
-    expect(count(db, "option_value")).toBe(4);
+    // Option groups: collar + sleeve (shirt); pleats + side/back pockets + closure (trouser).
+    expect(count(db, "option_group")).toBe(6);
+    // Option values across all groups (incl. the double pleat).
+    expect(count(db, "option_value")).toBe(14);
   });
 
   it("makes the trouser orderable with its own fabrics + allow-list (FR-104)", () => {

@@ -48,7 +48,7 @@ export default async function OptionGroupDetailPage({
         entityId={id}
         backPath={`/option-groups/${id}`}
         media={groupMedia}
-        heading="Group image (optional)"
+        heading="Image for the 'None' choice (optional groups, shown when nothing is selected)"
       />
 
       <h2 className="mt-8 text-lg font-medium">Values</h2>
