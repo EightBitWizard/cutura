@@ -12,7 +12,7 @@ export const LOCALE_COOKIE = "cutura_locale";
 
 // Ensure every page route is under a locale prefix, and gate the account area
 // behind a customer session. Static assets and API routes are excluded (matcher).
-export async function proxy(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Admin-managed redirects (NFR-20): an exact-path match wins before anything else.
