@@ -135,6 +135,10 @@ export function Configurator({
     `inline-flex items-center gap-2 rounded-sm border px-3 py-2 text-sm transition-colors ${
       active ? "border-ink bg-ink text-paper" : "border-line-strong text-ink hover:border-ink"
     }`;
+  const tile = (active: boolean) =>
+    `overflow-hidden rounded-sm border text-left transition-colors ${
+      active ? "border-accent ring-1 ring-accent" : "border-line hover:border-line-strong"
+    }`;
 
   return (
     <div className="mt-8 flex flex-col gap-8">
@@ -176,47 +180,87 @@ export function Configurator({
         </section>
       )}
 
-      {model.optionGroups.map((g) => (
-        <section key={g.code}>
-          <h2 className={groupLabel}>
-            {g.label}
-            {g.required ? (
-              <span className="ml-1 lowercase tracking-normal text-ink-subtle">({t.required})</span>
-            ) : null}
-          </h2>
-          <div className="mt-3 flex flex-wrap gap-2">
-            {!g.required && (
-              <button
-                type="button"
-                aria-pressed={selected[g.code] === ""}
-                onClick={() => setSelected((s) => ({ ...s, [g.code]: "" }))}
-                className={pill(selected[g.code] === "")}
-              >
-                {t.none}
-              </button>
+      {model.optionGroups.map((g) => {
+        const hasImages = g.values.some((v) => v.mediaId);
+        return (
+          <section key={g.code}>
+            <h2 className={groupLabel}>
+              {g.label}
+              {g.required ? (
+                <span className="ml-1 lowercase tracking-normal text-ink-subtle">
+                  ({t.required})
+                </span>
+              ) : null}
+            </h2>
+
+            {hasImages ? (
+              // Visual swatch tiles when any value in the group carries an image
+              // (e.g. collar styles), so customers can see the options.
+              <div className="mt-3 grid grid-cols-3 gap-3 sm:grid-cols-4">
+                {!g.required && (
+                  <button
+                    type="button"
+                    aria-pressed={selected[g.code] === ""}
+                    onClick={() => setSelected((s) => ({ ...s, [g.code]: "" }))}
+                    className={tile(selected[g.code] === "")}
+                  >
+                    <span className="block aspect-square w-full bg-sunken" aria-hidden="true" />
+                    <span className="block px-2 py-1.5 text-xs font-medium text-ink">{t.none}</span>
+                  </button>
+                )}
+                {g.values.map((v) => (
+                  <button
+                    key={v.code}
+                    type="button"
+                    aria-pressed={selected[g.code] === v.code}
+                    onClick={() => setSelected((s) => ({ ...s, [g.code]: v.code }))}
+                    className={tile(selected[g.code] === v.code)}
+                  >
+                    <MediaImage
+                      mediaId={v.mediaId}
+                      alt=""
+                      className="aspect-square w-full bg-sunken object-cover"
+                    />
+                    <span className="block px-2 py-1.5">
+                      <span className="block text-xs font-medium text-ink">{v.label}</span>
+                      {v.surchargeMinor > 0 ? (
+                        <span className="block text-xs text-ink-subtle">
+                          +{formatCHF(v.surchargeMinor)}
+                        </span>
+                      ) : null}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <div className="mt-3 flex flex-wrap gap-2">
+                {!g.required && (
+                  <button
+                    type="button"
+                    aria-pressed={selected[g.code] === ""}
+                    onClick={() => setSelected((s) => ({ ...s, [g.code]: "" }))}
+                    className={pill(selected[g.code] === "")}
+                  >
+                    {t.none}
+                  </button>
+                )}
+                {g.values.map((v) => (
+                  <button
+                    key={v.code}
+                    type="button"
+                    aria-pressed={selected[g.code] === v.code}
+                    onClick={() => setSelected((s) => ({ ...s, [g.code]: v.code }))}
+                    className={pill(selected[g.code] === v.code)}
+                  >
+                    {v.label}
+                    {v.surchargeMinor > 0 ? ` (+${formatCHF(v.surchargeMinor)})` : ""}
+                  </button>
+                ))}
+              </div>
             )}
-            {g.values.map((v) => (
-              <button
-                key={v.code}
-                type="button"
-                aria-pressed={selected[g.code] === v.code}
-                onClick={() => setSelected((s) => ({ ...s, [g.code]: v.code }))}
-                className={pill(selected[g.code] === v.code)}
-              >
-                {v.mediaId ? (
-                  <MediaImage
-                    mediaId={v.mediaId}
-                    alt=""
-                    className="h-5 w-5 rounded-[2px] object-cover"
-                  />
-                ) : null}
-                {v.label}
-                {v.surchargeMinor > 0 ? ` (+${formatCHF(v.surchargeMinor)})` : ""}
-              </button>
-            ))}
-          </div>
-        </section>
-      ))}
+          </section>
+        );
+      })}
 
       {model.upgrades.length > 0 && (
         <section>

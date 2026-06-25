@@ -34,6 +34,10 @@ All notable changes to this project. Newest first.
   admin (it had none, which is why it rendered as unstyled HTML), with the brand tokens,
   the Inter typeface, a sticky top navigation with active-section highlighting, and
   consistent buttons, inputs, tables, and muted status colours across every page.
+- Option pictures: the admin option-groups list now has an "Images" link (so per-value
+  images, e.g. collar styles, are easy to find and add), and the configurator renders an
+  option group whose values carry images as visual swatch tiles instead of a tiny
+  thumbnail. Option groups without images keep the compact text options.
 - A product image gallery: the product page now shows every published image for an item
   (a main image plus clickable, accessible thumbnails), not only the primary one. Single-
   image products show just the image; items without a photo keep the branded placeholder.

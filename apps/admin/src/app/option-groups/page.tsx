@@ -62,6 +62,12 @@ export default async function OptionGroupsPage() {
                   </td>
                   <td className="py-3">
                     <div className="flex gap-2">
+                      <Link
+                        href={`/option-groups/${g.id}`}
+                        className="rounded border border-line-strong px-2 py-1"
+                      >
+                        Images
+                      </Link>
                       <form method="post" action="/api/catalog/publish">
                         <input type="hidden" name="entityType" value="optionGroup" />
                         <input type="hidden" name="entityId" value={g.id} />
