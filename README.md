@@ -43,8 +43,26 @@ staging deploy.
 
 ## Publishing catalog
 
-Built in milestone M2: author an item in the admin as a draft, publish to
-Staging, verify, then publish to Production. (The admin UI is not built yet.)
+Author an item in the admin as a draft, publish to Staging, verify on the staging
+storefront, then publish to Production. Everything (garment types, models, fabrics,
+options, upgrades, collections, attributes) is owned in CUTURA's own database; there
+is no Shopify catalog.
+
+### Product images
+
+Each catalog item carries its own images, uploaded in the admin and shown on the
+storefront once published:
+
+- Base models: open a model and use the image manager (upload, set primary, delete).
+- Fabrics and upgrades: open the item from its list (the "Images" link) and upload there.
+- Option groups and values: open the group; upload a group image and a swatch per value
+  (value swatches appear next to each option in the configurator).
+- Collections: upload a banner on the collection page.
+
+Images only appear on the storefront after you publish the owning item to that
+environment (publishing copies both the image records and the image files). Allowed
+formats: PNG, JPEG, WebP, GIF. SVG is rejected for safety. While an item has no image,
+the storefront shows a calm branded placeholder, not a broken box.
 
 A new garment type (for example trousers, shipped in M8) is added as catalog data
 plus its estimator module - no measurement-flow or checkout change. The storefront
