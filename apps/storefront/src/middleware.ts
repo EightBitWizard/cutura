@@ -5,6 +5,7 @@ import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { pickLocale } from "@cutura/core";
 import { getDb, getRedirect } from "@cutura/db";
 
+import { verifyBasicAuth } from "@/server/access";
 import { defaultLocale, locales } from "@/i18n/config";
 import { type KVLike, readSessionCookie, verifyCustomerSession } from "@/server/auth";
 
@@ -15,12 +16,27 @@ export const LOCALE_COOKIE = "cutura_locale";
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Admin-managed redirects (NFR-20): an exact-path match wins before anything else.
   const env = getCloudflareContext().env as unknown as {
     DB: D1Database;
     SESSIONS: KVLike;
     SESSION_SECRET: string;
+    SITE_PASSWORD?: string;
   };
+
+  // Private staging gate: when SITE_PASSWORD is set the whole storefront requires HTTP
+  // Basic Auth; production leaves it unset and stays public. /api + static are excluded
+  // by the matcher, so health checks and webhooks stay reachable.
+  if (
+    env.SITE_PASSWORD &&
+    !verifyBasicAuth(request.headers.get("authorization"), env.SITE_PASSWORD)
+  ) {
+    return new NextResponse("Authentication required", {
+      status: 401,
+      headers: { "WWW-Authenticate": 'Basic realm="CUTURA staging", charset="UTF-8"' },
+    });
+  }
+
+  // Admin-managed redirects (NFR-20): an exact-path match wins before anything else.
   const red = await getRedirect(getDb(env.DB), pathname);
   if (red) {
     const url = request.nextUrl.clone();

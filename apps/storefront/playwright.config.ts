@@ -10,12 +10,20 @@ if (!baseURL) {
   );
 }
 
+// When the target is gated by the staging password (SITE_PASSWORD set), send HTTP Basic
+// Auth so the live smoke/a11y tests pass; ungated targets ignore the credentials.
+const sitePassword = process.env.SITE_PASSWORD;
+
 export default defineConfig({
   testDir: "./e2e",
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   reporter: "list",
-  use: { baseURL, trace: "on-first-retry" },
+  use: {
+    baseURL,
+    trace: "on-first-retry",
+    ...(sitePassword ? { httpCredentials: { username: "cutura", password: sitePassword } } : {}),
+  },
   projects: [
     { name: "desktop", use: { ...devices["Desktop Chrome"] } },
     { name: "mobile", use: { ...devices["iPhone 12"] } },

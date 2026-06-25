@@ -22,6 +22,9 @@ export interface StorefrontEnv {
   SHOPIFY_API_VERSION: string;
   // Optional Turnstile secret (NFR-18); when set, the contact form is verified.
   TURNSTILE_SECRET?: string;
+  // Optional staging access password; when set, the whole storefront is gated by HTTP
+  // Basic Auth (set on staging, leave unset on production so production stays public).
+  SITE_PASSWORD?: string;
 }
 
 export function getEnv(): StorefrontEnv {

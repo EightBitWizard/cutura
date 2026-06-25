@@ -92,4 +92,6 @@ jobs:
       - name: Live-URL smoke test (staging)
         env:
           BASE_URL: ${{ vars.STAGING_URL }}
+          # Staging is gated by HTTP Basic Auth; the test authenticates when this is set.
+          SITE_PASSWORD: ${{ secrets.SITE_PASSWORD }}
         run: pnpm --filter @cutura/storefront exec playwright test --grep @smoke

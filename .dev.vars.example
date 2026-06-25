@@ -22,3 +22,8 @@ SHOPIFY_ADMIN_API_TOKEN=""
 SHOPIFY_WEBHOOK_SECRET=""
 SHOPIFY_STORE_DOMAIN="cutura.myshopify.com"
 SHOPIFY_API_VERSION="2026-04"
+
+# Optional staging access gate (storefront). When set, the whole storefront requires
+# HTTP Basic Auth (any username + this password). Set it on staging to keep it private;
+# leave it UNSET on production so the public site stays open. Leave blank for local dev.
+SITE_PASSWORD=""

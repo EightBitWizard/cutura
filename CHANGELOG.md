@@ -40,6 +40,10 @@ All notable changes to this project. Newest first.
 - Product-page images now show in full, never cropped: the main image and thumbnails fit
   the whole photo and the leftover space shows the warm panel (the listing grid keeps its
   uniform filled cards).
+- The storefront can be kept private behind a password: set the `SITE_PASSWORD` secret on
+  staging and the whole site requires HTTP Basic Auth (any username + the password);
+  production leaves it unset and stays public. Health checks and webhooks are unaffected.
+- A branded browser-tab icon (favicon) for the storefront and the admin.
 - An editorial landing page: the home page now flows hero -> how it works -> fabric /
   craftsmanship -> a curated model preview (with "view all") -> trust / quality, with
   larger calm sections and better mobile rhythm instead of jumping into a product grid. A

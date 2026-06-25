@@ -51,7 +51,10 @@ pnpm --filter @cutura/storefront exec wrangler secret put MEASUREMENT_ENCRYPTION
 pnpm --filter @cutura/storefront exec wrangler secret put EMAIL_PROVIDER_KEY --env staging
 pnpm --filter @cutura/storefront exec wrangler secret put SHOPIFY_ADMIN_API_TOKEN --env staging
 pnpm --filter @cutura/storefront exec wrangler secret put SHOPIFY_WEBHOOK_SECRET --env staging
-# repeat with --env production
+# Keep staging PRIVATE: set SITE_PASSWORD on staging only (HTTP Basic Auth gates the
+# whole site). Do NOT set it on production - production must stay public.
+pnpm --filter @cutura/storefront exec wrangler secret put SITE_PASSWORD --env staging
+# repeat the others with --env production (but NOT SITE_PASSWORD)
 
 # admin worker (no --env): login + session + the order-ops secrets
 pnpm --filter @cutura/admin exec wrangler secret put ADMIN_AUTH_SECRET
