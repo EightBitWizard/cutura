@@ -8,6 +8,7 @@ import {
   getLandingConfig,
   getPrimaryMediaId,
   getRecommendations,
+  listLandingCollections,
   listPublishedCollections,
   listPublishedModels,
   localize,
@@ -49,9 +50,10 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const h = getHomeMessages(locale);
   const db = getDb(getEnv().DB);
 
-  const [models, collections, landing] = await Promise.all([
+  const [models, collections, landingCollections, landing] = await Promise.all([
     listPublishedModels(db, locale),
     listPublishedCollections(db, locale),
+    listLandingCollections(db, locale),
     getLandingConfig(db),
   ]);
   const mediaByModel = await primaryMediaForEntities(
@@ -159,32 +161,83 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </div>
       </Container>
 
-      {/* Model preview (curated, not the whole catalog) */}
-      {previewItems.length > 0 && (
+      {/* Featured collections (admin-selected), else a curated model preview */}
+      {landingCollections.length > 0
+        ? landingCollections.map((c) => (
+            <Container key={c.handle} className="border-t border-line py-16 sm:py-24">
+              <div className="flex items-end justify-between gap-4">
+                <h2 className="text-2xl font-semibold tracking-tight text-ink sm:text-3xl">
+                  {c.name}
+                </h2>
+                <Link
+                  href={`/${locale}/collections/${c.handle}`}
+                  className="shrink-0 text-sm text-ink-muted underline transition-colors hover:text-ink"
+                >
+                  {h.viewCollection}
+                </Link>
+              </div>
+              {c.description ? (
+                <p className="mt-3 max-w-2xl leading-relaxed text-ink-muted">{c.description}</p>
+              ) : null}
+              {c.bannerMediaId ? (
+                <Link
+                  href={`/${locale}/collections/${c.handle}`}
+                  className="mt-8 block overflow-hidden bg-sunken"
+                >
+                  <MediaImage
+                    mediaId={c.bannerMediaId}
+                    alt={c.name}
+                    className="aspect-[3/1] w-full object-cover"
+                  />
+                </Link>
+              ) : null}
+              {c.models.length > 0 && (
+                <div className="mt-10 grid grid-cols-2 gap-x-6 gap-y-12 sm:grid-cols-3">
+                  {c.models.map((m) => (
+                    <ModelCard
+                      key={m.handle}
+                      locale={locale}
+                      model={m}
+                      mediaId={mediaByModel.get(m.id) ?? null}
+                      fromLabel={t.from}
+                      notifyLabel={t.notifyMe}
+                    />
+                  ))}
+                </div>
+              )}
+            </Container>
+          ))
+        : previewItems.length > 0 && (
+            <Container className="border-t border-line py-16 sm:py-24">
+              <div className="flex items-end justify-between gap-4">
+                <h2 className="text-2xl font-semibold tracking-tight text-ink sm:text-3xl">
+                  {h.previewHeading}
+                </h2>
+                <Link
+                  href={`/${locale}/discover`}
+                  className="shrink-0 text-sm text-ink-muted underline transition-colors hover:text-ink"
+                >
+                  {h.viewAll}
+                </Link>
+              </div>
+              <div className="mt-10 grid grid-cols-2 gap-x-6 gap-y-12 sm:grid-cols-3">
+                {previewItems.map((m) => (
+                  <ModelCard
+                    key={m.handle}
+                    locale={locale}
+                    model={m}
+                    mediaId={mediaByModel.get(m.id) ?? null}
+                    fromLabel={t.from}
+                    notifyLabel={t.notifyMe}
+                  />
+                ))}
+              </div>
+            </Container>
+          )}
+
+      {/* Recommendations (logged-in only; hidden when empty) */}
+      {recommended.length > 0 && (
         <Container className="border-t border-line py-16 sm:py-24">
-          <div className="flex items-end justify-between gap-4">
-            <h2 className="text-2xl font-semibold tracking-tight text-ink sm:text-3xl">
-              {h.previewHeading}
-            </h2>
-            <Link
-              href={`/${locale}/discover`}
-              className="shrink-0 text-sm text-ink-muted underline transition-colors hover:text-ink"
-            >
-              {h.viewAll}
-            </Link>
-          </div>
-          <div className="mt-10 grid grid-cols-2 gap-x-6 gap-y-12 sm:grid-cols-3">
-            {previewItems.map((m) => (
-              <ModelCard
-                key={m.handle}
-                locale={locale}
-                model={m}
-                mediaId={mediaByModel.get(m.id) ?? null}
-                fromLabel={t.from}
-                notifyLabel={t.notifyMe}
-              />
-            ))}
-          </div>
           <RecommendedSection
             locale={locale}
             heading={t.recommendedForYou}

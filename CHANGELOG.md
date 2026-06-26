@@ -4,6 +4,19 @@ All notable changes to this project. Newest first.
 
 ## Unreleased
 
+### Added (catalog + admin follow-ups)
+
+- Each product now has an editable, per-language description (in the admin Models editor),
+  shown on the product page with line breaks preserved.
+- Collections can be featured on the landing page: a "Show on the landing page" toggle and
+  order plus a per-language banner-subtitle description per collection, and the home page now
+  renders each featured collection as a banner with up to three preview garments and a "View
+  collection" link to its page (falling back to a curated model preview when none are
+  featured).
+- Admin tidy-up: one consistent "Publish to staging" panel on every catalog editor (incl.
+  option groups, which previously had none), a grouped top navigation (Catalog / Operations /
+  Configuration), and a card-menu catalog home.
+
 ### Added (Batch 10 - visual design system, WS0)
 
 - A storefront visual identity, "Warmed Swiss Method": warm off-white surfaces, deep

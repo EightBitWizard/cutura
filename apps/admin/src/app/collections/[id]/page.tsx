@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { baseModel, collection, getRow, listCollectionMemberIds, listRows } from "@cutura/db";
 
+import { PublishPanel } from "@/components/PublishPanel";
 import { controlDb } from "@/server/catalog";
 
 export const dynamic = "force-dynamic";
@@ -68,6 +69,38 @@ export default async function CollectionDetailPage({
           </label>
         </section>
 
+        <section className="flex flex-col gap-3 rounded border border-line bg-sunken/40 p-3">
+          <label className="flex items-center gap-2 text-sm font-medium">
+            <input
+              type="checkbox"
+              name="featuredOnLanding"
+              defaultChecked={col.featuredOnLanding}
+            />
+            Show on the landing page
+          </label>
+          <label className="flex max-w-xs flex-col text-sm">
+            Landing position (lower shows first)
+            <input
+              name="landingPosition"
+              type="number"
+              defaultValue={col.landingPosition}
+              className={inputClass}
+            />
+          </label>
+          <h2 className="mt-1 text-sm font-medium">Description (banner subtitle, per language)</h2>
+          {(["de", "en", "it", "fr"] as const).map((loc) => (
+            <label key={loc} className="flex flex-col text-sm">
+              {`Text (${loc.toUpperCase()})`}
+              <textarea
+                name={`description_${loc}`}
+                defaultValue={col.descriptionI18n?.[loc] ?? ""}
+                rows={2}
+                className={inputClass}
+              />
+            </label>
+          ))}
+        </section>
+
         <section>
           <h2 className="text-lg font-medium">Members</h2>
           {models.length === 0 ? (
@@ -114,15 +147,7 @@ export default async function CollectionDetailPage({
         </form>
       </section>
 
-      <form method="post" action="/api/catalog/publish" className="mt-6">
-        <input type="hidden" name="entityType" value="collection" />
-        <input type="hidden" name="entityId" value={id} />
-        <input type="hidden" name="environment" value="staging" />
-        <input type="hidden" name="back" value={`/collections/${id}`} />
-        <button type="submit" className="rounded border border-line-strong px-3 py-1 text-sm">
-          Publish to staging
-        </button>
-      </form>
+      <PublishPanel entityType="collection" entityId={id} backPath={`/collections/${id}`} />
     </main>
   );
 }

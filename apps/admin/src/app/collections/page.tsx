@@ -28,6 +28,7 @@ export default async function CollectionsPage() {
             <th className="py-2">Handle</th>
             <th className="py-2">Name (DE)</th>
             <th className="py-2">Members</th>
+            <th className="py-2">Landing</th>
             <th className="py-2">Locales</th>
             <th className="py-2">Actions</th>
           </tr>
@@ -35,7 +36,7 @@ export default async function CollectionsPage() {
         <tbody>
           {collections.length === 0 ? (
             <tr>
-              <td colSpan={5} className="py-6 text-ink-subtle">
+              <td colSpan={6} className="py-6 text-ink-subtle">
                 No collections yet.
               </td>
             </tr>
@@ -50,6 +51,9 @@ export default async function CollectionsPage() {
                     <Link href={`/collections/${c.id}`} className="underline">
                       {count.get(c.id) ?? 0} members
                     </Link>
+                  </td>
+                  <td className="py-3 text-ink-subtle">
+                    {c.featuredOnLanding ? `on (pos ${c.landingPosition})` : "-"}
                   </td>
                   <td className="py-3 text-ink-subtle">
                     {missing.length === 0 ? "complete" : `missing: ${missing.join(", ")}`}

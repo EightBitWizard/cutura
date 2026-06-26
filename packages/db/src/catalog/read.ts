@@ -291,6 +291,53 @@ export async function getPublishedCollection(
   };
 }
 
+/**
+ * Featured collections for the storefront landing page, in landingPosition order. Each
+ * carries its banner, localized name/description, and up to three ordered, non-draft
+ * member models for the preview row.
+ */
+export async function listLandingCollections(
+  db: Database,
+  locale: Locale,
+): Promise<PublishedCollectionDetail[]> {
+  const featured = (await db.select().from(collection))
+    .filter((c) => c.featuredOnLanding)
+    .sort((a, b) => a.landingPosition - b.landingPosition);
+  const result: PublishedCollectionDetail[] = [];
+  for (const col of featured) {
+    const members = byPosition(
+      await db.select().from(collectionMember).where(eq(collectionMember.collectionId, col.id)),
+    );
+    const ids = members.map((m) => m.baseModelId);
+    const rows = ids.length
+      ? await db.select().from(baseModel).where(inArray(baseModel.id, ids))
+      : [];
+    const byId = new Map(rows.filter((m) => m.status !== "draft").map((m) => [m.id, m]));
+    const models = ids
+      .map((id) => byId.get(id))
+      .filter((m): m is NonNullable<typeof m> => m !== undefined)
+      .slice(0, 3)
+      .map((m) => ({
+        id: m.id,
+        handle: m.handle,
+        name: localize(m.nameI18n, locale),
+        description: localize(m.descriptionI18n, locale),
+        basePriceMinor: m.basePriceMinor,
+        leadTimeMinDays: m.leadTimeMinDays,
+        leadTimeMaxDays: m.leadTimeMaxDays,
+        status: m.status as "view_only" | "orderable",
+      }));
+    result.push({
+      handle: col.handle,
+      name: localize(col.nameI18n, locale),
+      description: localize(col.descriptionI18n, locale),
+      bannerMediaId: col.bannerMediaId ?? null,
+      models,
+    });
+  }
+  return result;
+}
+
 export interface AttributeFacet {
   key: string;
   label: string;

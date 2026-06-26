@@ -116,6 +116,9 @@ export const collection = sqliteTable("collection", {
   nameI18n: text("name_i18n", { mode: "json" }).$type<LocalizedText>().notNull(),
   descriptionI18n: text("description_i18n", { mode: "json" }).$type<LocalizedText>(),
   bannerMediaId: text("banner_media_id"),
+  // Whether this collection is shown on the storefront landing page, and in which order.
+  featuredOnLanding: integer("featured_on_landing", { mode: "boolean" }).notNull().default(false),
+  landingPosition: integer("landing_position").notNull().default(0),
   ...timestamps(),
 });
 

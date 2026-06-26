@@ -20,6 +20,8 @@ export async function POST(
     handle: String(form.get("handle") ?? existing.handle).trim() || existing.handle,
     nameI18n: localizedFromForm(form, "name"),
     descriptionI18n: localizedFromForm(form, "description"),
+    featuredOnLanding: form.get("featuredOnLanding") != null,
+    landingPosition: Number(form.get("landingPosition") ?? existing.landingPosition) || 0,
     updatedAt: new Date().toISOString(),
   });
   await setCollectionMembers(db, id, form.getAll("member").map(String));

@@ -970,6 +970,7 @@ export interface HomeMessages {
   trustBody: string;
   previewHeading: string;
   viewAll: string;
+  viewCollection: string;
 }
 
 const homeCatalog: Record<Locale, HomeMessages> = {
@@ -1003,6 +1004,7 @@ const homeCatalog: Record<Locale, HomeMessages> = {
       "Jedes Stück wird nach Ihren Massen gefertigt und vor dem Versand in der Schweiz geprüft. Passt etwas nicht, fertigen wir es neu - das ist unsere Passformgarantie.",
     previewHeading: "Unsere Modelle",
     viewAll: "Alle Modelle ansehen",
+    viewCollection: "Kollektion ansehen",
   },
   en: {
     heroEyebrow: "Made to measure",
@@ -1034,6 +1036,7 @@ const homeCatalog: Record<Locale, HomeMessages> = {
       "Every piece is made to your measurements and quality-checked in Switzerland before it ships. If something is not right, we remake it - that is our fit guarantee.",
     previewHeading: "Our models",
     viewAll: "View all models",
+    viewCollection: "View collection",
   },
   it: {
     heroEyebrow: "Su misura",
@@ -1065,6 +1068,7 @@ const homeCatalog: Record<Locale, HomeMessages> = {
       "Ogni capo è realizzato sulle tue misure e controllato in Svizzera prima della spedizione. Se qualcosa non va, lo rifacciamo: è la nostra garanzia di vestibilità.",
     previewHeading: "I nostri modelli",
     viewAll: "Vedi tutti i modelli",
+    viewCollection: "Vedi la collezione",
   },
   fr: {
     heroEyebrow: "Sur mesure",
@@ -1096,6 +1100,7 @@ const homeCatalog: Record<Locale, HomeMessages> = {
       "Chaque pièce est confectionnée à vos mesures et contrôlée en Suisse avant l'envoi. Si quelque chose ne va pas, nous la refaisons : c'est notre garantie d'ajustement.",
     previewHeading: "Nos modèles",
     viewAll: "Voir tous les modèles",
+    viewCollection: "Voir la collection",
   },
 };
 
