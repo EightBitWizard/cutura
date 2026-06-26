@@ -32,10 +32,10 @@ describe("staging seed", () => {
     const model = db
       .prepare("SELECT handle, status FROM base_model WHERE id = 'bm_oxford'")
       .get() as { handle: string; status: string } | undefined;
-    expect(model?.handle).toBe("oxford-business");
+    expect(model?.handle).toBe("oxford-business-shirt");
     expect(model?.status).toBe("orderable");
-    // Two garment types (shirt + trouser); the starter Oxford/Chino plus the Riviera +
-    // Linen catalog (3 more models, 4 more fabrics).
+    // Two garment types (shirt + trouser); five orderable models and eight fabrics across
+    // the Business Essentials and Casual Essentials collections.
     expect(count(db, "garment_type")).toBe(2);
     expect(count(db, "base_model")).toBe(5);
     expect(count(db, "fabric")).toBe(8);
@@ -44,10 +44,10 @@ describe("staging seed", () => {
     expect(count(db, "option_group")).toBe(6);
     // Option values across all groups (incl. the double pleat).
     expect(count(db, "option_value")).toBe(14);
-    // Riviera collection (+ its 2 members) and the reciprocal Riviera cross-sell.
-    expect(count(db, "collection")).toBe(1);
-    expect(count(db, "collection_member")).toBe(2);
-    expect(count(db, "cross_sell_rule")).toBe(4);
+    // Business Essentials (2 members) + Casual Essentials (3 members); reciprocal cross-sell.
+    expect(count(db, "collection")).toBe(2);
+    expect(count(db, "collection_member")).toBe(5);
+    expect(count(db, "cross_sell_rule")).toBe(6);
   });
 
   it("makes the trouser orderable with its own fabrics + allow-list (FR-104)", () => {
@@ -57,7 +57,7 @@ describe("staging seed", () => {
         "SELECT bm.handle, gt.key FROM base_model bm JOIN garment_type gt ON gt.id = bm.garment_type_id WHERE bm.id = 'bm_chino'",
       )
       .get() as { handle: string; key: string } | undefined;
-    expect(trouser?.handle).toBe("chino-classic");
+    expect(trouser?.handle).toBe("city-pleated-trouser");
     expect(trouser?.key).toBe("trouser");
     const allowed = count(db, "model_allowed_fabric WHERE base_model_id = 'bm_chino'");
     expect(allowed).toBe(2);
@@ -67,6 +67,6 @@ describe("staging seed", () => {
     const db = seededDb(true);
     expect(count(db, "base_model")).toBe(5);
     expect(count(db, "fabric")).toBe(8);
-    expect(count(db, "cross_sell_rule")).toBe(4);
+    expect(count(db, "cross_sell_rule")).toBe(6);
   });
 });
