@@ -14,6 +14,7 @@ import {
 } from "@cutura/db";
 
 import { MediaManager } from "@/components/MediaManager";
+import { PublishPanel } from "@/components/PublishPanel";
 import { controlDb } from "@/server/catalog";
 
 export const dynamic = "force-dynamic";
@@ -122,6 +123,24 @@ export default async function BaseModelDetailPage({ params }: { params: Promise<
               />
             </label>
           </div>
+        </section>
+
+        <section className="flex flex-col gap-3">
+          <h2 className="text-lg font-medium">Description (shown on the product page)</h2>
+          <p className="text-sm text-ink-subtle">
+            Free text per language. Line breaks are kept. German is the fallback.
+          </p>
+          {(["de", "en", "it", "fr"] as const).map((loc) => (
+            <label key={loc} className="flex flex-col text-sm">
+              {`Text (${loc.toUpperCase()})`}
+              <textarea
+                name={`description_${loc}`}
+                defaultValue={model.descriptionI18n?.[loc] ?? ""}
+                rows={3}
+                className={inputClass}
+              />
+            </label>
+          ))}
         </section>
 
         <section>
@@ -249,15 +268,7 @@ export default async function BaseModelDetailPage({ params }: { params: Promise<
         </div>
       </section>
 
-      <form method="post" action="/api/catalog/publish" className="mt-6">
-        <input type="hidden" name="entityType" value="baseModel" />
-        <input type="hidden" name="entityId" value={id} />
-        <input type="hidden" name="environment" value="staging" />
-        <input type="hidden" name="back" value={`/base-models/${id}`} />
-        <button type="submit" className="rounded border border-line-strong px-3 py-1 text-sm">
-          Publish to staging
-        </button>
-      </form>
+      <PublishPanel entityType="baseModel" entityId={id} backPath={`/base-models/${id}`} />
     </main>
   );
 }

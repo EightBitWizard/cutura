@@ -129,7 +129,9 @@ export default async function ProductPage({
           <div className="lg:sticky lg:top-24 lg:self-start">
             {garmentName ? <Eyebrow>{garmentName}</Eyebrow> : null}
             <h1 className="mt-2 text-3xl font-semibold tracking-tight text-ink">{model.name}</h1>
-            {model.description && <p className="mt-3 text-ink-muted">{model.description}</p>}
+            {model.description && (
+              <p className="mt-3 whitespace-pre-line text-ink-muted">{model.description}</p>
+            )}
 
             <p className="mt-5 flex items-baseline gap-2">
               <span className="text-xl font-semibold text-ink">

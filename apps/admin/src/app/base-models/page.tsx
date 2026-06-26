@@ -166,6 +166,14 @@ export default async function BaseModelsPage() {
               className="mt-1 rounded border border-line-strong px-2 py-1"
             />
           </label>
+          <label className="col-span-2 flex flex-col text-sm">
+            Description (DE) - optional, editable per language after creating
+            <textarea
+              name="description_de"
+              rows={3}
+              className="mt-1 rounded border border-line-strong px-2 py-1"
+            />
+          </label>
           <div className="col-span-2">
             <button type="submit" className="rounded-md bg-ink px-4 py-2 font-medium text-paper">
               Create base model
