@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getRow, listMedia, upgrade } from "@cutura/db";
 
 import { MediaManager } from "@/components/MediaManager";
+import { PublishPanel } from "@/components/PublishPanel";
 import { controlDb } from "@/server/catalog";
 
 export const dynamic = "force-dynamic";
@@ -43,15 +44,7 @@ export default async function UpgradeDetailPage({ params }: { params: Promise<{ 
         heading="Upgrade images"
       />
 
-      <form method="post" action="/api/catalog/publish" className="mt-8">
-        <input type="hidden" name="entityType" value="upgrade" />
-        <input type="hidden" name="entityId" value={id} />
-        <input type="hidden" name="environment" value="staging" />
-        <input type="hidden" name="back" value={`/upgrades/${id}`} />
-        <button type="submit" className="rounded border border-line-strong px-3 py-1 text-sm">
-          Publish to staging
-        </button>
-      </form>
+      <PublishPanel entityType="upgrade" entityId={id} backPath={`/upgrades/${id}`} />
     </main>
   );
 }

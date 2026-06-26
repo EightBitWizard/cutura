@@ -3,6 +3,7 @@ import Link from "next/link";
 import { fabric, getRow, listMedia } from "@cutura/db";
 
 import { MediaManager } from "@/components/MediaManager";
+import { PublishPanel } from "@/components/PublishPanel";
 import { controlDb } from "@/server/catalog";
 
 export const dynamic = "force-dynamic";
@@ -43,15 +44,7 @@ export default async function FabricDetailPage({ params }: { params: Promise<{ i
         heading="Fabric images (swatch)"
       />
 
-      <form method="post" action="/api/catalog/publish" className="mt-8">
-        <input type="hidden" name="entityType" value="fabric" />
-        <input type="hidden" name="entityId" value={id} />
-        <input type="hidden" name="environment" value="staging" />
-        <input type="hidden" name="back" value={`/fabrics/${id}`} />
-        <button type="submit" className="rounded border border-line-strong px-3 py-1 text-sm">
-          Publish to staging
-        </button>
-      </form>
+      <PublishPanel entityType="fabric" entityId={id} backPath={`/fabrics/${id}`} />
     </main>
   );
 }

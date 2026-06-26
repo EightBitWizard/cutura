@@ -4,6 +4,7 @@ import { formatCHF } from "@cutura/core";
 import { getRow, listMedia, listOptionValues, optionGroup } from "@cutura/db";
 
 import { MediaManager } from "@/components/MediaManager";
+import { PublishPanel } from "@/components/PublishPanel";
 import { controlDb } from "@/server/catalog";
 
 export const dynamic = "force-dynamic";
@@ -161,6 +162,8 @@ export default async function OptionGroupDetailPage({
           </div>
         </section>
       )}
+
+      <PublishPanel entityType="optionGroup" entityId={id} backPath={`/option-groups/${id}`} />
     </main>
   );
 }
