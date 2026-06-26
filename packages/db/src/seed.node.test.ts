@@ -34,15 +34,20 @@ describe("staging seed", () => {
       .get() as { handle: string; status: string } | undefined;
     expect(model?.handle).toBe("oxford-business");
     expect(model?.status).toBe("orderable");
-    // Two garment types (shirt + trouser), each with its model, fabrics, and options.
+    // Two garment types (shirt + trouser); the starter Oxford/Chino plus the Riviera +
+    // Linen catalog (3 more models, 4 more fabrics).
     expect(count(db, "garment_type")).toBe(2);
-    expect(count(db, "base_model")).toBe(2);
-    expect(count(db, "fabric")).toBe(4);
-    expect(count(db, "model_allowed_fabric")).toBe(4);
+    expect(count(db, "base_model")).toBe(5);
+    expect(count(db, "fabric")).toBe(8);
+    expect(count(db, "model_allowed_fabric")).toBe(11);
     // Option groups: collar + sleeve (shirt); pleats + side/back pockets + closure (trouser).
     expect(count(db, "option_group")).toBe(6);
     // Option values across all groups (incl. the double pleat).
     expect(count(db, "option_value")).toBe(14);
+    // Riviera collection (+ its 2 members) and the reciprocal Riviera cross-sell.
+    expect(count(db, "collection")).toBe(1);
+    expect(count(db, "collection_member")).toBe(2);
+    expect(count(db, "cross_sell_rule")).toBe(4);
   });
 
   it("makes the trouser orderable with its own fabrics + allow-list (FR-104)", () => {
@@ -60,8 +65,8 @@ describe("staging seed", () => {
 
   it("is idempotent (re-applying does not duplicate rows)", () => {
     const db = seededDb(true);
-    expect(count(db, "base_model")).toBe(2);
-    expect(count(db, "fabric")).toBe(4);
-    expect(count(db, "cross_sell_rule")).toBe(2);
+    expect(count(db, "base_model")).toBe(5);
+    expect(count(db, "fabric")).toBe(8);
+    expect(count(db, "cross_sell_rule")).toBe(4);
   });
 });
