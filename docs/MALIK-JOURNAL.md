@@ -9,31 +9,30 @@ Karton box: https://www.kaiserkraft.ch/verpackungsmaterial/klappschachteln-stuel
 Care label & Label: https://www.dutchlabelshop.com
 Sicherheitsettikett: https://www.vistaprint.ch/etiketten-und-aufkleber/personalisierte-etiketten/sicherheitsetiketten
 Seidenpapier: https://www.vistaprint.ch/verpackungen/seiden-und-packpapier/seidenpapier-mit-logo?utm_source=chatgpt.com
-Kleber für Seidenpapier: https://www.vistaprint.ch/etiketten-und-aufkleber/personalisierte-etiketten/aufkleberboegen 
+Kleber für Seidenpapier: https://www.vistaprint.ch/etiketten-und-aufkleber/personalisierte-etiketten/aufkleberboegen
 Packetbeileger: https://www.vistaprint.ch/marketingmaterial/paketbeileger
-
 
 Kosten:
 Produktionskosten Kleider:
-    Hosen (Testbestellung): 85$
+Hosen (Testbestellung): 85$
     Shorts (Testbestellung): 65$
-    Linen shirt (Testbestellung): 65$
+Linen shirt (Testbestellung): 65$
 
 Lieferoptionen Vietnam schweiz:
-    Standart (Testbestellung) (3-4W -> tatsächlich 2W): 48$ 
-    Eco (8-12D): 120$
-    Express (5-6D): 177$ 
+Standart (Testbestellung) (3-4W -> tatsächlich 2W): 48$
+Eco (8-12D): 120$
+Express (5-6D): 177$
 
 Lieferopptionen Schweiz Schweiz:
-    bis 100x60x60 bis 2 kg: 9 CHF
+bis 100x60x60 bis 2 kg: 9 CHF
 
 Verpackung (Voraussichtlich):
-    Logo Label eingenäht: 1 CHF
-    Care Logo: 0.5 CHF
-    Karton box: 1.5 - 7 CHF
-    Sicherheits ettikett: 0.14 CHF
-    Seidenpapier: 0.5 CHF
-    Papier Kleber: 0.2 CHF
-    Packetbeileger: 0.15 CHF
+Logo Label eingenäht: 1 CHF
+Care Logo: 0.5 CHF
+Karton box: 1.5 - 7 CHF
+Sicherheits ettikett: 0.14 CHF
+Seidenpapier: 0.5 CHF
+Papier Kleber: 0.2 CHF
+Packetbeileger: 0.15 CHF
 
     Total: ca. 4 CHF
