@@ -20,24 +20,26 @@ const db = () => getDb(env.TARGET_TEST_DB);
 const KEY = "test-measurement-encryption-key";
 
 const confirmed: GarmentMeasurements = {
-  chest: 100,
-  waist: 88,
-  hips: 96,
-  neck: 40,
+  neck: 39,
   shoulder: 46,
+  backWidth: 44,
+  aboveChest: 96,
+  chest: 100,
+  armhole: 46,
+  biceps: 35,
+  wrist: 17,
   sleeveLength: 64,
   shirtLength: 76,
 };
 
 const trouserConfirmed: GarmentMeasurements = {
   waist: 88,
-  hips: 96,
-  inseam: 80,
-  outseam: 104,
-  thigh: 60,
-  knee: 43,
-  legOpening: 34,
-  rise: 26,
+  belly: 92,
+  hips: 100,
+  crotch: 66,
+  thigh: 58,
+  calf: 38,
+  trouserLength: 108,
 };
 
 function versionFor(values: GarmentMeasurements) {
@@ -85,7 +87,7 @@ describe("profile management", () => {
     expect(got?.currentVersion).toBe(2);
     const m = got?.confirmed as unknown as Record<string, number>;
     expect(m.chest).toBe(104);
-    expect(m.waist).toBe(88); // unchanged
+    expect(m.neck).toBe(39); // unchanged
   });
 
   it("archives a profile out of the active list", async () => {
@@ -116,7 +118,7 @@ describe("profile management", () => {
     const again = await saveCustomerMeasurement(
       db(),
       customer.id,
-      versionFor({ ...trouserConfirmed, inseam: 82 }),
+      versionFor({ ...trouserConfirmed, trouserLength: 110 }),
       KEY,
     );
     expect(again.profileId).toBe(trouser.profileId);

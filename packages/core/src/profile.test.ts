@@ -8,11 +8,14 @@ import {
 import type { ShirtMeasurements } from "./types";
 
 const confirmed: ShirtMeasurements = {
-  chest: 100,
-  waist: 88,
-  hips: 100,
   neck: 39,
   shoulder: 46,
+  backWidth: 44,
+  aboveChest: 96,
+  chest: 100,
+  armhole: 46,
+  biceps: 35,
+  wrist: 17,
   sleeveLength: 64,
   shirtLength: 76,
 };
@@ -68,12 +71,12 @@ describe("three-layer measurement profile versioning", () => {
       createdAt: "t1",
     });
     const v3 = reviseConfirmedValues(
-      reviseConfirmedValues(v1, { waist: 90 }, "t2"),
-      { waist: 91 },
+      reviseConfirmedValues(v1, { chest: 102 }, "t2"),
+      { chest: 103 },
       "t3",
     );
     expect(v3.version).toBe(3);
     expect(v3.previousVersion).toBe(2);
-    expect((v3.confirmedValues as ShirtMeasurements).waist).toBe(91);
+    expect((v3.confirmedValues as ShirtMeasurements).chest).toBe(103);
   });
 });

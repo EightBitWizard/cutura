@@ -18,11 +18,14 @@ const db = () => getDb(env.TARGET_TEST_DB);
 const iso = "2026-06-24T10:00:00.000Z";
 
 const confirmed: GarmentMeasurements = {
-  chest: 100,
-  waist: 88,
-  hips: 96,
-  neck: 40,
+  neck: 39,
   shoulder: 46,
+  backWidth: 44,
+  aboveChest: 96,
+  chest: 100,
+  armhole: 46,
+  biceps: 35,
+  wrist: 17,
   sleeveLength: 64,
   shirtLength: 76,
 };
@@ -43,13 +46,12 @@ function sampleConfig() {
 
 const trouserConfirmed: GarmentMeasurements = {
   waist: 88,
-  hips: 96,
-  inseam: 80,
-  outseam: 104,
-  thigh: 60,
-  knee: 43,
-  legOpening: 34,
-  rise: 26,
+  belly: 92,
+  hips: 100,
+  crotch: 66,
+  thigh: 58,
+  calf: 38,
+  trouserLength: 108,
 };
 
 function trouserConfig() {

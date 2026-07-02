@@ -31,23 +31,42 @@ export function checkShirtOutliers(
     return { isOutlier: true, flags: ["Keine Masse vorhanden - manuelle Prüfung erforderlich."] };
   }
 
-  const { chest, waist, neck, shoulder, sleeveLength, shirtLength } = measurements;
+  const {
+    neck,
+    shoulder,
+    backWidth,
+    aboveChest,
+    chest,
+    armhole,
+    biceps,
+    wrist,
+    sleeveLength,
+    shirtLength,
+  } = measurements;
 
   if (isNum(chest) && (chest < 70 || chest > 160)) {
     flags.push("Brustumfang liegt ausserhalb des üblichen Bereichs (70-160 cm).");
   }
-  if (isNum(waist) && (waist < 50 || waist > 150)) {
-    flags.push("Taillenumfang liegt ausserhalb des üblichen Bereichs (50-150 cm).");
-  }
   if (isNum(neck) && (neck < 30 || neck > 60)) {
     flags.push("Halsumfang liegt ausserhalb des üblichen Bereichs (30-60 cm).");
   }
-
-  if (isNum(chest) && isNum(waist)) {
-    if (waist > chest) flags.push("Taillenumfang grösser als Brustumfang - bitte prüfen.");
-    if (chest - waist > 30) {
-      flags.push("Sehr grosse Taille-Brust-Differenz (>30 cm) - bitte prüfen.");
-    }
+  if (isNum(aboveChest) && (aboveChest < 65 || aboveChest > 155)) {
+    flags.push("Oberbrustumfang liegt ausserhalb des üblichen Bereichs (65-155 cm).");
+  }
+  if (isNum(aboveChest) && isNum(chest) && aboveChest > chest + 3) {
+    flags.push("Oberbrustumfang deutlich grösser als Brustumfang - bitte prüfen.");
+  }
+  if (isNum(backWidth) && (backWidth < 30 || backWidth > 60)) {
+    flags.push("Rückenbreite liegt ausserhalb des üblichen Bereichs (30-60 cm).");
+  }
+  if (isNum(armhole) && (armhole < 30 || armhole > 65)) {
+    flags.push("Armlochumfang liegt ausserhalb des üblichen Bereichs (30-65 cm).");
+  }
+  if (isNum(biceps) && (biceps < 20 || biceps > 55)) {
+    flags.push("Oberarmumfang liegt ausserhalb des üblichen Bereichs (20-55 cm).");
+  }
+  if (isNum(wrist) && (wrist < 12 || wrist > 25)) {
+    flags.push("Handgelenkumfang liegt ausserhalb des üblichen Bereichs (12-25 cm).");
   }
 
   if (isNum(chest) && chest > 0 && isNum(neck)) {
@@ -95,7 +114,7 @@ export function checkTrouserOutliers(
     return { isOutlier: true, flags: ["Keine Masse vorhanden - manuelle Prüfung erforderlich."] };
   }
 
-  const { waist, hips, inseam, outseam, thigh, knee, legOpening, rise } = measurements;
+  const { waist, belly, hips, crotch, thigh, calf, trouserLength } = measurements;
 
   if (isNum(waist) && isNum(hips) && waist - hips > 10) {
     flags.push("Taillenumfang deutlich grösser als Hüftumfang - bitte prüfen.");
@@ -104,34 +123,31 @@ export function checkTrouserOutliers(
   if (isNum(waist) && (waist < 55 || waist > 150)) {
     flags.push("Taillenumfang liegt ausserhalb des üblichen Bereichs (55-150 cm).");
   }
+  if (isNum(belly) && (belly < 55 || belly > 160)) {
+    flags.push("Bauchumfang liegt ausserhalb des üblichen Bereichs (55-160 cm).");
+  }
   if (isNum(hips) && (hips < 70 || hips > 160)) {
     flags.push("Hüftumfang liegt ausserhalb des üblichen Bereichs (70-160 cm).");
   }
 
-  if (isNum(inseam) && (inseam < 60 || inseam > 95)) {
-    flags.push("Schrittlänge liegt ausserhalb des üblichen Bereichs (60-95 cm).");
+  if (isNum(crotch) && (crotch < 45 || crotch > 90)) {
+    flags.push("Schrittbogen liegt ausserhalb des üblichen Bereichs (45-90 cm).");
   }
-  if (isNum(outseam) && (outseam < 80 || outseam > 120)) {
-    flags.push("Aussenlänge liegt ausserhalb des üblichen Bereichs (80-120 cm).");
+  if (isNum(trouserLength) && (trouserLength < 80 || trouserLength > 125)) {
+    flags.push("Hosenlänge liegt ausserhalb des üblichen Bereichs (80-125 cm).");
   }
-  if (isNum(inseam) && isNum(outseam) && outseam <= inseam) {
-    flags.push("Aussenlänge muss grösser als Schrittlänge sein - bitte prüfen.");
+  if (isNum(crotch) && isNum(trouserLength) && crotch >= trouserLength) {
+    flags.push("Hosenlänge muss grösser als der Schrittbogen sein - bitte prüfen.");
   }
 
   if (isNum(thigh) && (thigh < 40 || thigh > 85)) {
     flags.push("Oberschenkelumfang liegt ausserhalb des üblichen Bereichs (40-85 cm).");
   }
-  if (isNum(thigh) && isNum(knee) && knee > thigh) {
-    flags.push("Knieumfang grösser als Oberschenkelumfang - bitte prüfen.");
+  if (isNum(thigh) && isNum(calf) && calf > thigh) {
+    flags.push("Wadenumfang grösser als Oberschenkelumfang - bitte prüfen.");
   }
-  if (isNum(thigh) && isNum(legOpening) && legOpening > thigh) {
-    flags.push("Beinöffnung grösser als Oberschenkelumfang - bitte prüfen.");
-  }
-  if (isNum(legOpening) && (legOpening < 16 || legOpening > 50)) {
-    flags.push("Beinöffnung liegt ausserhalb des üblichen Bereichs (16-50 cm).");
-  }
-  if (isNum(rise) && (rise < 18 || rise > 38)) {
-    flags.push("Schritttiefe liegt ausserhalb des üblichen Bereichs (18-38 cm).");
+  if (isNum(calf) && (calf < 25 || calf > 60)) {
+    flags.push("Wadenumfang liegt ausserhalb des üblichen Bereichs (25-60 cm).");
   }
 
   return { isOutlier: flags.length > 0, flags };

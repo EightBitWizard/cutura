@@ -4,11 +4,14 @@ import { applyOverride, buildOrderSnapshot } from "./snapshot";
 import type { ShirtMeasurements } from "./types";
 
 const confirmed: ShirtMeasurements = {
-  chest: 100,
-  waist: 88,
-  hips: 100,
   neck: 39,
   shoulder: 46,
+  backWidth: 44,
+  aboveChest: 96,
+  chest: 100,
+  armhole: 46,
+  biceps: 35,
+  wrist: 17,
   sleeveLength: 64,
   shirtLength: 76,
 };

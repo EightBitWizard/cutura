@@ -9,21 +9,25 @@ import type { CustomerMilestone } from "@cutura/core";
 import type { Locale } from "./config";
 
 export interface MeasurementFieldLabels {
-  // Shirt
-  chest: string;
-  waist: string;
-  hips: string;
+  // Shirt (supplier guideline order)
   neck: string;
   shoulder: string;
+  backWidth: string;
+  aboveChest: string;
+  chest: string;
+  armhole: string;
+  biceps: string;
+  wrist: string;
   sleeveLength: string;
   shirtLength: string;
-  // Trouser
-  inseam: string;
-  outseam: string;
+  // Trouser (supplier guideline order)
+  waist: string;
+  belly: string;
+  hips: string;
+  crotch: string;
   thigh: string;
-  knee: string;
-  legOpening: string;
-  rise: string;
+  calf: string;
+  trouserLength: string;
 }
 
 /** @deprecated use MeasurementFieldLabels (now covers all garment types). */
@@ -222,19 +226,23 @@ const de: Messages = {
       "Einige Masse sind ungewöhnlich. Ihre Bestellung wird vor der Produktion geprüft.",
     saving: "Wird gespeichert ...",
     fields: {
-      chest: "Brustumfang",
-      waist: "Taillenumfang",
-      hips: "Hüftumfang",
       neck: "Halsumfang",
       shoulder: "Schulterbreite",
+      backWidth: "Rückenbreite",
+      aboveChest: "Oberbrustumfang",
+      chest: "Brustumfang",
+      armhole: "Armlochumfang",
+      biceps: "Oberarmumfang",
+      wrist: "Handgelenkumfang",
       sleeveLength: "Ärmellänge",
       shirtLength: "Hemdlänge",
-      inseam: "Schrittlänge",
-      outseam: "Aussenlänge",
+      waist: "Taillenumfang",
+      belly: "Bauchumfang",
+      hips: "Hüftumfang",
+      crotch: "Schrittbogen",
       thigh: "Oberschenkelumfang",
-      knee: "Knieumfang",
-      legOpening: "Beinöffnung",
-      rise: "Schritttiefe",
+      calf: "Wadenumfang",
+      trouserLength: "Hosenlänge",
     },
   },
   cart: {
@@ -344,19 +352,23 @@ const en: Messages = {
     outlierNotice: "Some measurements are unusual. Your order will be reviewed before production.",
     saving: "Saving ...",
     fields: {
-      chest: "Chest",
-      waist: "Waist",
-      hips: "Hips",
       neck: "Neck",
       shoulder: "Shoulder width",
+      backWidth: "Back width",
+      aboveChest: "Above chest",
+      chest: "Chest",
+      armhole: "Armhole",
+      biceps: "Biceps",
+      wrist: "Wrist",
       sleeveLength: "Sleeve length",
       shirtLength: "Shirt length",
-      inseam: "Inseam",
-      outseam: "Outseam",
+      waist: "Waist",
+      belly: "Belly",
+      hips: "Hips",
+      crotch: "Crotch length",
       thigh: "Thigh",
-      knee: "Knee",
-      legOpening: "Leg opening",
-      rise: "Rise",
+      calf: "Calf",
+      trouserLength: "Trouser length",
     },
   },
   cart: {
@@ -467,19 +479,23 @@ const it: Messages = {
       "Alcune misure sono insolite. Il tuo ordine sara verificato prima della produzione.",
     saving: "Salvataggio ...",
     fields: {
-      chest: "Torace",
-      waist: "Vita",
-      hips: "Fianchi",
       neck: "Collo",
       shoulder: "Larghezza spalle",
+      backWidth: "Larghezza schiena",
+      aboveChest: "Sopra il torace",
+      chest: "Torace",
+      armhole: "Giromanica",
+      biceps: "Bicipite",
+      wrist: "Polso",
       sleeveLength: "Lunghezza manica",
       shirtLength: "Lunghezza camicia",
-      inseam: "Cavallo interno",
-      outseam: "Lunghezza esterna",
+      waist: "Girovita",
+      belly: "Addome",
+      hips: "Fianchi",
+      crotch: "Cavallo",
       thigh: "Coscia",
-      knee: "Ginocchio",
-      legOpening: "Apertura gamba",
-      rise: "Altezza cavallo",
+      calf: "Polpaccio",
+      trouserLength: "Lunghezza pantalone",
     },
   },
   cart: {
@@ -591,19 +607,23 @@ const fr: Messages = {
       "Certaines mesures sont inhabituelles. Votre commande sera verifiee avant production.",
     saving: "Enregistrement ...",
     fields: {
-      chest: "Poitrine",
-      waist: "Taille",
-      hips: "Hanches",
-      neck: "Cou",
-      shoulder: "Largeur d epaules",
+      neck: "Tour de cou",
+      shoulder: "Largeur d'épaules",
+      backWidth: "Largeur de dos",
+      aboveChest: "Au-dessus de la poitrine",
+      chest: "Tour de poitrine",
+      armhole: "Emmanchure",
+      biceps: "Tour de biceps",
+      wrist: "Tour de poignet",
       sleeveLength: "Longueur de manche",
       shirtLength: "Longueur de chemise",
-      inseam: "Entrejambe",
-      outseam: "Longueur exterieure",
-      thigh: "Cuisse",
-      knee: "Genou",
-      legOpening: "Bas de jambe",
-      rise: "Hauteur d entrejambe",
+      waist: "Tour de taille",
+      belly: "Tour de ventre",
+      hips: "Tour de hanches",
+      crotch: "Enfourchure",
+      thigh: "Tour de cuisse",
+      calf: "Tour de mollet",
+      trouserLength: "Longueur de pantalon",
     },
   },
   cart: {

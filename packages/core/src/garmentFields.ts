@@ -2,25 +2,29 @@
 // the measurement flow (wizard + detailed entry + labels) reads. Adding a garment
 // type is data + an estimator module + an entry here - no flow rewrite (FR-104/523).
 
+// Ordered per the supplier's measurement guideline (tuongtailor.com), top-down as
+// they are taken on the body; the production spec carries exactly these fields.
 const SHIRT_FIELDS = [
-  "chest",
-  "waist",
-  "hips",
   "neck",
   "shoulder",
+  "backWidth",
+  "aboveChest",
+  "chest",
+  "armhole",
+  "biceps",
+  "wrist",
   "sleeveLength",
   "shirtLength",
 ] as const;
 
 const TROUSER_FIELDS = [
   "waist",
+  "belly",
   "hips",
-  "inseam",
-  "outseam",
+  "crotch",
   "thigh",
-  "knee",
-  "legOpening",
-  "rise",
+  "calf",
+  "trouserLength",
 ] as const;
 
 /** The customer-entered base inputs the wizard collects; the rest are derived. */

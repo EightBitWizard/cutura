@@ -11,30 +11,29 @@ export type FitPreference = "slim" | "regular" | "relaxed";
 
 export type ConfidenceLevel = "high" | "medium" | "low";
 
+// Field sets follow the supplier's measurement guideline (tuongtailor.com), so the
+// spec the tailor receives contains exactly the measurements he works with. All cm.
 export interface ShirtMeasurements {
-  // Core (always required), centimetres
-  chest: number;
-  waist: number;
-  hips: number;
   neck: number;
   shoulder: number;
+  backWidth: number;
+  aboveChest: number;
+  chest: number;
+  armhole: number;
+  biceps: number;
+  wrist: number;
   sleeveLength: number;
   shirtLength: number;
-  // Detail (required for detailed entry, derived in the wizard)
-  chest_extra?: number;
-  wristCircumference?: number;
-  bicepCircumference?: number;
 }
 
 export interface TrouserMeasurements {
   waist: number;
+  belly: number;
   hips: number;
-  inseam: number;
-  outseam: number;
+  crotch: number;
   thigh: number;
-  knee?: number;
-  legOpening?: number;
-  rise?: number;
+  calf: number;
+  trouserLength: number;
 }
 
 export type GarmentMeasurements = ShirtMeasurements | TrouserMeasurements;

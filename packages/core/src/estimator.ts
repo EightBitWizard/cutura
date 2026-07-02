@@ -57,7 +57,7 @@ const BODY_REVIEW_HINT =
 export const shirtEstimator: MeasurementEstimator = {
   garmentType: "shirt",
   estimate(input: WizardShortInput): EstimationResult {
-    const { heightCm, weightKg, chestCm, waistCm } = input;
+    const { heightCm, weightKg, chestCm } = input;
     const warnings: string[] = [];
 
     if (!heightCm || heightCm <= 0 || !weightKg || weightKg <= 0) {
@@ -69,17 +69,16 @@ export const shirtEstimator: MeasurementEstimator = {
       warnings.push("Ungewöhnliches Verhältnis von Grösse und Gewicht - bitte Eingaben prüfen.");
     }
 
-    const dropRatio = chestCm - waistCm;
-    if (dropRatio < 5 || dropRatio > 30) {
-      warnings.push("Ungewöhnliche Differenz zwischen Brust- und Taillenumfang.");
-    }
-
+    // Derivations for the supplier's shirt field set (chest itself is the wizard input).
     const neck = round(chestCm * 0.37 + (bmi > 25 ? (bmi - 25) * 0.3 : 0));
     const shoulder = round(heightCm * 0.245 + chestCm * 0.06);
+    const backWidth = round(chestCm * 0.44);
+    const aboveChest = round(chestCm - 4);
+    const armhole = round(chestCm * 0.46 + (bmi > 25 ? (bmi - 25) * 0.2 : 0));
+    const biceps = round(chestCm * 0.35 + (weightKg - 70) * 0.05);
+    const wrist = round(16.5 + (weightKg - 70) * 0.04);
     const sleeveLength = round(heightCm * 0.335);
     const shirtLength = round(heightCm * 0.43);
-    const bicepCircumference = round(chestCm * 0.35 + (weightKg - 70) * 0.05);
-    const wristCircumference = round(16.5 + (weightKg - 70) * 0.04);
 
     if (sleeveLength < 55 || sleeveLength > 72) {
       warnings.push(
@@ -104,10 +103,13 @@ export const shirtEstimator: MeasurementEstimator = {
       derived: {
         neck,
         shoulder,
+        backWidth,
+        aboveChest,
+        armhole,
+        biceps,
+        wrist,
         sleeveLength,
         shirtLength,
-        bicepCircumference,
-        wristCircumference,
       },
       confidenceLevel,
       warnings,
@@ -118,7 +120,7 @@ export const shirtEstimator: MeasurementEstimator = {
 export const trouserEstimator: MeasurementEstimator = {
   garmentType: "trouser",
   estimate(input: WizardShortInput): EstimationResult {
-    const { heightCm, weightKg, waistCm, hipsCm, fitPreference } = input;
+    const { heightCm, weightKg, waistCm, hipsCm } = input;
     const warnings: string[] = [];
 
     if (!heightCm || heightCm <= 0 || !weightKg || weightKg <= 0) {
@@ -133,26 +135,18 @@ export const trouserEstimator: MeasurementEstimator = {
       warnings.push("Ungewöhnliche Differenz zwischen Taille und Hüfte - bitte Eingaben prüfen.");
     }
 
-    // Inseam: ~46% of height, with a mild downward adjustment for heavier builds
-    // where the worn waist sits higher.
-    const inseam = round(heightCm * 0.46 - (bmi > 28 ? (bmi - 28) * 0.2 : 0));
-    // Rise scales with height plus a small lift for heavier builds.
-    const rise = round(heightCm * 0.155 + (bmi > 25 ? (bmi - 25) * 0.25 : 0));
-    const outseam = round(inseam + rise);
+    // Derivations for the supplier's trouser field set (waist + hips are wizard inputs).
+    // Trouser length runs from the worn waist to the top of the shoe (the supplier's
+    // "pant length"), i.e. the historic inseam + rise share of height.
+    const belly = round(waistCm + 2 + (bmi > 24 ? (bmi - 24) * 0.8 : 0));
+    const crotch = round(heightCm * 0.36 + (bmi > 25 ? (bmi - 25) * 0.4 : 0));
     const thigh = round(waistCm * 0.58 + (weightKg - 70) * 0.18);
-    const knee = round(thigh * 0.72);
-    const legOpeningFactor =
-      fitPreference === "slim" ? 0.46 : fitPreference === "relaxed" ? 0.62 : 0.54;
-    const legOpening = round(thigh * legOpeningFactor);
+    const calf = round(thigh * 0.65);
+    const trouserLength = round(heightCm * 0.615 - (bmi > 28 ? (bmi - 28) * 0.2 : 0));
 
-    if (inseam < 60 || inseam > 95) {
+    if (trouserLength < 80 || trouserLength > 125) {
       warnings.push(
-        `Berechnete Schrittlänge (${inseam} cm) liegt ausserhalb des Standardbereichs - Ihre Bestellung wird zur Prüfung weitergeleitet.`,
-      );
-    }
-    if (outseam < 80 || outseam > 120) {
-      warnings.push(
-        `Berechnete Aussenlänge (${outseam} cm) liegt ausserhalb des Standardbereichs - Ihre Bestellung wird zur Prüfung weitergeleitet.`,
+        `Berechnete Hosenlänge (${trouserLength} cm) liegt ausserhalb des Standardbereichs - Ihre Bestellung wird zur Prüfung weitergeleitet.`,
       );
     }
 
@@ -165,7 +159,7 @@ export const trouserEstimator: MeasurementEstimator = {
     }
 
     return {
-      derived: { inseam, outseam, thigh, knee, legOpening, rise },
+      derived: { belly, crotch, thigh, calf, trouserLength },
       confidenceLevel,
       warnings,
     };

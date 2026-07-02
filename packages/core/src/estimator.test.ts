@@ -42,16 +42,23 @@ describe("estimator seam (swappable interface)", () => {
   });
 });
 
-describe("shirt estimation (ported formulas, golden values)", () => {
-  it("derives the full set for a typical body", () => {
+// Field set aligned to the supplier's measurement guideline (tuongtailor.com):
+// shirt = neck, shoulder, back width, above chest, armhole, biceps, wrist,
+// sleeve length, shirt length (chest itself is the wizard input); trouser =
+// belly, crotch, thigh, calf, trouser length (waist + hips are wizard inputs).
+describe("shirt estimation (supplier field set, golden values)", () => {
+  it("derives the full supplier set for a typical body", () => {
     const { derived, confidenceLevel, warnings } = estimate("shirt", normal);
     expect(derived).toEqual({
       neck: 37,
       shoulder: 50.1,
+      backWidth: 44,
+      aboveChest: 96,
+      armhole: 46,
+      biceps: 35.3,
+      wrist: 16.7,
       sleeveLength: 60.3,
       shirtLength: 77.4,
-      bicepCircumference: 35.3,
-      wristCircumference: 16.7,
     });
     expect(confidenceLevel).toBe("high");
     expect(warnings).toEqual([]);
@@ -75,29 +82,24 @@ describe("shirt estimation (ported formulas, golden values)", () => {
   });
 });
 
-describe("trouser estimation (ported formulas, golden values)", () => {
-  it("derives the full set for a typical body", () => {
+describe("trouser estimation (supplier field set, golden values)", () => {
+  it("derives the full supplier set for a typical body", () => {
     const { derived, confidenceLevel } = estimate("trouser", normal);
     expect(derived).toEqual({
-      inseam: 82.8,
-      rise: 27.9,
-      outseam: 110.7,
+      belly: 87,
+      crotch: 64.8,
       thigh: 50.2,
-      knee: 36.1,
-      legOpening: 27.1,
+      calf: 32.6,
+      trouserLength: 110.7,
     });
     expect(confidenceLevel).toBe("high");
   });
 
-  it("widens the leg opening for a relaxed fit", () => {
-    const slim = (
-      estimate("trouser", { ...normal, fitPreference: "slim" })
-        .derived as Partial<TrouserMeasurements>
-    ).legOpening;
-    const relaxed = (
-      estimate("trouser", { ...normal, fitPreference: "relaxed" })
-        .derived as Partial<TrouserMeasurements>
-    ).legOpening;
-    expect(relaxed as number).toBeGreaterThan(slim as number);
+  it("estimates a larger belly for a heavier build", () => {
+    const light = (estimate("trouser", normal).derived as Partial<TrouserMeasurements>).belly;
+    const heavy = (
+      estimate("trouser", { ...normal, weightKg: 95 }).derived as Partial<TrouserMeasurements>
+    ).belly;
+    expect(heavy as number).toBeGreaterThan(light as number);
   });
 });

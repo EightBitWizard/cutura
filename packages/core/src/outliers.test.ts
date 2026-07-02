@@ -3,25 +3,28 @@ import { describe, expect, it } from "vitest";
 import { checkShirtOutliers, checkTrouserOutliers } from "./outliers";
 import type { ShirtMeasurements, TrouserMeasurements } from "./types";
 
+// Field sets aligned to the supplier's measurement guideline (tuongtailor.com).
 const validShirt: ShirtMeasurements = {
-  chest: 100,
-  waist: 88,
-  hips: 100,
   neck: 39,
   shoulder: 46,
+  backWidth: 44,
+  aboveChest: 96,
+  chest: 100,
+  armhole: 46,
+  biceps: 35,
+  wrist: 17,
   sleeveLength: 64,
   shirtLength: 76,
 };
 
 const validTrouser: TrouserMeasurements = {
   waist: 88,
+  belly: 92,
   hips: 100,
-  inseam: 80,
-  outseam: 104,
+  crotch: 66,
   thigh: 58,
-  knee: 42,
-  legOpening: 32,
-  rise: 26,
+  calf: 38,
+  trouserLength: 108,
 };
 
 describe("checkShirtOutliers", () => {
@@ -47,10 +50,19 @@ describe("checkShirtOutliers", () => {
     expect(result.isOutlier).toBe(true);
   });
 
-  it("flags a waist larger than the chest", () => {
-    const result = checkShirtOutliers({ ...validShirt, waist: 110, chest: 100 });
+  it("flags an above-chest larger than the chest", () => {
+    const result = checkShirtOutliers({ ...validShirt, aboveChest: 106, chest: 100 });
     expect(result.isOutlier).toBe(true);
-    expect(result.flags.join(" ")).toContain("Taillenumfang");
+    expect(result.flags.join(" ")).toContain("Oberbrustumfang");
+  });
+
+  it("flags an out-of-range armhole and wrist", () => {
+    const armhole = checkShirtOutliers({ ...validShirt, armhole: 20 });
+    expect(armhole.isOutlier).toBe(true);
+    expect(armhole.flags.join(" ")).toContain("Armloch");
+    const wrist = checkShirtOutliers({ ...validShirt, wrist: 40 });
+    expect(wrist.isOutlier).toBe(true);
+    expect(wrist.flags.join(" ")).toContain("Handgelenk");
   });
 });
 
@@ -59,15 +71,24 @@ describe("checkTrouserOutliers", () => {
     expect(checkTrouserOutliers(validTrouser)).toEqual({ isOutlier: false, flags: [] });
   });
 
-  it("flags an outseam that is not larger than the inseam", () => {
-    const result = checkTrouserOutliers({ ...validTrouser, outseam: 80, inseam: 80 });
+  it("flags a waist much larger than the hips", () => {
+    const result = checkTrouserOutliers({ ...validTrouser, waist: 115, hips: 100 });
     expect(result.isOutlier).toBe(true);
-    expect(result.flags.join(" ")).toContain("Aussenlänge");
+    expect(result.flags.join(" ")).toContain("Taillenumfang");
   });
 
-  it("flags a knee wider than the thigh", () => {
-    const result = checkTrouserOutliers({ ...validTrouser, knee: 70, thigh: 58 });
+  it("flags a calf wider than the thigh", () => {
+    const result = checkTrouserOutliers({ ...validTrouser, calf: 70, thigh: 58 });
     expect(result.isOutlier).toBe(true);
-    expect(result.flags.join(" ")).toContain("Knieumfang");
+    expect(result.flags.join(" ")).toContain("Waden");
+  });
+
+  it("flags an out-of-range trouser length and crotch", () => {
+    const length = checkTrouserOutliers({ ...validTrouser, trouserLength: 60 });
+    expect(length.isOutlier).toBe(true);
+    expect(length.flags.join(" ")).toContain("Hosenlänge");
+    const crotch = checkTrouserOutliers({ ...validTrouser, crotch: 20 });
+    expect(crotch.isOutlier).toBe(true);
+    expect(crotch.flags.join(" ")).toContain("Schrittbogen");
   });
 });

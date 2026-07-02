@@ -2,29 +2,34 @@ import { describe, expect, it } from "vitest";
 
 import { garmentFields, wizardBaseFields } from "./garmentFields";
 
+// Field sets follow the supplier's measurement guideline (tuongtailor.com), so the
+// form, the review screen, and the production spec collect exactly what the tailor
+// works with.
 describe("garmentFields", () => {
-  it("returns the ordered shirt confirmed fields", () => {
+  it("returns the ordered shirt confirmed fields (supplier guideline)", () => {
     expect(garmentFields("shirt")).toEqual([
-      "chest",
-      "waist",
-      "hips",
       "neck",
       "shoulder",
+      "backWidth",
+      "aboveChest",
+      "chest",
+      "armhole",
+      "biceps",
+      "wrist",
       "sleeveLength",
       "shirtLength",
     ]);
   });
 
-  it("returns the ordered trouser confirmed fields", () => {
+  it("returns the ordered trouser confirmed fields (supplier guideline)", () => {
     expect(garmentFields("trouser")).toEqual([
       "waist",
+      "belly",
       "hips",
-      "inseam",
-      "outseam",
+      "crotch",
       "thigh",
-      "knee",
-      "legOpening",
-      "rise",
+      "calf",
+      "trouserLength",
     ]);
   });
 
@@ -34,8 +39,13 @@ describe("garmentFields", () => {
 });
 
 describe("wizardBaseFields", () => {
-  it("is the customer-entered base inputs per type (chest dropped for trousers)", () => {
-    expect(wizardBaseFields("shirt")).toEqual(["chest", "waist", "hips"]);
+  it("is the customer-entered base inputs per type, always a subset of the confirmed fields", () => {
+    expect(wizardBaseFields("shirt")).toEqual(["chest"]);
     expect(wizardBaseFields("trouser")).toEqual(["waist", "hips"]);
+    for (const gt of ["shirt", "trouser"]) {
+      for (const base of wizardBaseFields(gt)) {
+        expect(garmentFields(gt)).toContain(base);
+      }
+    }
   });
 });

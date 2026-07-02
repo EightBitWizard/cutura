@@ -8,7 +8,7 @@ INSERT OR IGNORE INTO garment_type (id, key, name_i18n, measurement_schema_id, c
 VALUES ('gt_shirt', 'shirt', '{"de":"Hemd","en":"Shirt","it":"Camicia","fr":"Chemise"}', 'ms_shirt', '2026-06-24T00:00:00Z', '2026-06-24T00:00:00Z');
 
 INSERT OR IGNORE INTO measurement_schema (id, garment_type_id, version, fields, created_at, updated_at)
-VALUES ('ms_shirt', 'gt_shirt', 1, '{"core":["chest","waist","neck"],"units":"cm"}', '2026-06-24T00:00:00Z', '2026-06-24T00:00:00Z');
+VALUES ('ms_shirt', 'gt_shirt', 2, '{"core":["neck","shoulder","backWidth","aboveChest","chest","armhole","biceps","wrist","sleeveLength","shirtLength"],"units":"cm"}', '2026-06-24T00:00:00Z', '2026-06-24T00:00:00Z');
 
 -- Default supplier
 INSERT OR IGNORE INTO supplier (id, name, is_default, created_at, updated_at)
@@ -42,7 +42,7 @@ INSERT OR IGNORE INTO garment_type (id, key, name_i18n, measurement_schema_id, c
 VALUES ('gt_trouser', 'trouser', '{"de":"Hose","en":"Trousers","it":"Pantaloni","fr":"Pantalon"}', 'ms_trouser', '2026-06-24T00:00:00Z', '2026-06-24T00:00:00Z');
 
 INSERT OR IGNORE INTO measurement_schema (id, garment_type_id, version, fields, created_at, updated_at)
-VALUES ('ms_trouser', 'gt_trouser', 1, '{"core":["waist","hips","inseam"],"units":"cm"}', '2026-06-24T00:00:00Z', '2026-06-24T00:00:00Z');
+VALUES ('ms_trouser', 'gt_trouser', 2, '{"core":["waist","belly","hips","crotch","thigh","calf","trouserLength"],"units":"cm"}', '2026-06-24T00:00:00Z', '2026-06-24T00:00:00Z');
 
 -- Base model: City Pleated Trouser (Business Essentials)
 INSERT OR IGNORE INTO base_model (id, garment_type_id, handle, name_i18n, description_i18n, base_price_minor, lead_time_min_days, lead_time_max_days, status, created_at, updated_at)

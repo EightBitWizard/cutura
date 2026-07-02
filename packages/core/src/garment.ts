@@ -6,7 +6,19 @@
 
 import type { GarmentType } from "./types";
 
-const TROUSER_ONLY_KEYS = ["inseam", "outseam", "thigh", "rise", "knee", "legOpening"] as const;
+// Current supplier-guideline keys first; the historic keys stay so snapshots
+// written before the field-set change (remakes, admin views) still infer correctly.
+const TROUSER_ONLY_KEYS = [
+  "belly",
+  "crotch",
+  "calf",
+  "trouserLength",
+  "inseam",
+  "outseam",
+  "rise",
+  "knee",
+  "legOpening",
+] as const;
 
 /**
  * Infer the garment type from a partial measurement object, keyed on
@@ -24,18 +36,29 @@ export function inferGarmentType(
 }
 
 export const MEASUREMENT_FIELD_LABELS_DE: Record<string, string> = {
-  // Shirts
+  // Shirts (supplier guideline)
   chest: "Brustumfang",
+  aboveChest: "Oberbrustumfang",
+  backWidth: "Rückenbreite",
+  armhole: "Armlochumfang",
   neck: "Halsumfang",
   shoulder: "Schulterbreite",
   sleeveLength: "Armlänge",
   shirtLength: "Hemdlänge",
+  biceps: "Oberarmumfang",
+  wrist: "Handgelenkumfang",
+  // Historic shirt keys (pre-guideline snapshots)
   bicepCircumference: "Oberarmumfang",
   wristCircumference: "Handgelenkumfang",
   // Shared
   waist: "Taillenumfang",
   hips: "Hüftumfang",
-  // Trousers
+  // Trousers (supplier guideline)
+  belly: "Bauchumfang",
+  crotch: "Schrittbogen",
+  calf: "Wadenumfang",
+  trouserLength: "Hosenlänge",
+  // Historic trouser keys (pre-guideline snapshots)
   inseam: "Schrittlänge",
   outseam: "Aussenlänge",
   thigh: "Oberschenkelumfang",
