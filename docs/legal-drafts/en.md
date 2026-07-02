@@ -274,67 +274,61 @@ best way to get it right the first time.
 ## slug: fit-guide (title: How to Measure)
 
 Good measurements are the single most important step in getting a made-to-measure garment
-right the first time. Take your time; this guide takes about ten minutes.
+right the first time. This guide follows the method of our tailoring workshop, so what you
+measure is exactly what the tailor works with. It takes about ten minutes.
 
 Before you start
 
 - Use a soft measuring tape (the flexible kind, not a rigid builder's tape).
-- Wear light clothing, or measure close to the skin where a step says so.
-- Stand relaxed and upright. Do not hold your breath or puff out your chest.
+- Measure over light clothing or close to the skin, never over thick layers.
+- Stand relaxed and upright, arms hanging naturally. Do not hold your breath or puff out
+  your chest.
 - Keep the tape level all the way around, snug but not tight. You should be able to slip a
   finger under it.
 - Measure each value twice. If the readings differ, measure a third time and use the
   consistent one.
-- Ask someone to help with back, shoulder, and sleeve measurements.
-- Record in centimetres.
-
-A useful shortcut: measure a garment that fits. For several measurements you can measure a
-shirt or pair of trousers you already own that fits the way you like, laid flat on a table.
-This is often more repeatable than measuring your body. Button or zip it and smooth out the
-wrinkles first.
-
-Body versus garment. Some values describe your body, some the finished garment. Enter the
-values as each step asks; our system adds the right amount of room for the model you chose.
-Do not add extra room yourself, or the garment will come out too large.
+- Several measurements are much easier with help: ask someone to measure your back, shoulder,
+  armhole, and sleeve.
+- All values are body measurements in centimetres. Our tailor adds the right amount of room
+  for the model and fit you chose; do not add extra room yourself.
 
 Shirt measurements
 
-1. Neck: around the base of your neck, where a collar sits. Leave a little comfort room; do
-   not measure tight.
-2. Chest: around the fullest part of your chest, under the arms and across the shoulder
-   blades, tape level.
-3. Waist: around your natural waist, at the narrowest point above your navel, tape relaxed.
-4. Hip: around the fullest part of your seat, tape level.
-5. Shoulder width: with help, across your back from shoulder edge to shoulder edge, along the
-   line where a seam would sit.
-6. Sleeve length: with your arm slightly bent, from the shoulder point along the outside of
-   the arm past the elbow to the wrist bone.
-7. Shirt length: from the base of the back of your neck straight down to where you want the
-   shirt to end.
-8. Bicep: around the fullest part of your upper arm.
-9. Wrist: around your wrist where a cuff would close.
-   Tip: for chest, waist, and hip, measuring a well-fitting shirt laid flat and doubling the flat
-   width is a good cross-check. If the two disagree a lot, measure both again.
+1. Neck: around the base of your neck, where a shirt collar sits. Leave a little comfort
+   room; do not measure tight.
+2. Shoulder width: across your back, from the edge of one shoulder to the edge of the other,
+   along the line where the seams would sit.
+3. Back width: across the widest part of your upper back, from armhole to armhole, with the
+   tape horizontal.
+4. Above chest: wrap the tape around your torso under the arms, just above the fullest part
+   of the chest.
+5. Chest: around the fullest part of your chest, tape level, breathing normally.
+6. Armhole: with your arm hanging naturally, run the tape under the armpit and bring both
+   ends together at the top of your shoulder.
+7. Biceps: around the fullest part of your upper arm.
+8. Wrist: around your wrist, where the arm meets the hand.
+9. Sleeve length: with your arm slightly bent, from the shoulder point along the outside of
+   the arm, past the elbow, to the wrist bone.
+10. Shirt length: from the highest point of your shoulder, next to the collar, straight down
+    to where you want the shirt to end.
 
 Trouser measurements
 
-1. Waist: around where you actually wear your trousers, which may sit slightly below your
-   natural waist. Tape level and relaxed.
-2. Seat: around the fullest part of your seat, feet together.
-3. Inseam: from the crotch straight down the inside of the leg to where the trouser should
-   end. Measuring a pair that fits, laid flat, is often easiest.
-4. Outseam: from the waistband line down the outside of the leg to the same end point.
+1. Waist: around where you actually wear your trousers, at hipbone level. Tape level and
+   relaxed, not tight.
+2. Belly: around the fullest part of your abdomen, tape level.
+3. Hips: around the fullest part of your seat, feet together.
+4. Crotch: from the top of the waistband at the front, down through the legs, up to the top
+   of the waistband at the back. Easiest with help.
 5. Thigh: around the fullest part of your upper leg.
-6. Knee: around your leg at the knee.
-7. Leg opening: measure the hem opening of a pair you like, laid flat, and double it.
-8. Front rise: from the crotch seam up to the top of the waistband at the front; easiest on a
-   well-fitting pair laid flat.
-   Tip: waist and inseam are where most fit issues start. Re-check both.
+6. Calf: around the fullest part of your calf.
+7. Trouser length: from the waistband, down the outside of the leg, to the top of your shoe.
+   Stand straight and look ahead while someone measures.
 
 After you measure
 
-- Read your values back once. A number far outside the usual range is usually a slipped tape;
-  re-measure it.
+- Read your values back once. A number far outside the usual range is usually a slipped
+  tape; re-measure it.
 - Save your measurements to your account so you can reorder without measuring again.
 - If a value still feels uncertain, tell us; we would rather ask than guess.
 
