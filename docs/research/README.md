@@ -22,6 +22,9 @@ diligent, web-sourced research to inform the launch decisions and the website co
 - [market-competitors.md](market-competitors.md) - competitive landscape, customer
   expectations and trust barriers, a prioritized service menu, and a positioning
   recommendation.
+- [business-setup.md](business-setup.md) - the minimum legal setup for the founder as a
+  home-based sole proprietor: no founding act needed, Impressum/name/address rules, AHV
+  registration + UID, voluntary VAT registration for import-VAT recovery, and a day-0 checklist.
 - [pricing.md](pricing.md) - landed-cost model and recommended prices (added when the pricing
   worker completes).
 - [content-drafts.md](content-drafts.md) - draft FAQ, measuring guide, shipping and trust copy
