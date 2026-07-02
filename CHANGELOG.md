@@ -4,6 +4,22 @@ All notable changes to this project. Newest first.
 
 ## Unreleased
 
+### Added (launch content + pricing)
+
+- Real website content in de/en/fr/it, grounded in the research dossier: a full FAQ, a
+  step-by-step measuring guide, expanded shipping copy, the bounded CUTURA Fit Promise page
+  (first shirt + first trousers, 30 days, photos, free remake, keep the original, refund
+  fallback), and lawyer-ready DRAFTS of the imprint, terms, and privacy policy (clearly
+  bannered as drafts; imprint carries [TO COMPLETE] company fields). English masters live in
+  docs/legal-drafts/; the generated update SQL in infra/seed/content-pages.sql was applied to
+  the control + staging databases. Legal pages must not reach production before lawyer
+  sign-off.
+- Launch prices set (research-backed): shirts CHF 169, linen shirt CHF 189, trousers CHF 189
+  (VAT-inclusive); stated lead time now 2-4 weeks (14-28 days); accepted terms/privacy
+  versions bumped to 2026-07-02.
+- German copy aligned to the formal "Sie" register across product and collection
+  descriptions (was mixed du/Sie).
+
 ### Added (catalog + admin follow-ups)
 
 - Each product now has an editable, per-language description (in the admin Models editor),
