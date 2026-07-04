@@ -25,6 +25,10 @@ diligent, web-sourced research to inform the launch decisions and the website co
 - [business-setup.md](business-setup.md) - the minimum legal setup for the founder as a
   home-based sole proprietor: no founding act needed, Impressum/name/address rules, AHV
   registration + UID, voluntary VAT registration for import-VAT recovery, and a day-0 checklist.
+- [production-partners.md](production-partners.md) - deep market research (2026-07-03) on
+  alternative made-to-measure production partners: 106 candidates screened, 24 deep-dive
+  verified, top-10 recommendations with contacts, rejected list with reasons, and a
+  ready-to-send RFQ package. In German.
 - [pricing.md](pricing.md) - landed-cost model and recommended prices (added when the pricing
   worker completes).
 - [content-drafts.md](content-drafts.md) - draft FAQ, measuring guide, shipping and trust copy
