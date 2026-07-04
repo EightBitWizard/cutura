@@ -25,6 +25,11 @@ diligent, web-sourced research to inform the launch decisions and the website co
 - [business-setup.md](business-setup.md) - the minimum legal setup for the founder as a
   home-based sole proprietor: no founding act needed, Impressum/name/address rules, AHV
   registration + UID, voluntary VAT registration for import-VAT recovery, and a day-0 checklist.
+- [pivot-strategy.md](pivot-strategy.md) - positioning strategy (2026-07-04): full
+  competitive landscape map incl. Hockerty deep teardown, creative niche ideation, scored
+  pivot options (A-E + novel niches), the recommended play (Fit Promise as the brand on a
+  curated five-piece catalog + fit-code reorder loop), a 90-day plan, and measurable
+  kill/green-light criteria. In German.
 - [production-partners.md](production-partners.md) - deep market research (2026-07-03) on
   alternative made-to-measure production partners: 106 candidates screened, 24 deep-dive
   verified, top-10 recommendations with contacts, rejected list with reasons, and a
