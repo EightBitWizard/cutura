@@ -18,6 +18,7 @@ export * from "./redirects";
 export * from "./shipping";
 export * from "./signals";
 export * from "./suppliers";
+export * from "./producers/mapping";
 export * from "./publish";
 export * from "./orders";
 export * from "./email";

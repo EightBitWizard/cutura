@@ -6,10 +6,11 @@ import {
   getDefaultQcChecklist,
   marginMinor,
 } from "@cutura/core";
-import { getOrderCost, getOrderDetail, readSnapshot } from "@cutura/db";
+import { getOrderCost, getOrderDetail, getRow, readSnapshot, supplier } from "@cutura/db";
 
 import { environmentDb } from "@/server/catalog";
 import { getEnv } from "@/server/env";
+import { type ProducerSheetView, buildProducerSheetForItem } from "@/server/producer";
 
 export const dynamic = "force-dynamic";
 
@@ -30,13 +31,28 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
 
   const key = getEnv().MEASUREMENT_ENCRYPTION_KEY;
   const items = await Promise.all(
-    detail.items.map(async (d) => ({
-      ...d,
-      snapshot: d.pkg ? await readSnapshot(d.pkg.snapshotEnc, key) : null,
-    })),
+    detail.items.map(async (d) => {
+      const snapshot = d.pkg ? await readSnapshot(d.pkg.snapshotEnc, key) : null;
+      // Producer order sheet (portal mode): shown once approved, until the item
+      // has arrived in Switzerland.
+      let producerSheet: ProducerSheetView | null = null;
+      if (snapshot && d.pkg?.supplierId && ["approved", "in_production"].includes(d.item.status)) {
+        const sup = await getRow(db, supplier, d.pkg.supplierId);
+        producerSheet = await buildProducerSheetForItem(db, {
+          snapshot,
+          baseModelId: d.item.baseModelId,
+          orderNumber: detail.order.orderNumber,
+          itemId: d.item.id,
+          supplierCapabilities: sup?.capabilities,
+        });
+      }
+      return { ...d, snapshot, producerSheet };
+    }),
   );
 
   const anyInReview = items.some((i) => i.item.status === "in_review");
+  const anyApproved = items.some((i) => i.item.status === "approved");
+  const anyInProduction = items.some((i) => i.item.status === "in_production");
   const allQcPassed = items.length > 0 && items.every((i) => i.item.status === "qc_passed");
   const cost = await getOrderCost(db, id);
   const margin = cost ? marginMinor(detail.order.totalMinor, cost) : null;
@@ -61,6 +77,22 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
           <form method="post" action={`/api/orders/${id}/approve`}>
             <button type="submit" className="rounded bg-ink px-3 py-1 text-sm text-paper">
               Approve + send to supplier
+            </button>
+          </form>
+        )}
+        {anyApproved && (
+          <form method="post" action={`/api/orders/${id}/transition`}>
+            <input type="hidden" name="target" value="in_production" />
+            <button type="submit" className="rounded bg-ink px-3 py-1 text-sm text-paper">
+              Ordered in producer portal
+            </button>
+          </form>
+        )}
+        {anyInProduction && (
+          <form method="post" action={`/api/orders/${id}/transition`}>
+            <input type="hidden" name="target" value="arrived_ch" />
+            <button type="submit" className="rounded border border-line-strong px-3 py-1 text-sm">
+              Parcel arrived in CH
             </button>
           </form>
         )}
@@ -146,7 +178,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
         </div>
       </form>
 
-      {items.map(({ item, pkg, qc, snapshot }) => (
+      {items.map(({ item, pkg, qc, snapshot, producerSheet }) => (
         <section key={item.id} className="mt-6 rounded-lg border border-line p-4">
           <div className="flex items-center justify-between">
             <h2 className="font-medium">{snapshot?.baseModelName ?? item.baseModelId}</h2>
@@ -154,6 +186,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
           </div>
           {snapshot && <OutlierWarning snapshot={snapshot} />}
           {snapshot && <SnapshotView snapshot={snapshot} />}
+          {producerSheet && <ProducerSheetSection view={producerSheet} />}
           {qc && (
             <p className="mt-2 text-sm">
               QC: <span className="font-medium">{qc.overallResult}</span>
@@ -210,6 +243,32 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
         ))}
       </ul>
     </main>
+  );
+}
+
+function ProducerSheetSection({ view }: { view: ProducerSheetView }) {
+  const hasGaps = view.sheet.missingMappings.length > 0;
+  return (
+    <div className="mt-3 rounded border border-line bg-sunken p-3">
+      <div className="flex items-center justify-between">
+        <h3 className="text-sm font-medium uppercase tracking-wide text-ink-subtle">
+          Producer order sheet ({view.sheet.producer}, {view.mode})
+        </h3>
+      </div>
+      <p className="mt-1 text-xs text-ink-subtle">
+        Enter this order in the producer portal, then use the button Ordered in producer portal
+        above.
+      </p>
+      {hasGaps && (
+        <p className="mt-2 rounded border border-warning/40 bg-warning/5 p-2 text-xs text-warning">
+          Missing producer codes ({view.sheet.missingMappings.length}). Resolve them in the portal
+          and add the codes under Suppliers, Producer mappings.
+        </p>
+      )}
+      <pre className="mt-2 overflow-x-auto whitespace-pre-wrap rounded bg-surface p-3 font-mono text-xs">
+        {view.text}
+      </pre>
+    </div>
   );
 }
 

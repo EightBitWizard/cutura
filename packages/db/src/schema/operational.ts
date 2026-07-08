@@ -188,6 +188,26 @@ export const supplier = sqliteTable("supplier", {
   ...timestamps(),
 });
 
+// External catalog codes per producer adapter (e.g. Kutetailor style, fabric, and
+// option codes). Keyed by CUTURA catalog CODES (model handle, fabric code,
+// "group:value" pair, upgrade code) rather than row ids, so entries stay stable
+// across publishes and environments. Read at approval time to translate the
+// frozen snapshot codes into the producer's order sheet; edited on the admin
+// supplier page. Operational routing data, never published to the storefront.
+export const producerCatalogMap = sqliteTable(
+  "producer_catalog_map",
+  {
+    id: text("id").primaryKey(),
+    producer: text("producer").notNull(),
+    entityType: text("entity_type").notNull(),
+    entityKey: text("entity_key").notNull(),
+    externalCode: text("external_code").notNull(),
+    extra: text("extra", { mode: "json" }).$type<unknown>(),
+    ...timestamps(),
+  },
+  (t) => [uniqueIndex("producer_catalog_map_unique").on(t.producer, t.entityType, t.entityKey)],
+);
+
 export const shippingZone = sqliteTable("shipping_zone", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),

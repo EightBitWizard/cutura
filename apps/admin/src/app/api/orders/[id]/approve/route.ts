@@ -1,4 +1,4 @@
-import { type EmailAttachment, buildSupplierSpec } from "@cutura/core";
+import { type EmailAttachment, buildSupplierSpec, parseSupplierCapabilities } from "@cutura/core";
 import {
   ResendEmailProvider,
   approveOrderItem,
@@ -63,6 +63,15 @@ export async function POST(
     if (d.item.status !== "in_review" || !d.pkg) continue;
     await approveOrderItem(db, d.item.id, "admin");
 
+    // Producer adapter dispatch: suppliers with an adapter (e.g. Kutetailor) get
+    // no spec email. In "manual" mode the founder enters the order in the
+    // producer portal from the order sheet shown on the order page; "api" mode
+    // will submit the same payload automatically once the producer API is
+    // confirmed (payload builder exists, endpoint pending).
+    const sup = d.pkg.supplierId ? await getRow(db, supplier, d.pkg.supplierId) : undefined;
+    const caps = parseSupplierCapabilities(sup?.capabilities);
+    if (caps.adapter) continue;
+
     const snapshot = await readSnapshot(d.pkg.snapshotEnc, env.MEASUREMENT_ENCRYPTION_KEY);
     const media = await listMedia(db, "model", d.item.baseModelId);
     const images = media
@@ -77,7 +86,6 @@ export async function POST(
       contentType: "application/pdf",
     };
 
-    const sup = d.pkg.supplierId ? await getRow(db, supplier, d.pkg.supplierId) : undefined;
     const to = supplierEmail(sup?.contact);
     if (to) {
       await sendEmailAndLog(

@@ -66,3 +66,36 @@ export const MEASUREMENT_FIELD_LABELS_DE: Record<string, string> = {
   legOpening: "Beinöffnung",
   rise: "Schritttiefe",
 };
+
+/** English field labels for producer-facing documents (portals operate in English). */
+export const MEASUREMENT_FIELD_LABELS_EN: Record<string, string> = {
+  // Shirts (supplier guideline)
+  chest: "Chest",
+  aboveChest: "Above chest",
+  backWidth: "Back width",
+  armhole: "Armhole",
+  neck: "Neck",
+  shoulder: "Shoulder width",
+  sleeveLength: "Sleeve length",
+  shirtLength: "Shirt length",
+  biceps: "Biceps",
+  wrist: "Wrist",
+  // Historic shirt keys (pre-guideline snapshots)
+  bicepCircumference: "Biceps",
+  wristCircumference: "Wrist",
+  // Shared
+  waist: "Waist",
+  hips: "Hips",
+  // Trousers (supplier guideline)
+  belly: "Belly",
+  crotch: "Crotch length",
+  calf: "Calf",
+  trouserLength: "Trouser length",
+  // Historic trouser keys (pre-guideline snapshots)
+  inseam: "Inseam",
+  outseam: "Outseam",
+  thigh: "Thigh",
+  knee: "Knee",
+  legOpening: "Leg opening",
+  rise: "Rise",
+};
