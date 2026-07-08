@@ -103,3 +103,68 @@ describe("trouser estimation (supplier field set, golden values)", () => {
     expect(heavy as number).toBeGreaterThan(light as number);
   });
 });
+
+describe("jacketEstimator (men, supplier guideline fields)", () => {
+  it("derives the jacket measurement set from height/weight/chest", () => {
+    const result = estimate("jacket", {
+      heightCm: 180,
+      weightKg: 75,
+      chestCm: 100,
+      waistCm: 85,
+      hipsCm: 98,
+      fitPreference: "regular",
+    });
+    expect(result.derived).toEqual({
+      shoulder: 50.1,
+      sleeveLength: 60.3,
+      backLength: 45,
+      jacketLength: 74.7,
+      biceps: 35.3,
+      wrist: 16.7,
+    });
+    expect(result.confidenceLevel).toBe("high");
+  });
+});
+
+describe("jacketWomenEstimator (provisional female proportions)", () => {
+  it("derives the women's jacket set from height/weight/bust", () => {
+    const result = estimate("jacket_w", {
+      heightCm: 168,
+      weightKg: 62,
+      chestCm: 92,
+      waistCm: 74,
+      hipsCm: 100,
+      fitPreference: "regular",
+    });
+    expect(result.derived).toEqual({
+      shoulder: 41.1,
+      sleeveLength: 55.4,
+      backLength: 39.5,
+      jacketLength: 63.8,
+      biceps: 27.7,
+      wrist: 15.1,
+    });
+    expect(result.confidenceLevel).toBe("high");
+  });
+});
+
+describe("trouserWomenEstimator (provisional female proportions)", () => {
+  it("derives the women's trouser set from height/weight/waist/hips", () => {
+    const result = estimate("trouser_w", {
+      heightCm: 168,
+      weightKg: 62,
+      chestCm: 0,
+      waistCm: 74,
+      hipsCm: 100,
+      fitPreference: "regular",
+    });
+    expect(result.derived).toEqual({
+      belly: 75,
+      crotch: 62.2,
+      thigh: 58.2,
+      calf: 36.7,
+      trouserLength: 104.2,
+    });
+    expect(result.confidenceLevel).toBe("high");
+  });
+});

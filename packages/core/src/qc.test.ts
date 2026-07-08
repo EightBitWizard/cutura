@@ -78,3 +78,17 @@ describe("QC checklist templates", () => {
     expect(getDefaultQcChecklist("trouser")).toHaveLength(11);
   });
 });
+
+describe("jacket + women QC templates", () => {
+  it("jackets (men and women) get the jacket checklist", () => {
+    const men = getDefaultQcChecklist("jacket");
+    const women = getDefaultQcChecklist("jacket_w");
+    expect(men.map((i) => i.id)).toContain("lapels");
+    expect(men.map((i) => i.id)).toContain("lining");
+    expect(women).toEqual(men);
+  });
+
+  it("women's trousers get the trouser checklist", () => {
+    expect(getDefaultQcChecklist("trouser_w")).toEqual(getDefaultQcChecklist("trouser"));
+  });
+});

@@ -20,6 +20,9 @@ export interface MeasurementFieldLabels {
   wrist: string;
   sleeveLength: string;
   shirtLength: string;
+  // Jacket (producer guideline)
+  backLength: string;
+  jacketLength: string;
   // Trouser (supplier guideline order)
   waist: string;
   belly: string;
@@ -109,7 +112,7 @@ export interface Messages {
   youMightAlsoLike: string;
   recommendedForYou: string;
   fitGuide: string;
-  garmentNames: { shirt: string; trouser: string };
+  garmentNames: Record<string, string>;
   consentText: string;
   consentAccept: string;
   consentDecline: string;
@@ -164,7 +167,13 @@ const de: Messages = {
   youMightAlsoLike: "Das könnte Ihnen auch gefallen",
   recommendedForYou: "Für Sie empfohlen",
   fitGuide: "Passform- und Massleitfaden",
-  garmentNames: { shirt: "Hemd", trouser: "Hose" },
+  garmentNames: {
+    shirt: "Hemd",
+    trouser: "Hose",
+    jacket: "Sakko",
+    jacket_w: "Blazer (Damen)",
+    trouser_w: "Hose (Damen)",
+  },
   consentText:
     "Wir verwenden notwendige Cookies. Optionale Analyse-Cookies nur mit Ihrer Zustimmung.",
   consentAccept: "Alle akzeptieren",
@@ -236,6 +245,8 @@ const de: Messages = {
       wrist: "Handgelenkumfang",
       sleeveLength: "Ärmellänge",
       shirtLength: "Hemdlänge",
+      backLength: "Rückenlänge",
+      jacketLength: "Sakkolänge",
       waist: "Taillenumfang",
       belly: "Bauchumfang",
       hips: "Hüftumfang",
@@ -292,7 +303,13 @@ const en: Messages = {
   youMightAlsoLike: "You might also like",
   recommendedForYou: "Recommended for you",
   fitGuide: "Fit and size guide",
-  garmentNames: { shirt: "Shirt", trouser: "Trousers" },
+  garmentNames: {
+    shirt: "Shirt",
+    trouser: "Trousers",
+    jacket: "Jacket",
+    jacket_w: "Jacket (women)",
+    trouser_w: "Trousers (women)",
+  },
   consentText: "We use necessary cookies. Optional analytics cookies only with your consent.",
   consentAccept: "Accept all",
   consentDecline: "Necessary only",
@@ -362,6 +379,8 @@ const en: Messages = {
       wrist: "Wrist",
       sleeveLength: "Sleeve length",
       shirtLength: "Shirt length",
+      backLength: "Back length",
+      jacketLength: "Jacket length",
       waist: "Waist",
       belly: "Belly",
       hips: "Hips",
@@ -418,7 +437,13 @@ const it: Messages = {
   youMightAlsoLike: "Potrebbe interessarti anche",
   recommendedForYou: "Consigliati per te",
   fitGuide: "Guida a vestibilita e misure",
-  garmentNames: { shirt: "Camicia", trouser: "Pantaloni" },
+  garmentNames: {
+    shirt: "Camicia",
+    trouser: "Pantaloni",
+    jacket: "Giacca",
+    jacket_w: "Giacca (donna)",
+    trouser_w: "Pantaloni (donna)",
+  },
   consentText: "Usiamo cookie necessari. Cookie di analisi opzionali solo con il tuo consenso.",
   consentAccept: "Accetta tutti",
   consentDecline: "Solo necessari",
@@ -489,6 +514,8 @@ const it: Messages = {
       wrist: "Polso",
       sleeveLength: "Lunghezza manica",
       shirtLength: "Lunghezza camicia",
+      backLength: "Lunghezza schiena",
+      jacketLength: "Lunghezza giacca",
       waist: "Girovita",
       belly: "Addome",
       hips: "Fianchi",
@@ -545,7 +572,13 @@ const fr: Messages = {
   youMightAlsoLike: "Vous pourriez aussi aimer",
   recommendedForYou: "Recommandé pour vous",
   fitGuide: "Guide des tailles et coupes",
-  garmentNames: { shirt: "Chemise", trouser: "Pantalon" },
+  garmentNames: {
+    shirt: "Chemise",
+    trouser: "Pantalon",
+    jacket: "Veste",
+    jacket_w: "Veste (femme)",
+    trouser_w: "Pantalon (femme)",
+  },
   consentText:
     "Nous utilisons des cookies necessaires. Cookies d'analyse optionnels seulement avec votre accord.",
   consentAccept: "Tout accepter",
@@ -617,6 +650,8 @@ const fr: Messages = {
       wrist: "Tour de poignet",
       sleeveLength: "Longueur de manche",
       shirtLength: "Longueur de chemise",
+      backLength: "Longueur du dos",
+      jacketLength: "Longueur de veste",
       waist: "Tour de taille",
       belly: "Tour de ventre",
       hips: "Tour de hanches",

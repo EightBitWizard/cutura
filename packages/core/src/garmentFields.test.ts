@@ -49,3 +49,31 @@ describe("wizardBaseFields", () => {
     }
   });
 });
+
+describe("jacket + women garment types", () => {
+  it("returns the supplier jacket field order for men and women", () => {
+    const expected = [
+      "chest",
+      "waist",
+      "hips",
+      "shoulder",
+      "sleeveLength",
+      "backLength",
+      "jacketLength",
+      "biceps",
+      "wrist",
+    ];
+    expect(garmentFields("jacket")).toEqual(expected);
+    expect(garmentFields("jacket_w")).toEqual(expected);
+  });
+
+  it("women's trousers use the trouser field set", () => {
+    expect(garmentFields("trouser_w")).toEqual(garmentFields("trouser"));
+  });
+
+  it("jacket wizard asks for chest, waist, and hips; women's trousers for waist and hips", () => {
+    expect(wizardBaseFields("jacket")).toEqual(["chest", "waist", "hips"]);
+    expect(wizardBaseFields("jacket_w")).toEqual(["chest", "waist", "hips"]);
+    expect(wizardBaseFields("trouser_w")).toEqual(["waist", "hips"]);
+  });
+});

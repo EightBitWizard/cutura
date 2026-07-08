@@ -99,10 +99,74 @@ export function checkOutliers(
   garmentType: string,
   measurements: GarmentMeasurements | null | undefined,
 ): OutlierCheck {
-  if (garmentType === "trouser") {
+  if (garmentType === "trouser" || garmentType === "trouser_w") {
     return checkTrouserOutliers(measurements as Partial<TrouserMeasurements> | null | undefined);
   }
+  if (garmentType === "jacket" || garmentType === "jacket_w") {
+    return checkJacketOutliers(measurements as Record<string, number> | null | undefined);
+  }
   return checkShirtOutliers(measurements as Partial<ShirtMeasurements> | null | undefined);
+}
+
+/**
+ * Jacket plausibility (men + women share ranges; the bounds are wide enough for
+ * both cuts and any hit routes the order to review, never blocks it).
+ */
+export function checkJacketOutliers(
+  measurements: Record<string, number> | null | undefined,
+): OutlierCheck {
+  const flags: string[] = [];
+
+  if (!measurements || Object.keys(measurements).length === 0) {
+    return { isOutlier: true, flags: ["Keine Masse vorhanden - manuelle Prüfung erforderlich."] };
+  }
+
+  const { chest, waist, hips, shoulder, sleeveLength, backLength, jacketLength, biceps, wrist } =
+    measurements;
+
+  if (isNum(chest) && (chest < 70 || chest > 160)) {
+    flags.push("Brustumfang liegt ausserhalb des üblichen Bereichs (70-160 cm).");
+  }
+  if (isNum(waist) && (waist < 55 || waist > 150)) {
+    flags.push("Taillenumfang liegt ausserhalb des üblichen Bereichs (55-150 cm).");
+  }
+  if (isNum(hips) && (hips < 70 || hips > 160)) {
+    flags.push("Hüftumfang liegt ausserhalb des üblichen Bereichs (70-160 cm).");
+  }
+  if (isNum(chest) && isNum(waist) && waist > chest + 5) {
+    flags.push("Taillenumfang deutlich grösser als Brustumfang - bitte prüfen.");
+  }
+
+  if (isNum(shoulder)) {
+    if (shoulder < 30 || shoulder > 60) {
+      flags.push("Schulterbreite liegt ausserhalb des üblichen Bereichs (30-60 cm).");
+    }
+    if (isNum(chest) && shoulder > chest / 2 + 5) {
+      flags.push("Schulterbreite scheint sehr gross - bitte prüfen.");
+    }
+  }
+
+  if (isNum(sleeveLength) && (sleeveLength < 50 || sleeveLength > 72)) {
+    flags.push("Armlänge liegt ausserhalb des üblichen Bereichs (50-72 cm).");
+  }
+  if (isNum(backLength) && (backLength < 30 || backLength > 60)) {
+    flags.push("Rückenlänge liegt ausserhalb des üblichen Bereichs (30-60 cm).");
+  }
+  if (isNum(jacketLength) && (jacketLength < 50 || jacketLength > 95)) {
+    flags.push("Sakkolänge liegt ausserhalb des üblichen Bereichs (50-95 cm).");
+  }
+  if (isNum(backLength) && isNum(jacketLength) && jacketLength <= backLength) {
+    flags.push("Sakkolänge muss grösser als die Rückenlänge sein - bitte prüfen.");
+  }
+
+  if (isNum(biceps) && (biceps < 20 || biceps > 55)) {
+    flags.push("Oberarmumfang liegt ausserhalb des üblichen Bereichs (20-55 cm).");
+  }
+  if (isNum(wrist) && (wrist < 12 || wrist > 25)) {
+    flags.push("Handgelenkumfang liegt ausserhalb des üblichen Bereichs (12-25 cm).");
+  }
+
+  return { isOutlier: flags.length > 0, flags };
 }
 
 export function checkTrouserOutliers(

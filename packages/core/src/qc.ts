@@ -27,6 +27,20 @@ export const SHIRT_QC_CHECKLIST: readonly QcChecklistTemplateItem[] = [
   { id: "packaging", label: "Verpackung unbeschädigt" },
 ] as const;
 
+export const JACKET_QC_CHECKLIST: readonly QcChecklistTemplateItem[] = [
+  { id: "seams", label: "Nähte gleichmässig und sauber" },
+  { id: "fabric", label: "Stoff korrekt (Code stimmt überein)" },
+  { id: "shoulders", label: "Schultern symmetrisch, kein Wurf" },
+  { id: "lapels", label: "Revers laut Spezifikation, gleichmässig" },
+  { id: "sleeves", label: "Ärmel gleich lang, sauber eingesetzt" },
+  { id: "buttons", label: "Knöpfe korrekt befestigt, alle vorhanden" },
+  { id: "lining", label: "Futter glatt, ohne Zugfalten" },
+  { id: "measurements", label: "Kernmasse stichprobenhaft geprüft" },
+  { id: "pressing", label: "Gebügelt, keine Druckstellen" },
+  { id: "labeling", label: "Etiketten korrekt" },
+  { id: "packaging", label: "Verpackung unbeschädigt" },
+] as const;
+
 export const TROUSER_QC_CHECKLIST: readonly QcChecklistTemplateItem[] = [
   { id: "seams", label: "Nähte gleichmässig und sauber" },
   { id: "fabric", label: "Stoff korrekt (Code stimmt überein)" },
@@ -43,7 +57,12 @@ export const TROUSER_QC_CHECKLIST: readonly QcChecklistTemplateItem[] = [
 
 /** A fresh, mutable copy of the template for a garment type (trouser, else shirt). */
 export function getDefaultQcChecklist(garmentType: GarmentType): QcChecklistTemplateItem[] {
-  const template = garmentType === "trouser" ? TROUSER_QC_CHECKLIST : SHIRT_QC_CHECKLIST;
+  const template =
+    garmentType === "trouser" || garmentType === "trouser_w"
+      ? TROUSER_QC_CHECKLIST
+      : garmentType === "jacket" || garmentType === "jacket_w"
+        ? JACKET_QC_CHECKLIST
+        : SHIRT_QC_CHECKLIST;
   return template.map((item) => ({ ...item }));
 }
 

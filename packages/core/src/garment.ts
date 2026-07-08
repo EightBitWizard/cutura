@@ -53,6 +53,9 @@ export const MEASUREMENT_FIELD_LABELS_DE: Record<string, string> = {
   // Shared
   waist: "Taillenumfang",
   hips: "Hüftumfang",
+  // Jackets (producer guideline)
+  backLength: "Rückenlänge",
+  jacketLength: "Sakkolänge",
   // Trousers (supplier guideline)
   belly: "Bauchumfang",
   crotch: "Schrittbogen",
@@ -86,6 +89,9 @@ export const MEASUREMENT_FIELD_LABELS_EN: Record<string, string> = {
   // Shared
   waist: "Waist",
   hips: "Hips",
+  // Jackets (producer guideline)
+  backLength: "Back length",
+  jacketLength: "Jacket length",
   // Trousers (supplier guideline)
   belly: "Belly",
   crotch: "Crotch length",

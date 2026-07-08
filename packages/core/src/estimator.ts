@@ -166,5 +166,149 @@ export const trouserEstimator: MeasurementEstimator = {
   },
 };
 
+export const jacketEstimator: MeasurementEstimator = {
+  garmentType: "jacket",
+  estimate(input: WizardShortInput): EstimationResult {
+    const { heightCm, weightKg, chestCm } = input;
+    const warnings: string[] = [];
+
+    if (!heightCm || heightCm <= 0 || !weightKg || weightKg <= 0) {
+      return { derived: {}, confidenceLevel: "low", warnings: [INVALID_INPUT_WARNING] };
+    }
+
+    const bmi = weightKg / (heightCm / 100) ** 2;
+    if (bmi < 17 || bmi > 40) {
+      warnings.push("Ungewöhnliches Verhältnis von Grösse und Gewicht - bitte Eingaben prüfen.");
+    }
+
+    // Jacket derivations (producer guideline fields; chest/waist/hips are wizard
+    // inputs). Back length = nape to waistline, jacket length = nape to thigh;
+    // both scale with height per standard menswear pattern proportions.
+    const shoulder = round(heightCm * 0.245 + chestCm * 0.06);
+    const sleeveLength = round(heightCm * 0.335);
+    const backLength = round(heightCm * 0.25);
+    const jacketLength = round(heightCm * 0.415);
+    const biceps = round(chestCm * 0.35 + (weightKg - 70) * 0.05);
+    const wrist = round(16.5 + (weightKg - 70) * 0.04);
+
+    if (jacketLength < 50 || jacketLength > 95) {
+      warnings.push(
+        `Berechnete Sakkolänge (${jacketLength} cm) liegt ausserhalb des Standardbereichs - Ihre Bestellung wird zur Prüfung weitergeleitet.`,
+      );
+    }
+
+    let confidenceLevel: ConfidenceLevel = "high";
+    if (warnings.length > 0) {
+      confidenceLevel = "low";
+    } else if (bmi > 28 || bmi < 19) {
+      confidenceLevel = "medium";
+      warnings.push(BODY_REVIEW_HINT);
+    }
+
+    return {
+      derived: { shoulder, sleeveLength, backLength, jacketLength, biceps, wrist },
+      confidenceLevel,
+      warnings,
+    };
+  },
+};
+
+// Women's modules derive from standard female pattern-drafting proportions
+// (nape-to-waist ~ height * 0.235, narrower shoulder-to-height ratio, thigh
+// correlating with hips). PROVISIONAL until the producer confirms its women's
+// measuring guideline; wide outlier bounds plus the founder review gate catch
+// implausible results, and detailed manual entry always remains available.
+export const jacketWomenEstimator: MeasurementEstimator = {
+  garmentType: "jacket_w",
+  estimate(input: WizardShortInput): EstimationResult {
+    const { heightCm, weightKg, chestCm } = input;
+    const warnings: string[] = [];
+
+    if (!heightCm || heightCm <= 0 || !weightKg || weightKg <= 0) {
+      return { derived: {}, confidenceLevel: "low", warnings: [INVALID_INPUT_WARNING] };
+    }
+
+    const bmi = weightKg / (heightCm / 100) ** 2;
+    if (bmi < 16 || bmi > 40) {
+      warnings.push("Ungewöhnliches Verhältnis von Grösse und Gewicht - bitte Eingaben prüfen.");
+    }
+
+    const shoulder = round(heightCm * 0.22 + chestCm * 0.045);
+    const sleeveLength = round(heightCm * 0.33);
+    const backLength = round(heightCm * 0.235);
+    const jacketLength = round(heightCm * 0.38);
+    const biceps = round(chestCm * 0.3 + (weightKg - 60) * 0.05);
+    const wrist = round(15 + (weightKg - 60) * 0.04);
+
+    if (jacketLength < 50 || jacketLength > 95) {
+      warnings.push(
+        `Berechnete Sakkolänge (${jacketLength} cm) liegt ausserhalb des Standardbereichs - Ihre Bestellung wird zur Prüfung weitergeleitet.`,
+      );
+    }
+
+    let confidenceLevel: ConfidenceLevel = "high";
+    if (warnings.length > 0) {
+      confidenceLevel = "low";
+    } else if (bmi > 28 || bmi < 18) {
+      confidenceLevel = "medium";
+      warnings.push(BODY_REVIEW_HINT);
+    }
+
+    return {
+      derived: { shoulder, sleeveLength, backLength, jacketLength, biceps, wrist },
+      confidenceLevel,
+      warnings,
+    };
+  },
+};
+
+export const trouserWomenEstimator: MeasurementEstimator = {
+  garmentType: "trouser_w",
+  estimate(input: WizardShortInput): EstimationResult {
+    const { heightCm, weightKg, waistCm, hipsCm } = input;
+    const warnings: string[] = [];
+
+    if (!heightCm || heightCm <= 0 || !weightKg || weightKg <= 0) {
+      return { derived: {}, confidenceLevel: "low", warnings: [INVALID_INPUT_WARNING] };
+    }
+
+    const bmi = weightKg / (heightCm / 100) ** 2;
+    if (bmi < 16 || bmi > 40) {
+      warnings.push("Ungewöhnliches Verhältnis von Grösse und Gewicht - bitte Eingaben prüfen.");
+    }
+
+    // Female proportions: thigh follows hips more closely than waist; the crotch
+    // arc sits slightly longer relative to height than the male module.
+    const belly = round(waistCm + 1 + (bmi > 24 ? (bmi - 24) * 0.8 : 0));
+    const crotch = round(heightCm * 0.37 + (bmi > 25 ? (bmi - 25) * 0.4 : 0));
+    const thigh = round(hipsCm * 0.58 + (weightKg - 60) * 0.1);
+    const calf = round(thigh * 0.63);
+    const trouserLength = round(heightCm * 0.62 - (bmi > 28 ? (bmi - 28) * 0.2 : 0));
+
+    if (trouserLength < 80 || trouserLength > 125) {
+      warnings.push(
+        `Berechnete Hosenlänge (${trouserLength} cm) liegt ausserhalb des Standardbereichs - Ihre Bestellung wird zur Prüfung weitergeleitet.`,
+      );
+    }
+
+    let confidenceLevel: ConfidenceLevel = "high";
+    if (warnings.length > 0) {
+      confidenceLevel = "low";
+    } else if (bmi > 28 || bmi < 18) {
+      confidenceLevel = "medium";
+      warnings.push(BODY_REVIEW_HINT);
+    }
+
+    return {
+      derived: { belly, crotch, thigh, calf, trouserLength },
+      confidenceLevel,
+      warnings,
+    };
+  },
+};
+
 registerEstimator(shirtEstimator);
 registerEstimator(trouserEstimator);
+registerEstimator(jacketEstimator);
+registerEstimator(jacketWomenEstimator);
+registerEstimator(trouserWomenEstimator);

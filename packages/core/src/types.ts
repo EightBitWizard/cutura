@@ -4,8 +4,13 @@
 
 export type MeasurementMethod = "detailed" | "wizard";
 
-/** Garment type key. Garment types are data-driven; "shirt" and "trouser" ship at launch. */
-export type GarmentType = "shirt" | "trouser";
+/**
+ * Garment type key. Garment types are data-driven; shirts and trousers shipped
+ * first, jackets (men + women) and women's trousers join for the suit program.
+ * Women's cuts are separate keys (not a flag) so field sets, estimators, outlier
+ * ranges, and QC templates stay independently swappable per cut.
+ */
+export type GarmentType = "shirt" | "trouser" | "jacket" | "jacket_w" | "trouser_w";
 
 export type FitPreference = "slim" | "regular" | "relaxed";
 
@@ -36,7 +41,21 @@ export interface TrouserMeasurements {
   trouserLength: number;
 }
 
-export type GarmentMeasurements = ShirtMeasurements | TrouserMeasurements;
+// Jacket fields per the producer's jacket measuring guide; men's and women's
+// cuts share the field list (formulas and plausibility differ per cut).
+export interface JacketMeasurements {
+  chest: number;
+  waist: number;
+  hips: number;
+  shoulder: number;
+  sleeveLength: number;
+  backLength: number;
+  jacketLength: number;
+  biceps: number;
+  wrist: number;
+}
+
+export type GarmentMeasurements = ShirtMeasurements | TrouserMeasurements | JacketMeasurements;
 
 /** Short wizard input from which the estimator derives a full measurement set. */
 export interface WizardShortInput {

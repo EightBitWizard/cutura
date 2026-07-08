@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { checkShirtOutliers, checkTrouserOutliers } from "./outliers";
+import { checkOutliers, checkShirtOutliers, checkTrouserOutliers } from "./outliers";
 import type { ShirtMeasurements, TrouserMeasurements } from "./types";
 
 // Field sets aligned to the supplier's measurement guideline (tuongtailor.com).
@@ -90,5 +90,61 @@ describe("checkTrouserOutliers", () => {
     const crotch = checkTrouserOutliers({ ...validTrouser, crotch: 20 });
     expect(crotch.isOutlier).toBe(true);
     expect(crotch.flags.join(" ")).toContain("Schrittbogen");
+  });
+});
+
+describe("checkJacketOutliers", () => {
+  const validJacket = {
+    chest: 100,
+    waist: 85,
+    hips: 98,
+    shoulder: 50,
+    sleeveLength: 60,
+    backLength: 45,
+    jacketLength: 75,
+    biceps: 35,
+    wrist: 17,
+  };
+
+  it("passes a plausible men's jacket and a plausible women's jacket", () => {
+    expect(checkOutliers("jacket", validJacket).isOutlier).toBe(false);
+    expect(
+      checkOutliers("jacket_w", {
+        chest: 92,
+        waist: 74,
+        hips: 100,
+        shoulder: 41,
+        sleeveLength: 55,
+        backLength: 39.5,
+        jacketLength: 64,
+        biceps: 28,
+        wrist: 15,
+      }).isOutlier,
+    ).toBe(false);
+  });
+
+  it("flags out-of-range jacket lengths", () => {
+    const r = checkOutliers("jacket", { ...validJacket, jacketLength: 40 });
+    expect(r.isOutlier).toBe(true);
+    expect(r.flags.join(" ")).toContain("Sakkolänge");
+  });
+
+  it("flags a jacket shorter than the back length", () => {
+    const r = checkOutliers("jacket", { ...validJacket, jacketLength: 44, backLength: 45 });
+    expect(r.isOutlier).toBe(true);
+  });
+
+  it("routes women's trousers through the trouser checks", () => {
+    const r = checkOutliers("trouser_w", {
+      waist: 74,
+      belly: 75,
+      hips: 100,
+      crotch: 62,
+      thigh: 70,
+      calf: 71,
+      trouserLength: 104,
+    });
+    expect(r.isOutlier).toBe(true);
+    expect(r.flags.join(" ")).toContain("Waden");
   });
 });
