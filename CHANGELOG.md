@@ -4,6 +4,23 @@ All notable changes to this project. Newest first.
 
 ## Unreleased
 
+### Added (producer connection + suit program)
+
+- Producer adapter seam (ADR 0011): suppliers carry an order channel
+  ({adapter, mode} in capabilities). Kutetailor runs in manual portal mode at
+  launch: approval renders an English producer order sheet on the admin order
+  page (style/fabric/option codes via the new producer_catalog_map table, body
+  measurements in cm, white-label instruction); the API payload builder ships
+  prepared but dormant. Two new admin buttons drive the previously un-wired
+  transitions approved -> in_production -> arrived_ch.
+- Suit program: new garment types jacket, jacket_w, trouser_w (gender as
+  separate keys), jacket estimator + provisional women's estimators, jacket
+  plausibility checks and QC checklist, i18n labels + garment names in four
+  languages, and draft suit catalog entries (jackets m/w, suit trousers m/w,
+  two suiting fabrics, collection "Der Anzug") pending producer RFQ pricing.
+- Production location copy moved from Vietnam to China across content pages,
+  legal drafts, and docs (never "Swiss made"; Swiss design + per-piece QC).
+
 ### Added (launch content + pricing)
 
 - Real website content in de/en/fr/it, grounded in the research dossier: a full FAQ, a

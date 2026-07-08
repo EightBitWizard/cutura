@@ -74,7 +74,7 @@ DRAFT FOR LEGAL REVIEW. Version 2026-07-02.
    on arrival and report defects promptly.
 
 9. Your data. We process your personal data, including your body measurements, as described in
-   our Privacy Policy. Measurements are encrypted and are shared with our tailoring partner only
+   our Privacy Policy. Measurements are encrypted and are shared with our production partner only
    to the extent needed to make your garment.
 
 10. Liability. We are liable under the statutory rules. To the extent permitted by law, we are
@@ -112,7 +112,7 @@ and you can withdraw that consent at any time.
 
 Who receives data.
 
-- Our tailoring partner in Vietnam receives the production specification, including the
+- Our production partner in China receives the production specification, including the
   measurements needed to make your garment, under a data processing agreement with the
   recognised standard contractual clauses. We send only what is needed for production.
 - Our payment provider (Shopify) processes your payment and the related order data.
@@ -142,7 +142,7 @@ This policy may be updated; the version applicable to your order is recorded wit
 We deliver in Switzerland. Standard shipping is included in the price you see; nothing is
 added at checkout.
 
-Each garment is made to order by our tailoring partner in Vietnam and quality-checked in
+Each garment is made to order by our production partner in China and quality-checked in
 Switzerland before it ships to you. Plan for roughly 2 to 4 weeks from order to delivery. This
 is an estimate, not a guaranteed date; we build in time so every garment is checked properly
 rather than rushed.
@@ -198,7 +198,7 @@ reduce your statutory rights under Swiss law, which continue to apply in full.
 
 How does made-to-measure work at CUTURA?
 You choose a model, fabric, and style details, then enter your measurements. Your garment is
-cut and sewn to those measurements by our tailoring partner in Vietnam, quality-checked in
+cut and sewn to those measurements by our production partner in China, quality-checked in
 Switzerland, and shipped to you. Nothing is pulled from a shelf; each piece is made for your
 order.
 
@@ -226,7 +226,7 @@ offer instead is the Fit Promise on your first shirt and first trousers, which c
 specifically. A garment with a genuine production fault is always covered under statutory law.
 
 How long does it take?
-Each garment is made to order in Vietnam and quality-checked in Switzerland before it ships,
+Each garment is made to order in China and quality-checked in Switzerland before it ships,
 so plan for roughly 2 to 4 weeks from order to delivery. We treat this as an estimate, not a
 guaranteed date. You get a tracking link once your order ships.
 
@@ -245,13 +245,13 @@ checkout; we never see or store your card details.
 
 Are my measurements and data safe?
 Yes. Your measurements are encrypted and stored on servers in Switzerland or the EU. We share
-them only with our tailoring partner, only to the extent needed to make your garment, and we
+them only with our production partner, only to the extent needed to make your garment, and we
 never use them for advertising or profiling.
 
 Where are the clothes made?
 CUTURA is designed in Switzerland, and every garment is quality-checked in Switzerland before
-it ships. The garments are made by our tailoring partner in Vietnam, a workshop we chose for
-its craft and consistency. We are specific about this on purpose: it is honest, and the Swiss
+it ships. The garments are made by our production partner in China, a workshop we chose for
+its consistent single-piece quality. We are specific about this on purpose: it is honest, and the Swiss
 quality check is a real step in every order, not a label.
 
 Can I reorder in my saved size?

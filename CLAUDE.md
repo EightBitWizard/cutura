@@ -6,7 +6,7 @@ This file guides any coding agent (Claude Code or similar) working in this repos
 
 ## Product context
 
-CUTURA is a Swiss direct-to-consumer brand for made-to-measure clothing. A customer configures a garment online (model, fabric, style options, optional add-on upgrades), provides body measurements, and pays. The garment is produced on demand by a tailor in Vietnam, received and quality-checked in Switzerland, then shipped to the customer.
+CUTURA is a Swiss direct-to-consumer brand for made-to-measure clothing. A customer configures a garment online (model, fabric, style options, optional add-on upgrades), provides body measurements, and pays. The garment is produced on demand by the production partner in China (Kutetailor, connected via the producer adapter seam; manual portal mode at launch, API mode prepared), received and quality-checked in Switzerland, then shipped to the customer.
 
 This repository is a from-scratch rebuild on consolidated Cloudflare infrastructure. The platform is designed to be garment-type-general (any garment eventually, added as data) but launches deliberately narrow: a few shirts and a few trousers, serving Switzerland and Liechtenstein. The hard, tested domain logic from the previous build is ported into `packages/core`, not reinvented.
 

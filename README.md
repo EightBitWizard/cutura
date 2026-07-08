@@ -1,7 +1,8 @@
 # CUTURA
 
 Swiss made-to-measure clothing platform. A customer configures a garment, gives
-body measurements, and pays; the garment is produced on demand in Vietnam,
+body measurements, and pays; the garment is produced on demand by the production
+partner in China (Kutetailor),
 quality-checked in Switzerland, and shipped.
 
 This README is the founder-facing operating manual. The engineering specs live in
@@ -153,6 +154,28 @@ manually); the outcome is in the audit log. Shopify data-protection requests arr
 as webhooks: a deletion request erases the customer automatically; data-export and
 shop-closure requests appear in the audit log for you to fulfil. A scheduled job
 reconciles recent orders against Shopify every few hours (see Releasing/reconcile).
+
+## Ordering at the producer (Kutetailor)
+
+Production orders go to Kutetailor manually at launch (you keep control per
+order); the API mode is prepared and switched on later without a rebuild.
+
+1. A paid order lands in "in review". Check measurements and outlier warnings
+   on the order page, then click "Approve + send to supplier".
+2. The order page now shows the "Producer order sheet" per garment: style,
+   fabric, and option codes (from Suppliers -> Producer mappings), all body
+   measurements in cm in English, and the white-label instruction. Copy it
+   into the Kutetailor portal (kutetailor.net) and place the order there.
+   Lines marked "NO CODE MAPPED" mean the Kutetailor code is not mapped yet:
+   pick the right item in the portal, then save the code under Suppliers ->
+   Producer mappings so the next sheet fills it in automatically.
+3. Click "Ordered in producer portal" (status moves to in production).
+4. When the parcel lands, click "Parcel arrived in CH", run QC per piece as
+   usual, and release shipping once every piece passes.
+
+The order channel per supplier (spec email vs Kutetailor manual vs API) is set
+on the Suppliers page. Switching to the API later: set Mode to "api" once the
+endpoint and credentials are confirmed and configured.
 
 ## Shipping configuration
 

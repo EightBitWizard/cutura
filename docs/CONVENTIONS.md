@@ -61,6 +61,7 @@ reserved by `@opennextjs/cloudflare`: `NEXT_INC_CACHE_R2_BUCKET`,
 | Capacity + lead-time logic                  | `packages/core/src/capacity.ts`                                                                         |
 | Back-office ops (board/queue/customers/CSV) | `packages/db/src/ops/`                                                                                  |
 | KPIs + cost/margin                          | `packages/core/src/kpiMath.ts` + `packages/db/src/kpi/`                                                 |
+| Producer adapter (order sheet, API payload) | `packages/core/src/producerAdapter.ts` + `packages/db/src/producers/mapping.ts` (mapping table)         |
 | Suppliers + shipping config                 | `packages/db/src/suppliers/` + `packages/db/src/shipping/`                                              |
 | Storefront pause/capacity gate              | `apps/storefront/src/server/ops.ts`                                                                     |
 | i18n helpers (detect / seo / format)        | `packages/core/src/{i18nDetect,seo,format}.ts`                                                          |

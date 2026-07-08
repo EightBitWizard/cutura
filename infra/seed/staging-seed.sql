@@ -208,3 +208,59 @@ INSERT OR IGNORE INTO cross_sell_rule (id, source_type, source_key, suggested_mo
 INSERT OR IGNORE INTO cross_sell_rule (id, source_type, source_key, suggested_model_id, position, created_at, updated_at) VALUES ('xs_linen_camp', 'model', 'linen-essential-shirt', 'bm_riviera_shirt', 1, '2026-06-26T00:00:00Z', '2026-06-26T00:00:00Z');
 INSERT OR IGNORE INTO cross_sell_rule (id, source_type, source_key, suggested_model_id, position, created_at, updated_at) VALUES ('xs_oxford_city', 'model', 'oxford-business-shirt', 'bm_chino', 0, '2026-06-26T00:00:00Z', '2026-06-26T00:00:00Z');
 INSERT OR IGNORE INTO cross_sell_rule (id, source_type, source_key, suggested_model_id, position, created_at, updated_at) VALUES ('xs_city_oxford', 'model', 'city-pleated-trouser', 'bm_oxford', 0, '2026-06-26T00:00:00Z', '2026-06-26T00:00:00Z');
+
+-- ---------------------------------------------------------------------------
+-- Suit program (2026-07): jackets for men + women and the women's trouser.
+-- Garment types added as DATA + registered estimator modules (FR-104). Models
+-- start as DRAFT with placeholder prices; the founder flips them to orderable
+-- after the producer RFQ confirms pricing. Women's estimation formulas are
+-- provisional until the producer's women's guideline is confirmed.
+
+INSERT OR IGNORE INTO garment_type (id, key, name_i18n, measurement_schema_id, created_at, updated_at)
+VALUES ('gt_jacket', 'jacket', '{"de":"Sakko","en":"Jacket","it":"Giacca","fr":"Veste"}', 'ms_jacket', '2026-07-09T00:00:00Z', '2026-07-09T00:00:00Z');
+INSERT OR IGNORE INTO measurement_schema (id, garment_type_id, version, fields, created_at, updated_at)
+VALUES ('ms_jacket', 'gt_jacket', 1, '{"core":["chest","waist","hips","shoulder","sleeveLength","backLength","jacketLength","biceps","wrist"],"units":"cm"}', '2026-07-09T00:00:00Z', '2026-07-09T00:00:00Z');
+
+INSERT OR IGNORE INTO garment_type (id, key, name_i18n, measurement_schema_id, created_at, updated_at)
+VALUES ('gt_jacket_w', 'jacket_w', '{"de":"Blazer (Damen)","en":"Jacket (women)","it":"Giacca (donna)","fr":"Veste (femme)"}', 'ms_jacket_w', '2026-07-09T00:00:00Z', '2026-07-09T00:00:00Z');
+INSERT OR IGNORE INTO measurement_schema (id, garment_type_id, version, fields, created_at, updated_at)
+VALUES ('ms_jacket_w', 'gt_jacket_w', 1, '{"core":["chest","waist","hips","shoulder","sleeveLength","backLength","jacketLength","biceps","wrist"],"units":"cm"}', '2026-07-09T00:00:00Z', '2026-07-09T00:00:00Z');
+
+INSERT OR IGNORE INTO garment_type (id, key, name_i18n, measurement_schema_id, created_at, updated_at)
+VALUES ('gt_trouser_w', 'trouser_w', '{"de":"Hose (Damen)","en":"Trousers (women)","it":"Pantaloni (donna)","fr":"Pantalon (femme)"}', 'ms_trouser_w', '2026-07-09T00:00:00Z', '2026-07-09T00:00:00Z');
+INSERT OR IGNORE INTO measurement_schema (id, garment_type_id, version, fields, created_at, updated_at)
+VALUES ('ms_trouser_w', 'gt_trouser_w', 1, '{"core":["waist","belly","hips","crotch","thigh","calf","trouserLength"],"units":"cm"}', '2026-07-09T00:00:00Z', '2026-07-09T00:00:00Z');
+
+-- Suiting fabrics (shared by the four suit models)
+INSERT OR IGNORE INTO fabric (id, code, name_i18n, description_i18n, fibre_composition, care_data, surcharge_minor, available, created_at, updated_at)
+VALUES ('fab_suit_navy', 'SUI-NAV-01', '{"de":"Anzugstoff Marine","en":"Suiting Navy","fr":"Tissu de costume marine","it":"Tessuto abito blu navy"}', '{"de":"Ein dunkler Marine-Anzugstoff mit glatter, ruhiger Oberfläche. Der vielseitigste Ton für Anlass und Büro.","en":"A dark navy suiting fabric with a smooth, calm surface. The most versatile shade for occasions and the office.","fr":"Un tissu de costume bleu marine foncé à la surface lisse et sobre. La teinte la plus polyvalente pour les occasions et le bureau.","it":"Un tessuto da abito blu navy scuro con superficie liscia e sobria. La tonalità più versatile per occasioni e ufficio."}', '{"neutral":"100% Wolle / Wool"}', '["dry clean","iron low"]', 0, 1, '2026-07-09T00:00:00Z', '2026-07-09T00:00:00Z');
+INSERT OR IGNORE INTO fabric (id, code, name_i18n, description_i18n, fibre_composition, care_data, surcharge_minor, available, created_at, updated_at)
+VALUES ('fab_suit_grey', 'SUI-GRY-01', '{"de":"Anzugstoff Mittelgrau","en":"Suiting Mid Grey","fr":"Tissu de costume gris moyen","it":"Tessuto abito grigio medio"}', '{"de":"Ein mittelgrauer Anzugstoff mit feiner, gleichmässiger Struktur. Hell genug für den Tag, seriös genug für jeden Anlass.","en":"A mid grey suiting fabric with a fine, even structure. Light enough for daytime, serious enough for any occasion.","fr":"Un tissu de costume gris moyen à la structure fine et régulière. Assez clair pour la journée, assez sérieux pour toute occasion.","it":"Un tessuto da abito grigio medio con struttura fine e uniforme. Abbastanza chiaro per il giorno, abbastanza serio per ogni occasione."}', '{"neutral":"100% Wolle / Wool"}', '["dry clean","iron low"]', 0, 1, '2026-07-09T00:00:00Z', '2026-07-09T00:00:00Z');
+
+-- Suit models (DRAFT, placeholder prices pending the producer RFQ)
+INSERT OR IGNORE INTO base_model (id, garment_type_id, handle, name_i18n, description_i18n, base_price_minor, lead_time_min_days, lead_time_max_days, status, created_at, updated_at)
+VALUES ('bm_suit_jacket_m', 'gt_jacket', 'suit-jacket-men', '{"de":"Anzug-Sakko (Herren)","en":"Suit Jacket (Men)","fr":"Veste de costume (homme)","it":"Giacca da abito (uomo)"}', '{"de":"Ein klar geschnittenes Sakko nach Ihren Massen. Wenige, bewusst gewählte Optionen; zusammen mit der passenden Hose wird daraus Ihr Anzug.","en":"A cleanly cut jacket made to your measurements. Few, deliberately chosen options; together with the matching trousers it becomes your suit.","fr":"Une veste à la coupe nette, confectionnée selon vos mesures. Peu d''options, choisies avec soin; avec le pantalon assorti, elle devient votre costume.","it":"Una giacca dal taglio pulito, realizzata sulle tue misure. Poche opzioni scelte con cura; insieme ai pantaloni abbinati diventa il tuo abito."}', 34900, 14, 28, 'draft', '2026-07-09T00:00:00Z', '2026-07-09T00:00:00Z');
+INSERT OR IGNORE INTO base_model (id, garment_type_id, handle, name_i18n, description_i18n, base_price_minor, lead_time_min_days, lead_time_max_days, status, created_at, updated_at)
+VALUES ('bm_suit_trouser_m', 'gt_trouser', 'suit-trouser-men', '{"de":"Anzughose (Herren)","en":"Suit Trousers (Men)","fr":"Pantalon de costume (homme)","it":"Pantaloni da abito (uomo)"}', '{"de":"Die passende Anzughose zum Sakko, im gleichen Stoff gefertigt. Gerades Bein, ruhige Silhouette, nach Ihren Massen.","en":"The matching suit trousers, made in the same fabric as the jacket. Straight leg, calm silhouette, made to your measurements.","fr":"Le pantalon de costume assorti, confectionné dans le même tissu que la veste. Jambe droite, silhouette sobre, selon vos mesures.","it":"I pantaloni da abito abbinati, realizzati nello stesso tessuto della giacca. Gamba dritta, silhouette sobria, sulle tue misure."}', 18900, 14, 28, 'draft', '2026-07-09T00:00:00Z', '2026-07-09T00:00:00Z');
+INSERT OR IGNORE INTO base_model (id, garment_type_id, handle, name_i18n, description_i18n, base_price_minor, lead_time_min_days, lead_time_max_days, status, created_at, updated_at)
+VALUES ('bm_suit_jacket_w', 'gt_jacket_w', 'suit-jacket-women', '{"de":"Blazer (Damen)","en":"Suit Jacket (Women)","fr":"Veste de tailleur (femme)","it":"Giacca da tailleur (donna)"}', '{"de":"Ein klar geschnittener Blazer nach Ihren Massen. Wenige, bewusst gewählte Optionen; zusammen mit der passenden Hose wird daraus Ihr Anzug.","en":"A cleanly cut jacket made to your measurements. Few, deliberately chosen options; together with the matching trousers it becomes your suit.","fr":"Une veste à la coupe nette, confectionnée selon vos mesures. Peu d''options, choisies avec soin; avec le pantalon assorti, elle devient votre tailleur.","it":"Una giacca dal taglio pulito, realizzata sulle tue misure. Poche opzioni scelte con cura; insieme ai pantaloni abbinati diventa il tuo tailleur."}', 34900, 14, 28, 'draft', '2026-07-09T00:00:00Z', '2026-07-09T00:00:00Z');
+INSERT OR IGNORE INTO base_model (id, garment_type_id, handle, name_i18n, description_i18n, base_price_minor, lead_time_min_days, lead_time_max_days, status, created_at, updated_at)
+VALUES ('bm_suit_trouser_w', 'gt_trouser_w', 'suit-trouser-women', '{"de":"Anzughose (Damen)","en":"Suit Trousers (Women)","fr":"Pantalon de tailleur (femme)","it":"Pantaloni da tailleur (donna)"}', '{"de":"Die passende Anzughose zum Blazer, im gleichen Stoff gefertigt. Gerades Bein, ruhige Silhouette, nach Ihren Massen.","en":"The matching suit trousers, made in the same fabric as the jacket. Straight leg, calm silhouette, made to your measurements.","fr":"Le pantalon assorti à la veste, confectionné dans le même tissu. Jambe droite, silhouette sobre, selon vos mesures.","it":"I pantaloni abbinati alla giacca, realizzati nello stesso tessuto. Gamba dritta, silhouette sobria, sulle tue misure."}', 18900, 14, 28, 'draft', '2026-07-09T00:00:00Z', '2026-07-09T00:00:00Z');
+
+-- Allow-lists: suiting fabrics only; options stay deliberately curated (none at draft)
+INSERT OR IGNORE INTO model_allowed_fabric (id, base_model_id, fabric_id, position) VALUES ('maf_sjm_navy', 'bm_suit_jacket_m', 'fab_suit_navy', 0);
+INSERT OR IGNORE INTO model_allowed_fabric (id, base_model_id, fabric_id, position) VALUES ('maf_sjm_grey', 'bm_suit_jacket_m', 'fab_suit_grey', 1);
+INSERT OR IGNORE INTO model_allowed_fabric (id, base_model_id, fabric_id, position) VALUES ('maf_stm_navy', 'bm_suit_trouser_m', 'fab_suit_navy', 0);
+INSERT OR IGNORE INTO model_allowed_fabric (id, base_model_id, fabric_id, position) VALUES ('maf_stm_grey', 'bm_suit_trouser_m', 'fab_suit_grey', 1);
+INSERT OR IGNORE INTO model_allowed_fabric (id, base_model_id, fabric_id, position) VALUES ('maf_sjw_navy', 'bm_suit_jacket_w', 'fab_suit_navy', 0);
+INSERT OR IGNORE INTO model_allowed_fabric (id, base_model_id, fabric_id, position) VALUES ('maf_sjw_grey', 'bm_suit_jacket_w', 'fab_suit_grey', 1);
+INSERT OR IGNORE INTO model_allowed_fabric (id, base_model_id, fabric_id, position) VALUES ('maf_stw_navy', 'bm_suit_trouser_w', 'fab_suit_navy', 0);
+INSERT OR IGNORE INTO model_allowed_fabric (id, base_model_id, fabric_id, position) VALUES ('maf_stw_grey', 'bm_suit_trouser_w', 'fab_suit_grey', 1);
+
+-- Collection: the suit (jacket + trousers ordered together = the suit; one parcel by design)
+INSERT OR IGNORE INTO collection (id, handle, name_i18n, description_i18n, featured_on_landing, landing_position, created_at, updated_at)
+VALUES ('col_suits', 'the-suit', '{"de":"Der Anzug","en":"The Suit","fr":"Le costume","it":"L''abito"}', '{"de":"Ein Anzug, bewusst einfach: Sakko und Hose nach Ihren Massen, im gleichen Stoff, mit wenigen guten Optionen. Für Herren und Damen.","en":"A suit, deliberately simple: jacket and trousers made to your measurements, in the same fabric, with a few good options. For men and women.","fr":"Un costume volontairement simple: veste et pantalon selon vos mesures, dans le même tissu, avec quelques bonnes options. Pour hommes et femmes.","it":"Un abito volutamente semplice: giacca e pantaloni sulle tue misure, nello stesso tessuto, con poche buone opzioni. Per uomo e donna."}', 0, 3, '2026-07-09T00:00:00Z', '2026-07-09T00:00:00Z');
+INSERT OR IGNORE INTO collection_member (id, collection_id, base_model_id, position) VALUES ('cm_suit_jm', 'col_suits', 'bm_suit_jacket_m', 0);
+INSERT OR IGNORE INTO collection_member (id, collection_id, base_model_id, position) VALUES ('cm_suit_tm', 'col_suits', 'bm_suit_trouser_m', 1);
+INSERT OR IGNORE INTO collection_member (id, collection_id, base_model_id, position) VALUES ('cm_suit_jw', 'col_suits', 'bm_suit_jacket_w', 2);
+INSERT OR IGNORE INTO collection_member (id, collection_id, base_model_id, position) VALUES ('cm_suit_tw', 'col_suits', 'bm_suit_trouser_w', 3);

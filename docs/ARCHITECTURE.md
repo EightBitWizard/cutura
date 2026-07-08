@@ -31,7 +31,12 @@ only to Staging cannot reach Production because Production is a different databa
    customer pays on Shopify's hosted checkout (VAT recorded tax inclusive).
 3. The `orders/paid` webhook (HMAC-verified, idempotent on the event id) creates
    one immutable production package per garment.
-4. The order waits for founder approval, which emails the supplier the spec + PDF.
+4. The order waits for founder approval. Dispatch depends on the supplier's order
+   channel (supplier.capabilities): classic suppliers get the spec email + PDF;
+   producer-adapter suppliers (Kutetailor) get no email - the admin order page
+   renders an English order sheet (codes via producer_catalog_map, body
+   measurements in cm) that the founder enters in the producer portal, with a
+   prepared API mode activated later by a data switch.
 5. The guarded status machine drives the lifecycle; QC in Switzerland records a
    checklist; a fail cannot pass without an audited override; multi-item orders
    ship together once all items pass.
