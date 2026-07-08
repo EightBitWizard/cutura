@@ -19,6 +19,8 @@ export interface ConfiguratorMessages {
   selectRequired: string;
   addToCart: string;
   recalculating: string;
+  material: string;
+  care: string;
 }
 
 interface PriceResponse {
@@ -30,14 +32,29 @@ interface PriceResponse {
 
 // Uniform caption block for swatch tiles: a fixed-height area with a two-line-clamped
 // label and an always-present surcharge line, so every tile is the same height and the
-// images line up regardless of label length or whether there is a surcharge.
-function SwatchCaption({ label, surchargeMinor = 0 }: { label: string; surchargeMinor?: number }) {
+// images line up regardless of label length or whether there is a surcharge. When
+// `reserveMeta` is set (fabric tiles), a third line carries the fibre/weight detail and
+// is reserved on every tile so tiles stay aligned even where a fabric has no data.
+function SwatchCaption({
+  label,
+  surchargeMinor = 0,
+  meta,
+  reserveMeta = false,
+}: {
+  label: string;
+  surchargeMinor?: number;
+  meta?: string;
+  reserveMeta?: boolean;
+}) {
   return (
     <span className="flex min-h-[3.5rem] flex-col gap-0.5 px-2 py-1.5">
       <span className="line-clamp-2 text-xs font-medium leading-tight text-ink">{label}</span>
       <span className="text-xs leading-tight text-ink-subtle">
         {surchargeMinor > 0 ? `+${formatCHF(surchargeMinor)}` : " "}
       </span>
+      {reserveMeta ? (
+        <span className="line-clamp-1 text-xs leading-tight text-ink-subtle">{meta || " "}</span>
+      ) : null}
     </span>
   );
 }
@@ -66,6 +83,24 @@ export function Configurator({
   const [pending, setPending] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const seqRef = useRef(0);
+
+  // Mobile-only: the sticky bottom purchase bar appears once the in-flow total + CTA
+  // scrolls out of view, so only one primary action is on screen at a time.
+  const ctaRef = useRef<HTMLDivElement>(null);
+  const [showBar, setShowBar] = useState(false);
+  useEffect(() => {
+    const el = ctaRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    const obs = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry) setShowBar(!entry.isIntersecting);
+      },
+      { rootMargin: "0px 0px -4px 0px" },
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
 
   const optionValueCodes = useMemo(
     () => Object.values(selected).filter((c) => c !== ""),
@@ -128,6 +163,15 @@ export function Configurator({
   const display = server && !pending ? server.display : formatCHF(optimistic.total);
   const valid = server && !pending ? server.valid : localValid;
 
+  // Fabric as hero: the fibre + weight line shown on each tile, and the material + care
+  // detail for the selected fabric. All fields are optional in the published data, so
+  // every branch degrades to nothing when a fabric has no data.
+  const fabricMeta = (f: PublishedModelDetail["fabrics"][number]): string =>
+    [f.fibre, f.weightGsm ? `${f.weightGsm} g/m²` : null].filter(Boolean).join(" · ");
+  const anyFabricMeta = model.fabrics.some((f) => fabricMeta(f));
+  const selectedFabric = model.fabrics.find((f) => f.code === fabricCode);
+  const hasFabricDetail = Boolean(selectedFabric?.material || selectedFabric?.care);
+
   async function addToCart() {
     setSubmitting(true);
     try {
@@ -157,189 +201,254 @@ export function Configurator({
     }`;
 
   return (
-    <div className="mt-8 flex flex-col gap-8">
-      {model.fabrics.length > 0 && (
-        <section>
-          <h2 className={groupLabel}>{t.fabric}</h2>
-          <div className="mt-3 grid grid-cols-3 gap-3 sm:grid-cols-4">
-            {model.fabrics.map((f) => {
-              const active = fabricCode === f.code;
-              return (
-                <button
-                  key={f.code}
-                  type="button"
-                  aria-pressed={active}
-                  onClick={() => setFabricCode(f.code)}
-                  className={tile(active)}
-                >
-                  <MediaImage
-                    mediaId={f.mediaId}
-                    alt=""
-                    className="aspect-square w-full bg-sunken object-cover"
-                  />
-                  <SwatchCaption label={f.name} surchargeMinor={f.surchargeMinor} />
-                </button>
-              );
-            })}
-          </div>
-        </section>
-      )}
-
-      {model.optionGroups.map((g) => {
-        const hasImages = g.values.some((v) => v.mediaId);
-        return (
-          <section key={g.code}>
-            <h2 className={groupLabel}>
-              {g.label}
-              {g.required ? (
-                <span className="ml-1 lowercase tracking-normal text-ink-subtle">
-                  ({t.required})
-                </span>
-              ) : null}
-            </h2>
-
-            {hasImages ? (
-              // Visual swatch tiles when any value in the group carries an image
-              // (e.g. collar styles), so customers can see the options.
-              <div className="mt-3 grid grid-cols-3 gap-3 sm:grid-cols-4">
-                {!g.required && (
+    <>
+      <div className="mt-8 flex flex-col gap-8">
+        {model.fabrics.length > 0 && (
+          <section>
+            <h2 className={groupLabel}>{t.fabric}</h2>
+            <div className="mt-3 grid grid-cols-3 gap-3 sm:grid-cols-4">
+              {model.fabrics.map((f) => {
+                const active = fabricCode === f.code;
+                return (
                   <button
+                    key={f.code}
                     type="button"
-                    aria-pressed={selected[g.code] === ""}
-                    onClick={() => setSelected((s) => ({ ...s, [g.code]: "" }))}
-                    className={tile(selected[g.code] === "")}
+                    aria-pressed={active}
+                    onClick={() => setFabricCode(f.code)}
+                    className={tile(active)}
                   >
                     <MediaImage
-                      mediaId={g.noneMediaId}
+                      mediaId={f.mediaId}
                       alt=""
                       className="aspect-square w-full bg-sunken object-cover"
                     />
-                    <SwatchCaption label={t.none} />
-                  </button>
-                )}
-                {g.values.map((v) => (
-                  <button
-                    key={v.code}
-                    type="button"
-                    aria-pressed={selected[g.code] === v.code}
-                    onClick={() => setSelected((s) => ({ ...s, [g.code]: v.code }))}
-                    className={tile(selected[g.code] === v.code)}
-                  >
-                    <MediaImage
-                      mediaId={v.mediaId}
-                      alt=""
-                      className="aspect-square w-full bg-sunken object-cover"
+                    <SwatchCaption
+                      label={f.name}
+                      surchargeMinor={f.surchargeMinor}
+                      meta={fabricMeta(f)}
+                      reserveMeta={anyFabricMeta}
                     />
-                    <SwatchCaption label={v.label} surchargeMinor={v.surchargeMinor} />
                   </button>
-                ))}
-              </div>
-            ) : (
-              <div className="mt-3 flex flex-wrap gap-2">
-                {!g.required && (
-                  <button
-                    type="button"
-                    aria-pressed={selected[g.code] === ""}
-                    onClick={() => setSelected((s) => ({ ...s, [g.code]: "" }))}
-                    className={pill(selected[g.code] === "")}
-                  >
-                    {t.none}
-                  </button>
-                )}
-                {g.values.map((v) => (
-                  <button
-                    key={v.code}
-                    type="button"
-                    aria-pressed={selected[g.code] === v.code}
-                    onClick={() => setSelected((s) => ({ ...s, [g.code]: v.code }))}
-                    className={pill(selected[g.code] === v.code)}
-                  >
-                    {v.label}
-                    {v.surchargeMinor > 0 ? ` (+${formatCHF(v.surchargeMinor)})` : ""}
-                  </button>
-                ))}
-              </div>
+                );
+              })}
+            </div>
+
+            {hasFabricDetail && (
+              <dl className="mt-4 space-y-1.5 border-t border-line pt-4 text-sm">
+                {selectedFabric?.material ? (
+                  <div className="flex gap-3">
+                    <dt className="w-20 shrink-0 text-ink-subtle">{t.material}</dt>
+                    <dd className="text-ink-muted">{selectedFabric.material}</dd>
+                  </div>
+                ) : null}
+                {selectedFabric?.care ? (
+                  <div className="flex gap-3">
+                    <dt className="w-20 shrink-0 text-ink-subtle">{t.care}</dt>
+                    <dd className="text-ink-muted">{selectedFabric.care}</dd>
+                  </div>
+                ) : null}
+              </dl>
             )}
           </section>
-        );
-      })}
+        )}
 
-      {model.upgrades.length > 0 && (
-        <section>
-          <h2 className={groupLabel}>{t.upgrades}</h2>
-          <div className="mt-3 flex flex-col gap-2">
-            {model.upgrades.map((u) => {
-              const on = upgrades.has(u.code);
-              return (
-                <label
-                  key={u.code}
-                  className={`flex cursor-pointer items-center justify-between gap-3 rounded-sm border px-3 py-2.5 text-sm transition-colors ${
-                    on ? "border-ink bg-sunken" : "border-line hover:border-line-strong"
-                  }`}
-                >
-                  <span className="flex items-center gap-3">
-                    <input
-                      type="checkbox"
-                      checked={on}
-                      onChange={(e) =>
-                        setUpgrades((prev) => {
-                          const next = new Set(prev);
-                          if (e.target.checked) next.add(u.code);
-                          else next.delete(u.code);
-                          return next;
-                        })
-                      }
-                      className="h-4 w-4 accent-ink"
-                    />
-                    {u.mediaId ? (
-                      <MediaImage
-                        mediaId={u.mediaId}
-                        alt=""
-                        className="h-8 w-8 rounded-[2px] object-cover"
-                      />
-                    ) : null}
-                    <span className="text-ink">{u.name}</span>
+        {model.optionGroups.map((g) => {
+          const hasImages = g.values.some((v) => v.mediaId);
+          return (
+            <section key={g.code}>
+              <h2 className={groupLabel}>
+                {g.label}
+                {g.required ? (
+                  <span className="ml-1 lowercase tracking-normal text-ink-subtle">
+                    ({t.required})
                   </span>
-                  {u.priceMinor > 0 ? (
-                    <span className="shrink-0 text-ink-muted">+{formatCHF(u.priceMinor)}</span>
-                  ) : null}
-                </label>
-              );
-            })}
-          </div>
-        </section>
-      )}
+                ) : null}
+              </h2>
 
-      <div className="border-t border-line pt-5">
-        <div className="flex items-baseline justify-between">
-          <span className="text-sm text-ink-muted">{t.total}</span>
-          <span
-            className={`text-2xl font-semibold tabular-nums text-ink transition-opacity ${
-              pending ? "opacity-50" : "opacity-100"
-            }`}
-          >
-            {display}
-          </span>
-        </div>
-        <p className="mt-1 text-eyebrow uppercase text-ink-subtle">
-          {pending ? t.recalculating : t.allInclusive}
-        </p>
-        {!valid && <p className="mt-2 text-sm text-accent">{t.selectRequired}</p>}
-        <button
-          type="button"
-          disabled={!valid || submitting || paused}
-          onClick={addToCart}
-          className={buttonClasses("primary", "lg", "mt-4 w-full")}
-        >
-          {submitting ? (
+              {hasImages ? (
+                // Visual swatch tiles when any value in the group carries an image
+                // (e.g. collar styles), so customers can see the options.
+                <div className="mt-3 grid grid-cols-3 gap-3 sm:grid-cols-4">
+                  {!g.required && (
+                    <button
+                      type="button"
+                      aria-pressed={selected[g.code] === ""}
+                      onClick={() => setSelected((s) => ({ ...s, [g.code]: "" }))}
+                      className={tile(selected[g.code] === "")}
+                    >
+                      <MediaImage
+                        mediaId={g.noneMediaId}
+                        alt=""
+                        className="aspect-square w-full bg-sunken object-cover"
+                      />
+                      <SwatchCaption label={t.none} />
+                    </button>
+                  )}
+                  {g.values.map((v) => (
+                    <button
+                      key={v.code}
+                      type="button"
+                      aria-pressed={selected[g.code] === v.code}
+                      onClick={() => setSelected((s) => ({ ...s, [g.code]: v.code }))}
+                      className={tile(selected[g.code] === v.code)}
+                    >
+                      <MediaImage
+                        mediaId={v.mediaId}
+                        alt=""
+                        className="aspect-square w-full bg-sunken object-cover"
+                      />
+                      <SwatchCaption label={v.label} surchargeMinor={v.surchargeMinor} />
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {!g.required && (
+                    <button
+                      type="button"
+                      aria-pressed={selected[g.code] === ""}
+                      onClick={() => setSelected((s) => ({ ...s, [g.code]: "" }))}
+                      className={pill(selected[g.code] === "")}
+                    >
+                      {t.none}
+                    </button>
+                  )}
+                  {g.values.map((v) => (
+                    <button
+                      key={v.code}
+                      type="button"
+                      aria-pressed={selected[g.code] === v.code}
+                      onClick={() => setSelected((s) => ({ ...s, [g.code]: v.code }))}
+                      className={pill(selected[g.code] === v.code)}
+                    >
+                      {v.label}
+                      {v.surchargeMinor > 0 ? ` (+${formatCHF(v.surchargeMinor)})` : ""}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </section>
+          );
+        })}
+
+        {model.upgrades.length > 0 && (
+          <section>
+            <h2 className={groupLabel}>{t.upgrades}</h2>
+            <div className="mt-3 flex flex-col gap-2">
+              {model.upgrades.map((u) => {
+                const on = upgrades.has(u.code);
+                return (
+                  <label
+                    key={u.code}
+                    className={`flex cursor-pointer items-center justify-between gap-3 rounded-sm border px-3 py-2.5 text-sm transition-colors ${
+                      on ? "border-ink bg-sunken" : "border-line hover:border-line-strong"
+                    }`}
+                  >
+                    <span className="flex items-center gap-3">
+                      <input
+                        type="checkbox"
+                        checked={on}
+                        onChange={(e) =>
+                          setUpgrades((prev) => {
+                            const next = new Set(prev);
+                            if (e.target.checked) next.add(u.code);
+                            else next.delete(u.code);
+                            return next;
+                          })
+                        }
+                        className="h-4 w-4 accent-ink"
+                      />
+                      {u.mediaId ? (
+                        <MediaImage
+                          mediaId={u.mediaId}
+                          alt=""
+                          className="h-8 w-8 rounded-[2px] object-cover"
+                        />
+                      ) : null}
+                      <span className="text-ink">{u.name}</span>
+                    </span>
+                    {u.priceMinor > 0 ? (
+                      <span className="shrink-0 text-ink-muted">+{formatCHF(u.priceMinor)}</span>
+                    ) : null}
+                  </label>
+                );
+              })}
+            </div>
+          </section>
+        )}
+
+        <div ref={ctaRef} className="border-t border-line pt-5">
+          <div className="flex items-baseline justify-between">
+            <span className="text-sm text-ink-muted">{t.total}</span>
             <span
-              aria-hidden="true"
-              className="h-4 w-4 animate-spin rounded-full border-2 border-paper/40 border-t-paper"
-            />
-          ) : null}
-          {t.addToCart}
-        </button>
+              className={`text-2xl font-semibold tabular-nums text-ink transition-opacity ${
+                pending ? "opacity-50" : "opacity-100"
+              }`}
+            >
+              {display}
+            </span>
+          </div>
+          <p className="mt-1 text-eyebrow uppercase text-ink-subtle">
+            {pending ? t.recalculating : t.allInclusive}
+          </p>
+          {!valid && <p className="mt-2 text-sm text-accent">{t.selectRequired}</p>}
+          <button
+            type="button"
+            disabled={!valid || submitting || paused}
+            onClick={addToCart}
+            className={buttonClasses("primary", "lg", "mt-4 w-full")}
+          >
+            {submitting ? (
+              <span
+                aria-hidden="true"
+                className="h-4 w-4 animate-spin rounded-full border-2 border-paper/40 border-t-paper"
+              />
+            ) : null}
+            {t.addToCart}
+          </button>
+        </div>
       </div>
-    </div>
+
+      {/* Mobile-only sticky purchase bar: mirrors the in-flow total + CTA (no new price
+          logic) and slides in once the in-flow action scrolls out of view. Hidden on lg,
+          where the configurator column is sticky instead. */}
+      <div
+        aria-hidden={!showBar}
+        className={`fixed inset-x-0 bottom-0 z-40 border-t border-line bg-surface shadow-bar transition-transform duration-200 ease-out lg:hidden ${
+          showBar ? "translate-y-0" : "translate-y-full"
+        }`}
+      >
+        <div
+          className="mx-auto flex max-w-3xl items-center justify-between gap-4 px-4 pt-3"
+          style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 0.75rem)" }}
+        >
+          <div className="min-w-0">
+            <p className="text-eyebrow uppercase text-ink-subtle">{t.total}</p>
+            <p
+              className={`text-lg font-semibold tabular-nums text-ink transition-opacity ${
+                pending ? "opacity-50" : "opacity-100"
+              }`}
+            >
+              {display}
+            </p>
+          </div>
+          <button
+            type="button"
+            disabled={!valid || submitting || paused}
+            onClick={addToCart}
+            tabIndex={showBar ? undefined : -1}
+            className={buttonClasses("primary", "md", "shrink-0")}
+          >
+            {submitting ? (
+              <span
+                aria-hidden="true"
+                className="h-4 w-4 animate-spin rounded-full border-2 border-paper/40 border-t-paper"
+              />
+            ) : null}
+            {t.addToCart}
+          </button>
+        </div>
+      </div>
+    </>
   );
 }

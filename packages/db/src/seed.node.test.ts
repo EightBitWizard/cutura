@@ -36,17 +36,17 @@ describe("staging seed", () => {
     expect(model?.status).toBe("orderable");
     // Two garment types (shirt + trouser); five orderable models and eight fabrics across
     // the Business Essentials and Casual Essentials collections.
-    expect(count(db, "garment_type")).toBe(2);
-    expect(count(db, "base_model")).toBe(5);
-    expect(count(db, "fabric")).toBe(8);
-    expect(count(db, "model_allowed_fabric")).toBe(11);
+    expect(count(db, "garment_type")).toBe(5);
+    expect(count(db, "base_model")).toBe(9);
+    expect(count(db, "fabric")).toBe(10);
+    expect(count(db, "model_allowed_fabric")).toBe(19);
     // Option groups: collar + sleeve (shirt); pleats + side/back pockets + closure (trouser).
     expect(count(db, "option_group")).toBe(6);
     // Option values across all groups (incl. the double pleat).
     expect(count(db, "option_value")).toBe(14);
     // Business Essentials (2 members) + Casual Essentials (3 members); reciprocal cross-sell.
-    expect(count(db, "collection")).toBe(2);
-    expect(count(db, "collection_member")).toBe(5);
+    expect(count(db, "collection")).toBe(3);
+    expect(count(db, "collection_member")).toBe(9);
     expect(count(db, "cross_sell_rule")).toBe(6);
   });
 
@@ -65,8 +65,8 @@ describe("staging seed", () => {
 
   it("is idempotent (re-applying does not duplicate rows)", () => {
     const db = seededDb(true);
-    expect(count(db, "base_model")).toBe(5);
-    expect(count(db, "fabric")).toBe(8);
+    expect(count(db, "base_model")).toBe(9);
+    expect(count(db, "fabric")).toBe(10);
     expect(count(db, "cross_sell_rule")).toBe(6);
   });
 });

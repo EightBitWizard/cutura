@@ -125,7 +125,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       <div className="border-y border-line bg-surface">
         <Container className="py-16 sm:py-24">
           <Eyebrow>{h.processHeading}</Eyebrow>
-          <ol className="mt-10 grid gap-10 sm:grid-cols-3">
+          <ol className="mt-10 grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
             {h.steps.map((s, i) => (
               <li key={s.title}>
                 <span className="text-sm font-medium tabular-nums text-accent">
@@ -136,6 +136,15 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               </li>
             ))}
           </ol>
+          <p className="mt-10 max-w-2xl text-sm text-ink-muted">
+            {h.fitPromise}{" "}
+            <Link
+              href={`/${locale}/content/fit-guide`}
+              className="text-ink underline transition-colors hover:text-ink-muted"
+            >
+              {t.fitGuide}
+            </Link>
+          </p>
         </Container>
       </div>
 

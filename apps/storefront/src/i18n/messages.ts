@@ -145,6 +145,8 @@ export interface Messages {
   selectRequired: string;
   addToCart: string;
   recalculating: string;
+  fabricMaterial: string;
+  fabricCare: string;
   measure: MeasureMessages;
   cart: CartMessages;
   checkout: CheckoutMessages;
@@ -207,6 +209,8 @@ const de: Messages = {
   selectRequired: "Bitte alle erforderlichen Optionen wählen.",
   addToCart: "Weiter zu den Massen",
   recalculating: "Preis wird aktualisiert ...",
+  fabricMaterial: "Material",
+  fabricCare: "Pflege",
   measure: {
     title: "Ihre Masse",
     intro: "Wählen Sie, wie Sie Ihre Masse angeben möchten.",
@@ -342,6 +346,8 @@ const en: Messages = {
   selectRequired: "Please choose all required options.",
   addToCart: "Continue to measurements",
   recalculating: "Updating price ...",
+  fabricMaterial: "Material",
+  fabricCare: "Care",
   measure: {
     title: "Your measurements",
     intro: "Choose how you want to provide your measurements.",
@@ -476,6 +482,8 @@ const it: Messages = {
   selectRequired: "Scegli tutte le opzioni obbligatorie.",
   addToCart: "Continua con le misure",
   recalculating: "Aggiornamento del prezzo ...",
+  fabricMaterial: "Materiale",
+  fabricCare: "Manutenzione",
   measure: {
     title: "Le tue misure",
     intro: "Scegli come fornire le tue misure.",
@@ -612,6 +620,8 @@ const fr: Messages = {
   selectRequired: "Veuillez choisir toutes les options requises.",
   addToCart: "Continuer vers les mesures",
   recalculating: "Mise a jour du prix ...",
+  fabricMaterial: "Matière",
+  fabricCare: "Entretien",
   measure: {
     title: "Vos mesures",
     intro: "Choisissez comment fournir vos mesures.",
@@ -1017,6 +1027,8 @@ export interface HomeMessages {
   heroCta: string;
   processHeading: string;
   steps: { title: string; body: string }[];
+  /** Plain remake-promise line closing the process strip (not an outcome guarantee). */
+  fitPromise: string;
   fabricEyebrow: string;
   fabricTitle: string;
   fabricBody: string;
@@ -1045,10 +1057,15 @@ const homeCatalog: Record<Locale, HomeMessages> = {
         body: "Wir führen Sie Schritt für Schritt. Kein Schneider nötig.",
       },
       {
-        title: "Gefertigt und geliefert",
-        body: "Auf Mass gefertigt und zu Ihnen geliefert. Mit Passformgarantie.",
+        title: "Gefertigt und geprüft",
+        body: "Auf Mass gefertigt und vor dem Versand in der Schweiz geprüft.",
+      },
+      {
+        title: "Geliefert",
+        body: "Sorgfältig verpackt und zu Ihnen nach Hause geliefert.",
       },
     ],
+    fitPromise: "Gratis-Nachbesserung: Passt etwas nicht, fertigen wir es neu.",
     fabricEyebrow: "Material",
     fabricTitle: "Stoffe mit Charakter",
     fabricBody:
@@ -1077,10 +1094,15 @@ const homeCatalog: Record<Locale, HomeMessages> = {
         body: "We guide you step by step. No tailor needed.",
       },
       {
-        title: "Tailored and delivered",
-        body: "Handcrafted to your size and delivered to you. With a fit guarantee.",
+        title: "Made and checked",
+        body: "Tailored to your size and quality-checked in Switzerland before it ships.",
+      },
+      {
+        title: "Delivered",
+        body: "Carefully packed and delivered to your door.",
       },
     ],
+    fitPromise: "Free remake: if something is not right, we make it again.",
     fabricEyebrow: "Material",
     fabricTitle: "Cloth with character",
     fabricBody:
@@ -1109,10 +1131,15 @@ const homeCatalog: Record<Locale, HomeMessages> = {
         body: "Ti guidiamo passo dopo passo. Nessun sarto necessario.",
       },
       {
-        title: "Realizzato e consegnato",
-        body: "Confezionato su misura e consegnato a te. Con garanzia di vestibilità.",
+        title: "Confezionato e controllato",
+        body: "Realizzato sulle tue misure e controllato in Svizzera prima della spedizione.",
+      },
+      {
+        title: "Consegnato",
+        body: "Imballato con cura e consegnato a casa tua.",
       },
     ],
+    fitPromise: "Rifacimento gratuito: se qualcosa non va, lo rifacciamo.",
     fabricEyebrow: "Materiale",
     fabricTitle: "Tessuti con carattere",
     fabricBody:
@@ -1141,10 +1168,15 @@ const homeCatalog: Record<Locale, HomeMessages> = {
         body: "Nous vous guidons étape par étape. Aucun tailleur nécessaire.",
       },
       {
-        title: "Confectionné et livré",
-        body: "Confectionné à vos mesures et livré chez vous. Avec garantie d'ajustement.",
+        title: "Confectionné et contrôlé",
+        body: "Confectionné à vos mesures et contrôlé en Suisse avant l'envoi.",
+      },
+      {
+        title: "Livré",
+        body: "Emballé avec soin et livré chez vous.",
       },
     ],
+    fitPromise: "Retouche gratuite : si quelque chose ne va pas, nous le refaisons.",
     fabricEyebrow: "Matière",
     fabricTitle: "Des tissus de caractère",
     fabricBody:

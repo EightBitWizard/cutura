@@ -38,6 +38,10 @@ async function seedAndPublish(): Promise<{ handle: string }> {
     id: ids.f1,
     code: `OXF-${p}`,
     nameI18n: { de: "Oxford Weiss", en: "Oxford White" },
+    material: "Cotton poplin",
+    fibreComposition: { cotton: 100 },
+    careData: ["Machine wash 30", "Warm iron"],
+    weightGsm: 120,
     surchargeMinor: 2000,
     available: true,
     createdAt: TS,
@@ -112,6 +116,12 @@ describe("storefront catalog read", () => {
     expect(model?.name).toBe("Oxford Business");
     expect(model?.fabrics).toHaveLength(1);
     expect(model?.fabrics[0]?.name).toBe("Oxford White");
+    // Fabric-as-hero detail is surfaced to the storefront (fibre/weight on the tile,
+    // material/care in the selected state), formatted server-side.
+    expect(model?.fabrics[0]?.fibre).toBe("100% cotton");
+    expect(model?.fabrics[0]?.weightGsm).toBe(120);
+    expect(model?.fabrics[0]?.material).toBe("Cotton poplin");
+    expect(model?.fabrics[0]?.care).toBe("Machine wash 30, Warm iron");
     expect(model?.optionGroups).toHaveLength(1);
     expect(model?.optionGroups[0]?.values[0]?.code).toBe("spread");
     expect(model?.upgrades).toHaveLength(0);

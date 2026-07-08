@@ -8,6 +8,8 @@ test("@smoke home redirects to a locale and renders the brand", async ({ page })
   await page.goto("/");
   await expect(page).toHaveURL(/\/(de|en|it|fr)$/);
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+  // The "How it works" strip closes with the fit-promise line linking to the fit guide.
+  await expect(page.locator('a[href*="/content/fit-guide"]').first()).toBeVisible();
 });
 
 test("@smoke health endpoint reports the environment and a live DB", async ({ request }) => {

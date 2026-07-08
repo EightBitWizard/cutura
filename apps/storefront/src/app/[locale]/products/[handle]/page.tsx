@@ -30,17 +30,6 @@ import { getCustomerId } from "@/server/session";
 
 export const dynamic = "force-dynamic";
 
-// Render a fibre composition (object like {cotton: 100}, a string, or nothing).
-function fibreText(value: unknown): string {
-  if (typeof value === "string") return value;
-  if (value && typeof value === "object") {
-    return Object.entries(value as Record<string, unknown>)
-      .map(([k, v]) => (typeof v === "number" ? `${v}% ${k}` : `${k}: ${String(v)}`))
-      .join(", ");
-  }
-  return "";
-}
-
 export async function generateMetadata({
   params,
 }: {
@@ -93,7 +82,7 @@ export default async function ProductPage({
   const lead = leadTimeFor(ordering, model.leadTimeMinDays, model.leadTimeMaxDays);
   const garmentName = t.garmentNames[model.garmentType as "shirt" | "trouser"] ?? "";
 
-  const materials = model.fabrics.filter((f) => fibreText(f.fibreComposition));
+  const materials = model.fabrics.filter((f) => f.fibre);
 
   const jsonLd = buildProductJsonLd({
     name: model.name,
@@ -113,7 +102,8 @@ export default async function ProductPage({
       />
       <ViewSignal entityId={model.id} />
 
-      <Container className="py-8 sm:py-12">
+      {/* Extra bottom padding on mobile clears the sticky purchase bar (lg: none). */}
+      <Container className="pt-8 pb-28 sm:pt-12 lg:pb-12">
         <Link
           href={`/${locale}`}
           className="text-sm text-ink-muted transition-colors hover:text-ink"
@@ -147,7 +137,7 @@ export default async function ProductPage({
                 <ul className="mt-2 space-y-1 text-sm text-ink-muted">
                   {materials.map((f) => (
                     <li key={f.code}>
-                      {f.name}: {fibreText(f.fibreComposition)}
+                      {f.name}: {f.fibre}
                     </li>
                   ))}
                 </ul>
@@ -200,6 +190,8 @@ export default async function ProductPage({
                   selectRequired: t.selectRequired,
                   addToCart: t.addToCart,
                   recalculating: t.recalculating,
+                  material: t.fabricMaterial,
+                  care: t.fabricCare,
                 }}
               />
             )}

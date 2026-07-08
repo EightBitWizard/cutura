@@ -55,7 +55,14 @@ export interface PublishedModelDetail extends PublishedModelSummary {
     name: string;
     surchargeMinor: number;
     available: boolean;
-    fibreComposition: unknown;
+    /** Formatted fibre composition (e.g. "100% cotton"), or undefined when absent. */
+    fibre: string | undefined;
+    /** Fabric weight in grams per square metre, or null when absent. */
+    weightGsm: number | null;
+    /** Weave or construction name (e.g. "Cotton poplin"), or null when absent. */
+    material: string | null;
+    /** Formatted care instructions, or undefined when absent. */
+    care: string | undefined;
     mediaId: string | null;
   }>;
   optionGroups: Array<{
@@ -126,7 +133,10 @@ export async function getPublishedModel(
       name: localize(f.nameI18n, locale),
       surchargeMinor: f.surchargeMinor,
       available: f.available,
-      fibreComposition: f.fibreComposition,
+      fibre: stringifyComposition(f.fibreComposition),
+      weightGsm: f.weightGsm,
+      material: f.material,
+      care: stringifyCare(f.careData),
       mediaId: fabricMedia.get(f.id) ?? null,
     }));
 
