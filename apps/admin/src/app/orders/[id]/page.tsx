@@ -5,6 +5,7 @@ import {
   checkOutliers,
   getDefaultQcChecklist,
   marginMinor,
+  normalizeGarmentType,
 } from "@cutura/core";
 import { getOrderCost, getOrderDetail, getRow, readSnapshot, supplier } from "@cutura/db";
 
@@ -317,7 +318,7 @@ function QcForm({
   garmentType: string;
 }) {
   if (!packageId) return null;
-  const checklist = getDefaultQcChecklist(garmentType === "trouser" ? "trouser" : "shirt");
+  const checklist = getDefaultQcChecklist(normalizeGarmentType(garmentType));
   return (
     <form method="post" action={`/api/orders/${orderId}/qc`} className="mt-3 flex flex-col gap-2">
       <input type="hidden" name="packageId" value={packageId} />

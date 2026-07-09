@@ -6,6 +6,23 @@
 
 import type { GarmentType } from "./types";
 
+const GARMENT_TYPES: readonly GarmentType[] = [
+  "shirt",
+  "trouser",
+  "jacket",
+  "jacket_w",
+  "trouser_w",
+];
+
+/**
+ * Normalize an untrusted garment-type value (query param, request body) to a
+ * known key. Unknown values fall back to "shirt" (the historic default), so a
+ * bad input degrades to a working flow instead of an error page.
+ */
+export function normalizeGarmentType(value: unknown): GarmentType {
+  return GARMENT_TYPES.includes(value as GarmentType) ? (value as GarmentType) : "shirt";
+}
+
 // Current supplier-guideline keys first; the historic keys stay so snapshots
 // written before the field-set change (remakes, admin views) still infer correctly.
 const TROUSER_ONLY_KEYS = [

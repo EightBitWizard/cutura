@@ -1,3 +1,4 @@
+import { normalizeGarmentType } from "@cutura/core";
 import Link from "next/link";
 
 import { MeasurementFlow } from "@/components/MeasurementFlow";
@@ -18,7 +19,7 @@ export default async function MeasurePage({
   const { return: ret, gt } = await searchParams;
   const t = getMessages(locale);
   // Garment type drives the fields + estimator; default to shirt.
-  const garmentType = gt === "trouser" ? "trouser" : "shirt";
+  const garmentType = normalizeGarmentType(gt);
   // Only same-origin relative return paths (avoid open redirect).
   const returnUrl =
     typeof ret === "string" && ret.startsWith("/") && !ret.startsWith("//")

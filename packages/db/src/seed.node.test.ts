@@ -29,44 +29,49 @@ function count(db: DatabaseSync, table: string): number {
 describe("staging seed", () => {
   it("applies against the real schema and creates the starter catalog", () => {
     const db = seededDb();
+    // Catalog switch 2026-07-09: the Kutetailor-era entity owns the canonical
+    // handle; the old model is kept hidden with a -v1 handle.
     const model = db
-      .prepare("SELECT handle, status FROM base_model WHERE id = 'bm_oxford'")
+      .prepare("SELECT handle, status FROM base_model WHERE id = 'bm_kt_oxford'")
       .get() as { handle: string; status: string } | undefined;
-    expect(model?.handle).toBe("oxford-business-shirt");
+    expect(model?.handle).toBe("oxford-shirt");
     expect(model?.status).toBe("orderable");
-    // Two garment types (shirt + trouser); five orderable models and eight fabrics across
-    // the Business Essentials and Casual Essentials collections.
+    const old = db.prepare("SELECT handle, status FROM base_model WHERE id = 'bm_oxford'").get() as
+      | { handle: string; status: string }
+      | undefined;
+    expect(old?.handle).toBe("oxford-business-shirt-v1");
+    expect(old?.status).toBe("draft");
     expect(count(db, "garment_type")).toBe(5);
-    expect(count(db, "base_model")).toBe(9);
+    expect(count(db, "base_model")).toBe(15);
     expect(count(db, "fabric")).toBe(10);
-    expect(count(db, "model_allowed_fabric")).toBe(19);
+    expect(count(db, "model_allowed_fabric")).toBe(33);
     // Option groups: collar + sleeve (shirt); pleats + side/back pockets + closure (trouser).
     expect(count(db, "option_group")).toBe(6);
     // Option values across all groups (incl. the double pleat).
     expect(count(db, "option_value")).toBe(14);
     // Business Essentials (2 members) + Casual Essentials (3 members); reciprocal cross-sell.
-    expect(count(db, "collection")).toBe(3);
-    expect(count(db, "collection_member")).toBe(9);
-    expect(count(db, "cross_sell_rule")).toBe(6);
+    expect(count(db, "collection")).toBe(4);
+    expect(count(db, "collection_member")).toBe(15);
+    expect(count(db, "cross_sell_rule")).toBe(10);
   });
 
   it("makes the trouser orderable with its own fabrics + allow-list (FR-104)", () => {
     const db = seededDb();
     const trouser = db
       .prepare(
-        "SELECT bm.handle, gt.key FROM base_model bm JOIN garment_type gt ON gt.id = bm.garment_type_id WHERE bm.id = 'bm_chino'",
+        "SELECT bm.handle, gt.key FROM base_model bm JOIN garment_type gt ON gt.id = bm.garment_type_id WHERE bm.id = 'bm_kt_chino'",
       )
       .get() as { handle: string; key: string } | undefined;
-    expect(trouser?.handle).toBe("city-pleated-trouser");
+    expect(trouser?.handle).toBe("chino");
     expect(trouser?.key).toBe("trouser");
-    const allowed = count(db, "model_allowed_fabric WHERE base_model_id = 'bm_chino'");
+    const allowed = count(db, "model_allowed_fabric WHERE base_model_id = 'bm_kt_chino'");
     expect(allowed).toBe(2);
   });
 
   it("is idempotent (re-applying does not duplicate rows)", () => {
     const db = seededDb(true);
-    expect(count(db, "base_model")).toBe(9);
+    expect(count(db, "base_model")).toBe(15);
     expect(count(db, "fabric")).toBe(10);
-    expect(count(db, "cross_sell_rule")).toBe(6);
+    expect(count(db, "cross_sell_rule")).toBe(10);
   });
 });

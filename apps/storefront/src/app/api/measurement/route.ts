@@ -1,4 +1,5 @@
 import {
+  normalizeGarmentType,
   type GarmentMeasurements,
   type WizardShortInput,
   checkOutliers,
@@ -34,7 +35,7 @@ export async function POST(request: Request): Promise<Response> {
   if (!body || typeof body.op !== "string") {
     return Response.json({ error: "bad request" }, { status: 400 });
   }
-  const garmentType = body.garmentType === "trouser" ? "trouser" : "shirt";
+  const garmentType = normalizeGarmentType(body.garmentType);
 
   if (body.op === "estimate") {
     if (!body.input) return Response.json({ error: "missing input" }, { status: 400 });
