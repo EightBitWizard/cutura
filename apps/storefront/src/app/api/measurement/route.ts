@@ -16,6 +16,7 @@ import {
   readMeasureToken,
   saveMeasurementVersion,
 } from "@/server/measurement";
+import { rateLimit } from "@/server/ratelimit";
 import { getCustomerId } from "@/server/session";
 
 export const dynamic = "force-dynamic";
@@ -31,6 +32,14 @@ interface MeasurementRequest {
 }
 
 export async function POST(request: Request): Promise<Response> {
+  // Unauthenticated endpoint: throttle per IP. Generous budget - the wizard
+  // legitimately fires several estimate/confirm calls per session (FR-521).
+  const env = getEnv();
+  const ip = request.headers.get("cf-connecting-ip") ?? "anon";
+  if (!(await rateLimit(env.RATE_LIMIT, `measure:${ip}`, 60, 60))) {
+    return Response.json({ error: "throttled" }, { status: 429 });
+  }
+
   const body = (await request.json().catch(() => null)) as MeasurementRequest | null;
   if (!body || typeof body.op !== "string") {
     return Response.json({ error: "bad request" }, { status: 400 });
@@ -65,7 +74,6 @@ export async function POST(request: Request): Promise<Response> {
     // Logged-in: persist to the customer's durable D1 profile instead of guest KV.
     const customerId = await getCustomerId();
     if (customerId) {
-      const env = getEnv();
       const { profileId } = await saveCustomerMeasurement(
         getDb(env.DB),
         customerId,

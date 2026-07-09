@@ -50,7 +50,14 @@ export async function middleware(request: NextRequest) {
   }
 
   // Admin-managed redirects (NFR-20): an exact-path match wins before anything else.
-  const red = await getRedirect(getDb(env.DB), pathname);
+  // Fail open on lookup errors: a transient D1 failure must not 500 every page, it
+  // only costs the redirect. Auth and the site-access gate above never fail open.
+  let red: { toPath: string; code: number } | null = null;
+  try {
+    red = await getRedirect(getDb(env.DB), pathname);
+  } catch {
+    red = null;
+  }
   if (red) {
     const url = request.nextUrl.clone();
     url.pathname = red.toPath;

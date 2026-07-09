@@ -47,6 +47,20 @@ export async function POST(
   const detail = await getOrderDetail(db, id);
   if (!detail) return seeOther("/orders");
 
+  // Pre-flight, before ANY transition (all-or-nothing): every in-review garment
+  // must have a channel to its producer - a supplier with an adapter, or a
+  // supplier contact email for the spec. Otherwise approval would strand the
+  // order in "approved" with nobody notified and no order sheet; approve nothing.
+  for (const d of detail.items) {
+    if (d.item.status !== "in_review" || !d.pkg) continue;
+    const sup = d.pkg.supplierId ? await getRow(db, supplier, d.pkg.supplierId) : undefined;
+    if (!sup) return seeOther(`/orders/${id}?error=no_channel`);
+    const caps = parseSupplierCapabilities(sup.capabilities);
+    if (!caps.adapter && !supplierEmail(sup.contact)) {
+      return seeOther(`/orders/${id}?error=no_channel`);
+    }
+  }
+
   const provider = new ResendEmailProvider(env.EMAIL_PROVIDER_KEY);
   const fetcher = {
     async get(r2Key: string) {

@@ -1,8 +1,9 @@
-import { getDb, submitFitReview } from "@cutura/db";
+import { customerOwnsOrder, getDb, submitFitReview } from "@cutura/db";
 
 import { defaultLocale, isLocale } from "@/i18n/config";
 import { getEnv } from "@/server/env";
 import { redirectTo } from "@/server/http";
+import { rateLimit } from "@/server/ratelimit";
 import { getCustomerId } from "@/server/session";
 
 export const dynamic = "force-dynamic";
@@ -24,6 +25,17 @@ export async function POST(request: Request): Promise<Response> {
   }
 
   const env = getEnv();
+  const ip = request.headers.get("cf-connecting-ip") ?? "anon";
+  if (!(await rateLimit(env.RATE_LIMIT, `fitreview:${ip}`, 5, 3600))) {
+    return redirectTo(request, `/${locale}/account/orders/${orderId}/fit-review?error=throttled`);
+  }
+
+  // Ownership gate BEFORE any storage side effect: photos of a foreign order id
+  // must never reach R2 (submitFitReview re-checks ownership on insert).
+  if (!(await customerOwnsOrder(getDb(env.DB), customerId, orderId))) {
+    return redirectTo(request, `/${locale}/account/orders/${orderId}/fit-review?error=not_owner`);
+  }
+
   const photoR2Keys: string[] = [];
   for (const file of form.getAll("photos")) {
     if (file instanceof File && file.size > 0 && ALLOWED.includes(file.type)) {

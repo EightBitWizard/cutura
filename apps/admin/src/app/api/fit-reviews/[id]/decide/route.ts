@@ -13,6 +13,16 @@ import { shopifyConfigured, shopifyRefund } from "@/server/shopify";
 
 export const dynamic = "force-dynamic";
 
+// The full decision vocabulary. Anything outside it is rejected: an unknown value
+// must never fall through to the money-moving refund branch.
+const DECISIONS = ["remake", "refund", "alteration"] as const;
+type Decision = (typeof DECISIONS)[number];
+
+function parseDecision(value: FormDataEntryValue | null): Decision | null {
+  const raw = String(value ?? "");
+  return (DECISIONS as readonly string[]).includes(raw) ? (raw as Decision) : null;
+}
+
 // Founder decision on a fit request. remake builds a linked remake order from the
 // original snapshot; refund records the decision and, when Shopify is configured,
 // executes the money-back refund via the payment rail (audited); alteration records
@@ -23,8 +33,8 @@ export async function POST(
 ): Promise<Response> {
   const { id } = await params;
   const form = await request.formData();
-  const raw = String(form.get("decision") ?? "");
-  const decision = raw === "remake" ? "remake" : raw === "alteration" ? "alteration" : "refund";
+  const decision = parseDecision(form.get("decision"));
+  if (!decision) return seeOther("/fit-reviews?error=invalid_decision");
 
   const db = environmentDb("staging");
   const fr = await getFitReview(db, id);

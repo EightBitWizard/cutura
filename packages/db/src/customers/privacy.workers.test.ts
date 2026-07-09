@@ -24,6 +24,7 @@ import {
 } from "../schema";
 import { findOrCreateCustomer } from "./auth";
 import { deleteCustomerData, exportCustomerData, redactCustomerByEmail } from "./privacy";
+import { reviseProfile } from "./profiles";
 
 const db = () => getDb(env.TARGET_TEST_DB);
 const KEY = "test-measurement-encryption-key";
@@ -280,5 +281,22 @@ describe("deleteCustomerData (the privacy gate)", () => {
     expect(dump?.profiles[0]?.confirmed).toEqual({ chest: 100 });
     expect(dump?.orders.length).toBe(1);
     expect(dump?.addresses.length).toBe(1);
+  });
+
+  it("exports the current confirmed values after a revision, not the oldest version", async () => {
+    const email = `expv_${crypto.randomUUID()}@x.ch`;
+    const { customer: c } = await findOrCreateCustomer(db(), email, "de");
+    await seedFootprint(c.id, c.email);
+
+    const [profile] = await db()
+      .select()
+      .from(measurementProfile)
+      .where(eq(measurementProfile.customerId, c.id));
+    expect(profile).toBeDefined();
+    const revised = await reviseProfile(db(), c.id, profile!.id, { chest: 104 }, KEY);
+    expect(revised?.newVersion).toBe(2);
+
+    const dump = await exportCustomerData(db(), c.id, KEY);
+    expect(dump?.profiles[0]?.confirmed).toEqual({ chest: 104 });
   });
 });

@@ -1,4 +1,4 @@
-import { eq, inArray } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 
 import { type GarmentMeasurements, decryptJson } from "@cutura/core";
 
@@ -282,11 +282,18 @@ export async function exportCustomerData(
     .where(eq(measurementProfile.customerId, customerId));
   const profiles: CustomerExport["profiles"] = [];
   for (const p of profileRows) {
+    // Export the profile's CURRENT confirmed values (currentVersion), not the
+    // first stored version: revisions bump currentVersion and the export must
+    // reflect what production would use today.
     const [v] = await db
       .select({ enc: measurementVersion.confirmedValuesEnc })
       .from(measurementVersion)
-      .where(eq(measurementVersion.profileId, p.id))
-      .orderBy(measurementVersion.version);
+      .where(
+        and(
+          eq(measurementVersion.profileId, p.id),
+          eq(measurementVersion.version, p.currentVersion),
+        ),
+      );
     let confirmed: GarmentMeasurements | null = null;
     if (v?.enc) {
       try {

@@ -123,6 +123,23 @@ async function buildDetail(db: Database, o: OrderRow, key: string): Promise<Cust
   };
 }
 
+/**
+ * True if the order exists and belongs to the customer. Cheap ownership check
+ * (no decryption); use it to gate side effects (e.g. photo uploads) before any
+ * heavier write path runs.
+ */
+export async function customerOwnsOrder(
+  db: Database,
+  customerId: string,
+  orderId: string,
+): Promise<boolean> {
+  const [row] = await db
+    .select({ id: order.id })
+    .from(order)
+    .where(and(eq(order.id, orderId), eq(order.customerId, customerId)));
+  return row !== undefined;
+}
+
 /** A customer's order detail, ownership-filtered. Null if not owned. */
 export async function getCustomerOrderDetail(
   db: Database,

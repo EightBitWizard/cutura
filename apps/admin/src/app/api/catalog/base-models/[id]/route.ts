@@ -17,6 +17,15 @@ function parseStatus(value: FormDataEntryValue | null): "draft" | "view_only" | 
   return value === "orderable" ? "orderable" : value === "view_only" ? "view_only" : "draft";
 }
 
+// The price in Rappen must be an explicit non-negative integer. Anything else
+// (empty, negative, fractional, non-numeric) is rejected; never silently store 0.
+function parsePriceMinor(value: FormDataEntryValue | null): number | null {
+  const raw = String(value ?? "").trim();
+  if (!/^\d+$/.test(raw)) return null;
+  const n = Number(raw);
+  return Number.isSafeInteger(n) ? n : null;
+}
+
 export async function POST(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
@@ -27,12 +36,14 @@ export async function POST(
   if (!existing) return seeOther("/base-models?error=notfound");
 
   const form = await request.formData();
+  const basePriceMinor = parsePriceMinor(form.get("basePriceMinor"));
+  if (basePriceMinor === null) return seeOther(`/base-models/${id}?error=invalid_price`);
   await saveRow(db, baseModel, {
     ...existing,
     handle: String(form.get("handle") ?? existing.handle).trim() || existing.handle,
     nameI18n: localizedFromForm(form, "name"),
     descriptionI18n: localizedFromForm(form, "description"),
-    basePriceMinor: Number(form.get("basePriceMinor") ?? existing.basePriceMinor) || 0,
+    basePriceMinor,
     leadTimeMinDays: Number(form.get("leadTimeMinDays") ?? existing.leadTimeMinDays) || 1,
     leadTimeMaxDays: Number(form.get("leadTimeMaxDays") ?? existing.leadTimeMaxDays) || 1,
     status: parseStatus(form.get("status")),

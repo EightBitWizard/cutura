@@ -6,7 +6,12 @@ import { encryptJson } from "@cutura/core";
 import { getDb } from "../getDb";
 import { order, orderItem, statusEvent } from "../schema";
 import { findOrCreateCustomer } from "./auth";
-import { getCustomerOrderDetail, getOrderByTrackingToken, listCustomerOrders } from "./orders";
+import {
+  customerOwnsOrder,
+  getCustomerOrderDetail,
+  getOrderByTrackingToken,
+  listCustomerOrders,
+} from "./orders";
 
 const db = () => getDb(env.TARGET_TEST_DB);
 const KEY = "test-measurement-encryption-key";
@@ -102,5 +107,22 @@ describe("customer orders", () => {
     const orderId = await seedOrder(a.id, crypto.randomUUID());
     expect(await getCustomerOrderDetail(db(), b.id, orderId, KEY)).toBeNull();
     expect(await getOrderByTrackingToken(db(), "nope", KEY)).toBeNull();
+  });
+
+  it("customerOwnsOrder confirms the owner and rejects non-owners and unknown orders", async () => {
+    const { customer: a } = await findOrCreateCustomer(
+      db(),
+      `oa_${crypto.randomUUID()}@x.ch`,
+      "de",
+    );
+    const { customer: b } = await findOrCreateCustomer(
+      db(),
+      `ob_${crypto.randomUUID()}@x.ch`,
+      "de",
+    );
+    const orderId = await seedOrder(a.id, crypto.randomUUID());
+    expect(await customerOwnsOrder(db(), a.id, orderId)).toBe(true);
+    expect(await customerOwnsOrder(db(), b.id, orderId)).toBe(false);
+    expect(await customerOwnsOrder(db(), a.id, crypto.randomUUID())).toBe(false);
   });
 });
