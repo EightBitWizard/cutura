@@ -325,6 +325,26 @@ Trouser measurements
 7. Trouser length: from the waistband, down the outside of the leg, to the top of your shoe.
    Stand straight and look ahead while someone measures.
 
+Jacket measurements
+
+1. Chest: around the fullest part of your chest, tape level, breathing normally.
+2. Waist: around your natural waist, a little above the navel. Leave room to breathe; do
+   not measure tight.
+3. Hips: around the fullest part of your seat, tape level.
+4. Shoulder width: across your back, from the edge of one shoulder to the edge of the
+   other.
+5. Sleeve length: with your arm slightly bent, from the shoulder point, past the elbow, to
+   the wrist.
+6. Back length: from the base of your neck straight down to the waistline of your
+   trousers. Easiest with help.
+7. Jacket length: from the base of your neck down to mid-thigh, where you want the jacket
+   to end.
+8. Biceps: around the fullest part of your upper arm.
+9. Wrist: around your wrist.
+
+The same technique applies to the women's blazer. All values are body measurements; our
+production partner adds the room the pattern needs.
+
 After you measure
 
 - Read your values back once. A number far outside the usual range is usually a slipped
