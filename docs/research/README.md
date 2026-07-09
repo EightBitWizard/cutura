@@ -25,6 +25,9 @@ diligent, web-sourced research to inform the launch decisions and the website co
 - [business-setup.md](business-setup.md) - the minimum legal setup for the founder as a
   home-based sole proprietor: no founding act needed, Impressum/name/address rules, AHV
   registration + UID, voluntary VAT registration for import-VAT recovery, and a day-0 checklist.
+- [app-review-2026-07.md](app-review-2026-07.md) - holistic application review (2026-07-09):
+  48 findings across five dimensions, all 14 critical/high adversarially confirmed; 18 fixed
+  the same night; prioritized backlog incl. three founder decisions. In German.
 - [pivot-strategy.md](pivot-strategy.md) - positioning strategy (2026-07-04): full
   competitive landscape map incl. Hockerty deep teardown, creative niche ideation, scored
   pivot options (A-E + novel niches), the recommended play (Fit Promise as the brand on a
