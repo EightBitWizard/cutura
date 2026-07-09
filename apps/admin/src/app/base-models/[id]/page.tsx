@@ -13,6 +13,7 @@ import {
   upgrade,
 } from "@cutura/db";
 
+import { FeedbackBanner } from "@/components/FeedbackBanner";
 import { MediaManager } from "@/components/MediaManager";
 import { PublishPanel } from "@/components/PublishPanel";
 import { controlDb } from "@/server/catalog";
@@ -21,8 +22,15 @@ export const dynamic = "force-dynamic";
 
 const inputClass = "mt-1 rounded border border-line-strong px-2 py-1";
 
-export default async function BaseModelDetailPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function BaseModelDetailPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
   const { id } = await params;
+  const feedbackParams = await searchParams;
   const db = controlDb();
   const model = await getRow(db, baseModel, id);
   if (!model) {
@@ -59,6 +67,8 @@ export default async function BaseModelDetailPage({ params }: { params: Promise<
           Back
         </Link>
       </div>
+
+      <FeedbackBanner params={feedbackParams} />
 
       <form
         method="post"

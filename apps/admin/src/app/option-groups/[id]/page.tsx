@@ -3,6 +3,7 @@ import Link from "next/link";
 import { formatCHF } from "@cutura/core";
 import { getRow, listMedia, listOptionValues, optionGroup } from "@cutura/db";
 
+import { ConfirmSubmitButton } from "@/components/ConfirmSubmitButton";
 import { MediaManager } from "@/components/MediaManager";
 import { PublishPanel } from "@/components/PublishPanel";
 import { controlDb } from "@/server/catalog";
@@ -72,9 +73,12 @@ export default async function OptionGroupDetailPage({
                     method="post"
                     action={`/api/catalog/option-groups/${id}/values/${v.id}/delete`}
                   >
-                    <button type="submit" className="rounded border border-line-strong px-2 py-1">
+                    <ConfirmSubmitButton
+                      message={`Delete option value "${v.code}" from this group?`}
+                      className="rounded border border-line-strong px-2 py-1"
+                    >
                       Delete
-                    </button>
+                    </ConfirmSubmitButton>
                   </form>
                 </td>
               </tr>

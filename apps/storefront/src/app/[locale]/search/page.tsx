@@ -3,7 +3,9 @@ import Link from "next/link";
 
 import { buildAlternates } from "@cutura/core";
 import {
+  garmentTypeNamesByModel,
   getDb,
+  listPublishedCollections,
   listPublishedContentPages,
   listPublishedModels,
   primaryMediaForEntities,
@@ -30,7 +32,9 @@ export async function generateMetadata({
 }
 
 // Localized global search (FR-350): a case-insensitive match over published model
-// names and content/legal page titles (launch catalog is small).
+// names, their localized garment-type and collection names (so "Hemd" finds the
+// shirts even where model names are English), and content/legal page titles
+// (launch catalog is small).
 export default async function SearchPage({
   params,
   searchParams,
@@ -45,10 +49,39 @@ export default async function SearchPage({
   const needle = q.toLowerCase();
   const db = getDb(getEnv().DB);
 
-  const [allModels, allPages] = q
-    ? await Promise.all([listPublishedModels(db, locale), listPublishedContentPages(db, locale)])
-    : [[], []];
-  const models = allModels.filter((m) => m.name.toLowerCase().includes(needle));
+  const [allModels, allPages, garmentByModel, collections] = q
+    ? await Promise.all([
+        listPublishedModels(db, locale),
+        listPublishedContentPages(db, locale),
+        garmentTypeNamesByModel(db, locale),
+        listPublishedCollections(db, locale),
+      ])
+    : [[], [], new Map<string, { key: string; name: string }>(), []];
+
+  // Localized collection names per model handle, part of the search haystack.
+  const collectionNamesByHandle = new Map<string, string[]>();
+  for (const col of collections) {
+    for (const handle of col.modelHandles) {
+      const names = collectionNamesByHandle.get(handle) ?? [];
+      names.push(col.name);
+      collectionNamesByHandle.set(handle, names);
+    }
+  }
+
+  const models = allModels.filter((m) => {
+    const garment = garmentByModel.get(m.id);
+    const haystack = [
+      m.name,
+      // Both garment-type name sources: the published catalog row and the
+      // static message catalog (e.g. "Hemd", "Sakko", "Veste", "Giacca").
+      garment?.name ?? "",
+      garment ? (t.garmentNames[garment.key] ?? "") : "",
+      ...(collectionNamesByHandle.get(m.handle) ?? []),
+    ]
+      .join(" ")
+      .toLowerCase();
+    return haystack.includes(needle);
+  });
   const pages = allPages.filter((p) => p.title.toLowerCase().includes(needle));
   const mediaByModel = await primaryMediaForEntities(
     db,

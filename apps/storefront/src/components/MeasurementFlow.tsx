@@ -59,6 +59,7 @@ export function MeasurementFlow({
   const [method, setMethod] = useState<"wizard" | "detailed">("wizard");
   const [saving, setSaving] = useState(false);
   const [outlier, setOutlier] = useState<string[] | null>(null);
+  const [requestError, setRequestError] = useState<string | null>(null);
 
   const confidenceLabel =
     confidence === "high"
@@ -71,6 +72,7 @@ export function MeasurementFlow({
 
   async function runEstimate() {
     setSaving(true);
+    setRequestError(null);
     try {
       const res = await fetch("/api/measurement", {
         method: "POST",
@@ -88,6 +90,11 @@ export function MeasurementFlow({
           },
         }),
       });
+      if (!res.ok) {
+        // Stay on the wizard and say so; detailed entry remains available.
+        setRequestError(t.estimateError);
+        return;
+      }
       const data = (await res.json()) as {
         fallback?: boolean;
         derived?: Confirmed;
@@ -109,6 +116,8 @@ export function MeasurementFlow({
       setConfirmed(next);
       setMethod("wizard");
       setStep("review");
+    } catch {
+      setRequestError(t.estimateError);
     } finally {
       setSaving(false);
     }
@@ -116,6 +125,7 @@ export function MeasurementFlow({
 
   async function confirm() {
     setSaving(true);
+    setRequestError(null);
     try {
       const originalInputs =
         method === "wizard"
@@ -133,9 +143,16 @@ export function MeasurementFlow({
           confirmedValues: confirmed,
         }),
       });
+      if (!res.ok) {
+        // A failed confirm must never redirect as if it succeeded.
+        setRequestError(t.saveError);
+        return;
+      }
       const data = (await res.json()) as { isOutlier?: boolean; flags?: string[] };
       if (data.isOutlier) setOutlier(data.flags ?? []);
-      else window.location.href = returnUrl;
+      else window.location.assign(returnUrl);
+    } catch {
+      setRequestError(t.saveError);
     } finally {
       setSaving(false);
     }
@@ -157,6 +174,12 @@ export function MeasurementFlow({
       </div>
     );
   }
+
+  const requestErrorNotice = requestError ? (
+    <p role="alert" className="mt-3 text-sm text-accent">
+      {requestError}
+    </p>
+  ) : null;
 
   const unitToggle = (
     <div className="mt-2 flex gap-2 text-sm">
@@ -287,10 +310,14 @@ export function MeasurementFlow({
             </select>
           </label>
         </div>
+        {requestErrorNotice}
         <div className="mt-4 flex gap-2">
           <button
             type="button"
-            onClick={() => setStep("choose")}
+            onClick={() => {
+              setRequestError(null);
+              setStep("choose");
+            }}
             className={buttonClasses("secondary", "md")}
           >
             {t.back}
@@ -321,10 +348,14 @@ export function MeasurementFlow({
         ))}
         {unitToggle}
         {fieldGrid(true)}
+        {requestErrorNotice}
         <div className="mt-4 flex gap-2">
           <button
             type="button"
-            onClick={() => setStep("wizard")}
+            onClick={() => {
+              setRequestError(null);
+              setStep("wizard");
+            }}
             className={buttonClasses("secondary", "md")}
           >
             {t.back}
@@ -348,10 +379,14 @@ export function MeasurementFlow({
       <h2 className="text-lg font-medium text-ink">{t.detailedTitle}</h2>
       {unitToggle}
       {fieldGrid(true)}
+      {requestErrorNotice}
       <div className="mt-4 flex gap-2">
         <button
           type="button"
-          onClick={() => setStep("choose")}
+          onClick={() => {
+            setRequestError(null);
+            setStep("choose");
+          }}
           className={buttonClasses("secondary", "md")}
         >
           {t.back}

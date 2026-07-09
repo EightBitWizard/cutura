@@ -3,11 +3,18 @@ import Link from "next/link";
 import { formatCHF } from "@cutura/core";
 import { baseModel, garmentType, incompleteLocales, listRows } from "@cutura/db";
 
+import { ConfirmSubmitButton } from "@/components/ConfirmSubmitButton";
+import { FeedbackBanner } from "@/components/FeedbackBanner";
 import { controlDb } from "@/server/catalog";
 
 export const dynamic = "force-dynamic";
 
-export default async function BaseModelsPage() {
+export default async function BaseModelsPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const feedbackParams = await searchParams;
   const db = controlDb();
   const models = await listRows(db, baseModel);
   const garmentTypes = await listRows(db, garmentType);
@@ -21,6 +28,8 @@ export default async function BaseModelsPage() {
           Dashboard
         </Link>
       </div>
+
+      <FeedbackBanner params={feedbackParams} />
 
       <table className="mt-6 w-full border-collapse text-sm">
         <thead>
@@ -72,12 +81,12 @@ export default async function BaseModelsPage() {
                         </button>
                       </form>
                       <form method="post" action={`/api/catalog/base-models/${m.id}/delete`}>
-                        <button
-                          type="submit"
+                        <ConfirmSubmitButton
+                          message={`Delete base model "${m.handle}" from the control catalog?`}
                           className="rounded border border-line-strong px-2 py-1"
                         >
                           Delete
-                        </button>
+                        </ConfirmSubmitButton>
                       </form>
                     </div>
                   </td>

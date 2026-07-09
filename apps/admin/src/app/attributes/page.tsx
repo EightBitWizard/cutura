@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { attributeDefinition, incompleteLocales, listRows } from "@cutura/db";
 
+import { ConfirmSubmitButton } from "@/components/ConfirmSubmitButton";
 import { controlDb } from "@/server/catalog";
 
 export const dynamic = "force-dynamic";
@@ -58,12 +59,12 @@ export default async function AttributesPage() {
                         </button>
                       </form>
                       <form method="post" action={`/api/catalog/attributes/${a.id}/delete`}>
-                        <button
-                          type="submit"
+                        <ConfirmSubmitButton
+                          message={`Delete attribute "${a.key}" from the control catalog?`}
                           className="rounded border border-line-strong px-2 py-1"
                         >
                           Delete
-                        </button>
+                        </ConfirmSubmitButton>
                       </form>
                     </div>
                   </td>

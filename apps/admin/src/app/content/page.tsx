@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { contentPage, incompleteLocales, listRows } from "@cutura/db";
 
+import { ConfirmSubmitButton } from "@/components/ConfirmSubmitButton";
 import { controlDb } from "@/server/catalog";
 
 export const dynamic = "force-dynamic";
@@ -54,9 +55,12 @@ export default async function ContentListPage() {
                     </button>
                   </form>
                   <form method="post" action={`/api/catalog/content/${p.id}/delete`}>
-                    <button type="submit" className="rounded border border-line-strong px-2 py-1">
+                    <ConfirmSubmitButton
+                      message={`Delete page "${p.slug}" from the control catalog?`}
+                      className="rounded border border-line-strong px-2 py-1"
+                    >
                       Delete
-                    </button>
+                    </ConfirmSubmitButton>
                   </form>
                 </td>
               </tr>

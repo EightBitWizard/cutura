@@ -14,7 +14,12 @@ import {
   optionValue,
 } from "../schema";
 import { publishEntity } from "../publish";
-import { getPublishedModel, listPublishedCollections, listPublishedModels } from "./read";
+import {
+  garmentTypeNamesByModel,
+  getPublishedModel,
+  listPublishedCollections,
+  listPublishedModels,
+} from "./read";
 
 const control = () => getDb(env.CONTROL_TEST_DB);
 const target = () => getDb(env.TARGET_TEST_DB);
@@ -145,5 +150,18 @@ describe("storefront catalog read", () => {
 
   it("returns undefined for an unknown handle", async () => {
     expect(await getPublishedModel(target(), "does-not-exist", "de")).toBeUndefined();
+  });
+
+  it("maps published models to their localized garment-type name for search", async () => {
+    const { handle } = await seedAndPublish();
+    const t = target();
+    const model = (await listPublishedModels(t, "de")).find((m) => m.handle === handle);
+    expect(model).toBeDefined();
+    const byModel = await garmentTypeNamesByModel(t, "de");
+    // The seeded garment type carries the German name "Hemd" (see seedAndPublish),
+    // so a search for "hemd" can match the model through its garment type.
+    expect(byModel.get(model!.id)?.name).toBe("Hemd");
+    // Missing locale falls back to German.
+    expect((await garmentTypeNamesByModel(t, "fr")).get(model!.id)?.name).toBe("Hemd");
   });
 });

@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { collection, collectionMember, incompleteLocales, listRows } from "@cutura/db";
 
+import { ConfirmSubmitButton } from "@/components/ConfirmSubmitButton";
 import { controlDb } from "@/server/catalog";
 
 export const dynamic = "force-dynamic";
@@ -70,12 +71,12 @@ export default async function CollectionsPage() {
                         </button>
                       </form>
                       <form method="post" action={`/api/catalog/collections/${c.id}/delete`}>
-                        <button
-                          type="submit"
+                        <ConfirmSubmitButton
+                          message={`Delete collection "${c.handle}" from the control catalog?`}
                           className="rounded border border-line-strong px-2 py-1"
                         >
                           Delete
-                        </button>
+                        </ConfirmSubmitButton>
                       </form>
                     </div>
                   </td>

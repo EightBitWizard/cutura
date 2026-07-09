@@ -3,13 +3,19 @@ import Link from "next/link";
 import { parseSupplierCapabilities } from "@cutura/core";
 import { listSuppliers } from "@cutura/db";
 
+import { FeedbackBanner } from "@/components/FeedbackBanner";
 import { environmentDb } from "@/server/catalog";
 
 export const dynamic = "force-dynamic";
 
 const input = "mt-1 rounded border border-line-strong px-2 py-1";
 
-export default async function SuppliersPage() {
+export default async function SuppliersPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const feedbackParams = await searchParams;
   // Suppliers live in the environment DB - the paid pipeline routes to the default here.
   const rows = await listSuppliers(environmentDb("staging"));
 
@@ -25,6 +31,8 @@ export default async function SuppliersPage() {
         One supplier at launch; all production routes to the default (staging). The model supports
         more later.
       </p>
+
+      <FeedbackBanner params={feedbackParams} />
 
       <ul className="mt-6 flex flex-col gap-3">
         {rows.map((s) => {

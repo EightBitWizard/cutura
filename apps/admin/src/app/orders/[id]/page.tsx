@@ -9,14 +9,23 @@ import {
 } from "@cutura/core";
 import { getOrderCost, getOrderDetail, getRow, readSnapshot, supplier } from "@cutura/db";
 
+import { ConfirmSubmitButton } from "@/components/ConfirmSubmitButton";
+import { FeedbackBanner } from "@/components/FeedbackBanner";
 import { environmentDb } from "@/server/catalog";
 import { getEnv } from "@/server/env";
 import { type ProducerSheetView, buildProducerSheetForItem } from "@/server/producer";
 
 export const dynamic = "force-dynamic";
 
-export default async function OrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function OrderDetailPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
   const { id } = await params;
+  const feedbackParams = await searchParams;
   const db = environmentDb("staging");
   const detail = await getOrderDetail(db, id);
   if (!detail) {
@@ -73,12 +82,17 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
         {detail.order.acceptedTermsVersion} / Privacy {detail.order.acceptedPrivacyVersion}
       </p>
 
+      <FeedbackBanner params={feedbackParams} />
+
       <div className="mt-4 flex gap-2">
         {anyInReview && (
           <form method="post" action={`/api/orders/${id}/approve`}>
-            <button type="submit" className="rounded bg-ink px-3 py-1 text-sm text-paper">
+            <ConfirmSubmitButton
+              message="Approve this order and send the spec to the supplier? This cannot be undone."
+              className="rounded bg-ink px-3 py-1 text-sm text-paper"
+            >
               Approve + send to supplier
-            </button>
+            </ConfirmSubmitButton>
           </form>
         )}
         {anyApproved && (

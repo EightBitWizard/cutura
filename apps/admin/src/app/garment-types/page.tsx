@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { garmentType, incompleteLocales, listRows } from "@cutura/db";
 
+import { ConfirmSubmitButton } from "@/components/ConfirmSubmitButton";
 import { controlDb } from "@/server/catalog";
 
 export const dynamic = "force-dynamic";
@@ -56,12 +57,12 @@ export default async function GarmentTypesPage() {
                         </button>
                       </form>
                       <form method="post" action={`/api/catalog/garment-types/${g.id}/delete`}>
-                        <button
-                          type="submit"
+                        <ConfirmSubmitButton
+                          message={`Delete garment type "${g.key}" from the control catalog?`}
                           className="rounded border border-line-strong px-2 py-1"
                         >
                           Delete
-                        </button>
+                        </ConfirmSubmitButton>
                       </form>
                     </div>
                   </td>

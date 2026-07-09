@@ -189,6 +189,7 @@ export default async function ProductPage({
                   allInclusive: t.allInclusive,
                   selectRequired: t.selectRequired,
                   addToCart: t.addToCart,
+                  addToCartError: t.addToCartError,
                   recalculating: t.recalculating,
                   material: t.fabricMaterial,
                   care: t.fabricCare,

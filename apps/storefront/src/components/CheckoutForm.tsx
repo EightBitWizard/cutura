@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { buttonClasses } from "@/components/ui/buttonClasses";
+import { checkoutErrorKey } from "@/i18n/checkoutErrors";
 import type { CheckoutMessages } from "@/i18n/messages";
 
 const input =
@@ -57,12 +58,18 @@ export function CheckoutForm({
       const data = (await res.json().catch(() => null)) as {
         checkoutUrl?: string;
         error?: string;
+        message?: string;
       } | null;
       if (res.ok && data?.checkoutUrl) {
         window.location.href = data.checkoutUrl;
         return;
       }
-      setError(data?.error ?? "checkout failed");
+      // Ordering pause carries a founder-written, already localized message;
+      // every other token maps to the catalog (generic fallback for unknowns).
+      if (data?.error === "ordering paused" && data.message) setError(data.message);
+      else setError(t.errors[checkoutErrorKey(data?.error)]);
+    } catch {
+      setError(t.errors.generic);
     } finally {
       setSubmitting(false);
     }
@@ -135,7 +142,11 @@ export function CheckoutForm({
         {t.acceptPrivacy}
       </label>
 
-      {error && <p className="text-sm text-accent">{error}</p>}
+      {error && (
+        <p role="alert" className="text-sm text-accent">
+          {error}
+        </p>
+      )}
 
       <button
         type="submit"

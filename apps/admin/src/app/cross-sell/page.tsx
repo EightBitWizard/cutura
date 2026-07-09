@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { baseModel, listCrossSellRules, listRows } from "@cutura/db";
 
+import { ConfirmSubmitButton } from "@/components/ConfirmSubmitButton";
 import { controlDb } from "@/server/catalog";
 
 export const dynamic = "force-dynamic";
@@ -46,9 +47,12 @@ export default async function CrossSellPage() {
                 </button>
               </form>
               <form method="post" action={`/api/catalog/cross-sell/${r.id}/delete`}>
-                <button type="submit" className="rounded border border-line-strong px-2 py-1">
+                <ConfirmSubmitButton
+                  message={`Delete the cross-sell rule for "${r.sourceKey}"?`}
+                  className="rounded border border-line-strong px-2 py-1"
+                >
                   Delete
-                </button>
+                </ConfirmSubmitButton>
               </form>
             </div>
           </li>

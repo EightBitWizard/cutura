@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { listProducerMappings } from "@cutura/db";
 
+import { FeedbackBanner } from "@/components/FeedbackBanner";
 import { environmentDb } from "@/server/catalog";
 
 export const dynamic = "force-dynamic";
@@ -14,9 +15,11 @@ const input = "mt-1 rounded border border-line-strong px-2 py-1";
 export default async function ProducerMappingsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ producer?: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const { producer = "kutetailor" } = await searchParams;
+  const feedbackParams = await searchParams;
+  const rawProducer = feedbackParams.producer;
+  const producer = (Array.isArray(rawProducer) ? rawProducer[0] : rawProducer) || "kutetailor";
   const rows = await listProducerMappings(environmentDb("staging"), producer);
 
   return (
@@ -31,6 +34,8 @@ export default async function ProducerMappingsPage({
         Producer <span className="font-mono">{producer}</span>: map CUTURA catalog codes to external
         producer codes. Unmapped entries still render on the order sheet with a warning.
       </p>
+
+      <FeedbackBanner params={feedbackParams} />
 
       <table className="mt-6 w-full text-sm">
         <thead>

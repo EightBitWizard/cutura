@@ -219,6 +219,30 @@ export async function getPublishedModel(
   };
 }
 
+/**
+ * The localized garment-type name (plus the type key) for every published
+ * model, keyed by model id. Used by the storefront search (FR-350) so a query
+ * like "Hemd" also matches models via their garment type, not only the model
+ * name.
+ */
+export async function garmentTypeNamesByModel(
+  db: Database,
+  locale: Locale,
+): Promise<Map<string, { key: string; name: string }>> {
+  const [models, types] = await Promise.all([
+    db.select().from(baseModel),
+    db.select().from(garmentType),
+  ]);
+  const typeById = new Map(types.map((t) => [t.id, t]));
+  const out = new Map<string, { key: string; name: string }>();
+  for (const m of models) {
+    if (m.status === "draft") continue;
+    const gt = typeById.get(m.garmentTypeId);
+    if (gt) out.set(m.id, { key: gt.key, name: localize(gt.nameI18n, locale) });
+  }
+  return out;
+}
+
 export interface PublishedCollection {
   handle: string;
   name: string;

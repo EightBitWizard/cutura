@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { listFitReviews } from "@cutura/db";
 
+import { ConfirmSubmitButton } from "@/components/ConfirmSubmitButton";
 import { environmentDb } from "@/server/catalog";
 
 export const dynamic = "force-dynamic";
@@ -48,9 +49,12 @@ export default async function FitReviewsPage() {
                   <option value="refund">refund</option>
                   <option value="alteration">alteration</option>
                 </select>
-                <button type="submit" className="rounded bg-ink px-3 py-1 text-sm text-paper">
+                <ConfirmSubmitButton
+                  message="Record this decision? It closes the fit review and cannot be undone."
+                  className="rounded bg-ink px-3 py-1 text-sm text-paper"
+                >
                   Decide
-                </button>
+                </ConfirmSubmitButton>
               </form>
             )}
           </li>

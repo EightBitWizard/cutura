@@ -62,6 +62,10 @@ export interface MeasureMessages {
   unitInch: string;
   outlierNotice: string;
   saving: string;
+  /** Shown inline when the wizard estimate request fails; entry stays available. */
+  estimateError: string;
+  /** Shown inline when confirming measurements fails; the customer is not redirected. */
+  saveError: string;
   fields: ShirtFieldLabels;
 }
 
@@ -75,6 +79,22 @@ export interface CartMessages {
   total: string;
   checkout: string;
   base: string;
+}
+
+/**
+ * Customer-facing texts for the known /api/checkout error tokens. The API keeps
+ * returning stable English tokens; the client maps them to these messages (see
+ * i18n/checkoutErrors.ts). `generic` covers unknown tokens and network failures.
+ */
+export interface CheckoutErrorMessages {
+  rateLimited: string;
+  missingFields: string;
+  staleConsent: string;
+  emptyCart: string;
+  orderingPaused: string;
+  invalidLine: string;
+  missingMeasurement: string;
+  generic: string;
 }
 
 export interface CheckoutMessages {
@@ -93,6 +113,7 @@ export interface CheckoutMessages {
   mustAccept: string;
   regionNote: string;
   redirecting: string;
+  errors: CheckoutErrorMessages;
 }
 
 export interface Messages {
@@ -144,6 +165,8 @@ export interface Messages {
   total: string;
   selectRequired: string;
   addToCart: string;
+  /** Shown inline when adding a configuration to the cart fails; no navigation happens. */
+  addToCartError: string;
   recalculating: string;
   fabricMaterial: string;
   fabricCare: string;
@@ -208,6 +231,8 @@ const de: Messages = {
   total: "Gesamt",
   selectRequired: "Bitte alle erforderlichen Optionen wählen.",
   addToCart: "Weiter zu den Massen",
+  addToCartError:
+    "Der Artikel konnte nicht in den Warenkorb gelegt werden. Bitte versuchen Sie es erneut.",
   recalculating: "Preis wird aktualisiert ...",
   fabricMaterial: "Material",
   fabricCare: "Pflege",
@@ -238,6 +263,9 @@ const de: Messages = {
     outlierNotice:
       "Einige Masse sind ungewöhnlich. Ihre Bestellung wird vor der Produktion geprüft.",
     saving: "Wird gespeichert ...",
+    estimateError:
+      "Die Masse konnten nicht abgeleitet werden. Bitte versuchen Sie es erneut oder geben Sie Ihre Masse direkt ein.",
+    saveError: "Ihre Masse konnten nicht gespeichert werden. Bitte versuchen Sie es erneut.",
     fields: {
       neck: "Halsumfang",
       shoulder: "Schulterbreite",
@@ -287,6 +315,18 @@ const de: Messages = {
     mustAccept: "Bitte AGB und Datenschutz akzeptieren.",
     regionNote: "Lieferung nur in die Schweiz und nach Liechtenstein.",
     redirecting: "Weiterleitung zur Zahlung ...",
+    errors: {
+      rateLimited: "Zu viele Versuche. Bitte warten Sie einen Moment und versuchen Sie es erneut.",
+      missingFields: "Bitte füllen Sie alle Adressfelder aus.",
+      staleConsent:
+        "Die AGB oder die Datenschutzerklärung wurden aktualisiert. Bitte laden Sie die Seite neu und bestätigen Sie erneut.",
+      emptyCart: "Ihr Warenkorb ist leer.",
+      orderingPaused: "Bestellungen sind zurzeit pausiert. Bitte versuchen Sie es später erneut.",
+      invalidLine:
+        "Eine Position in Ihrem Warenkorb ist nicht mehr gültig. Bitte prüfen Sie Ihren Warenkorb.",
+      missingMeasurement: "Bitte erfassen Sie zuerst Ihre Masse.",
+      generic: "Die Zahlung konnte nicht gestartet werden. Bitte versuchen Sie es später erneut.",
+    },
   },
 };
 
@@ -345,6 +385,7 @@ const en: Messages = {
   total: "Total",
   selectRequired: "Please choose all required options.",
   addToCart: "Continue to measurements",
+  addToCartError: "The item could not be added to the cart. Please try again.",
   recalculating: "Updating price ...",
   fabricMaterial: "Material",
   fabricCare: "Care",
@@ -374,6 +415,9 @@ const en: Messages = {
     unitInch: "inch",
     outlierNotice: "Some measurements are unusual. Your order will be reviewed before production.",
     saving: "Saving ...",
+    estimateError:
+      "The measurements could not be derived. Please try again or enter your measurements directly.",
+    saveError: "Your measurements could not be saved. Please try again.",
     fields: {
       neck: "Neck",
       shoulder: "Shoulder width",
@@ -423,6 +467,17 @@ const en: Messages = {
     mustAccept: "Please accept the Terms and Privacy Policy.",
     regionNote: "Delivery to Switzerland and Liechtenstein only.",
     redirecting: "Redirecting to payment ...",
+    errors: {
+      rateLimited: "Too many attempts. Please wait a moment and try again.",
+      missingFields: "Please fill in all address fields.",
+      staleConsent:
+        "The Terms or Privacy Policy have been updated. Please reload the page and confirm again.",
+      emptyCart: "Your cart is empty.",
+      orderingPaused: "Ordering is currently paused. Please try again later.",
+      invalidLine: "An item in your cart is no longer valid. Please review your cart.",
+      missingMeasurement: "Please capture your measurements first.",
+      generic: "The payment could not be started. Please try again later.",
+    },
   },
 };
 
@@ -481,6 +536,7 @@ const it: Messages = {
   total: "Totale",
   selectRequired: "Scegli tutte le opzioni obbligatorie.",
   addToCart: "Continua con le misure",
+  addToCartError: "Non e stato possibile aggiungere l articolo al carrello. Riprova.",
   recalculating: "Aggiornamento del prezzo ...",
   fabricMaterial: "Materiale",
   fabricCare: "Manutenzione",
@@ -511,6 +567,9 @@ const it: Messages = {
     outlierNotice:
       "Alcune misure sono insolite. Il tuo ordine sara verificato prima della produzione.",
     saving: "Salvataggio ...",
+    estimateError:
+      "Non e stato possibile derivare le misure. Riprova o inserisci le tue misure direttamente.",
+    saveError: "Non e stato possibile salvare le tue misure. Riprova.",
     fields: {
       neck: "Collo",
       shoulder: "Larghezza spalle",
@@ -560,6 +619,17 @@ const it: Messages = {
     mustAccept: "Accetta le condizioni e la privacy.",
     regionNote: "Spedizione solo in Svizzera e Liechtenstein.",
     redirecting: "Reindirizzamento al pagamento ...",
+    errors: {
+      rateLimited: "Troppi tentativi. Attendi un momento e riprova.",
+      missingFields: "Compila tutti i campi dell indirizzo.",
+      staleConsent:
+        "Le condizioni o l informativa sulla privacy sono state aggiornate. Ricarica la pagina e conferma di nuovo.",
+      emptyCart: "Il tuo carrello e vuoto.",
+      orderingPaused: "Gli ordini sono momentaneamente sospesi. Riprova piu tardi.",
+      invalidLine: "Un articolo nel carrello non e piu valido. Controlla il tuo carrello.",
+      missingMeasurement: "Acquisisci prima le tue misure.",
+      generic: "Non e stato possibile avviare il pagamento. Riprova piu tardi.",
+    },
   },
 };
 
@@ -619,6 +689,7 @@ const fr: Messages = {
   total: "Total",
   selectRequired: "Veuillez choisir toutes les options requises.",
   addToCart: "Continuer vers les mesures",
+  addToCartError: "L article n a pas pu etre ajoute au panier. Veuillez reessayer.",
   recalculating: "Mise a jour du prix ...",
   fabricMaterial: "Matière",
   fabricCare: "Entretien",
@@ -649,6 +720,9 @@ const fr: Messages = {
     outlierNotice:
       "Certaines mesures sont inhabituelles. Votre commande sera verifiee avant production.",
     saving: "Enregistrement ...",
+    estimateError:
+      "Les mesures n ont pas pu etre deduites. Veuillez reessayer ou saisir vos mesures directement.",
+    saveError: "Vos mesures n ont pas pu etre enregistrees. Veuillez reessayer.",
     fields: {
       neck: "Tour de cou",
       shoulder: "Largeur d'épaules",
@@ -698,6 +772,17 @@ const fr: Messages = {
     mustAccept: "Veuillez accepter les conditions et la confidentialite.",
     regionNote: "Livraison en Suisse et au Liechtenstein uniquement.",
     redirecting: "Redirection vers le paiement ...",
+    errors: {
+      rateLimited: "Trop de tentatives. Veuillez patienter un moment et reessayer.",
+      missingFields: "Veuillez remplir tous les champs d adresse.",
+      staleConsent:
+        "Les conditions ou la politique de confidentialite ont ete mises a jour. Veuillez recharger la page et confirmer a nouveau.",
+      emptyCart: "Votre panier est vide.",
+      orderingPaused: "Les commandes sont actuellement en pause. Veuillez reessayer plus tard.",
+      invalidLine: "Un article de votre panier n est plus valable. Veuillez verifier votre panier.",
+      missingMeasurement: "Veuillez d abord enregistrer vos mesures.",
+      generic: "Le paiement n a pas pu etre lance. Veuillez reessayer plus tard.",
+    },
   },
 };
 

@@ -18,6 +18,7 @@ export interface ConfiguratorMessages {
   allInclusive: string;
   selectRequired: string;
   addToCart: string;
+  addToCartError: string;
   recalculating: string;
   material: string;
   care: string;
@@ -82,6 +83,7 @@ export function Configurator({
   const [server, setServer] = useState<PriceResponse | null>(null);
   const [pending, setPending] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [submitFailed, setSubmitFailed] = useState(false);
   const seqRef = useRef(0);
 
   // Mobile-only: the sticky bottom purchase bar appears once the in-flow total + CTA
@@ -174,6 +176,7 @@ export function Configurator({
 
   async function addToCart() {
     setSubmitting(true);
+    setSubmitFailed(false);
     try {
       const res = await fetch("/api/cart", {
         method: "POST",
@@ -182,7 +185,12 @@ export function Configurator({
       });
       if (res.ok) {
         window.location.href = `/${locale}/measure?gt=${model.garmentType}&return=/${locale}/cart`;
+        return;
       }
+      // Stay on the page and say so; a silent failure would look like success.
+      setSubmitFailed(true);
+    } catch {
+      setSubmitFailed(true);
     } finally {
       setSubmitting(false);
     }
@@ -392,6 +400,11 @@ export function Configurator({
             {pending ? t.recalculating : t.allInclusive}
           </p>
           {!valid && <p className="mt-2 text-sm text-accent">{t.selectRequired}</p>}
+          {submitFailed && (
+            <p role="alert" className="mt-2 text-sm text-accent">
+              {t.addToCartError}
+            </p>
+          )}
           <button
             type="button"
             disabled={!valid || submitting || paused}
@@ -423,6 +436,7 @@ export function Configurator({
           style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 0.75rem)" }}
         >
           <div className="min-w-0">
+            {submitFailed && <p className="text-sm text-accent">{t.addToCartError}</p>}
             <p className="text-eyebrow uppercase text-ink-subtle">{t.total}</p>
             <p
               className={`text-lg font-semibold tabular-nums text-ink transition-opacity ${

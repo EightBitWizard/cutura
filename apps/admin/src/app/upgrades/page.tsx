@@ -3,6 +3,7 @@ import Link from "next/link";
 import { formatCHF } from "@cutura/core";
 import { incompleteLocales, listRows, upgrade } from "@cutura/db";
 
+import { ConfirmSubmitButton } from "@/components/ConfirmSubmitButton";
 import { controlDb } from "@/server/catalog";
 
 export const dynamic = "force-dynamic";
@@ -67,12 +68,12 @@ export default async function UpgradesPage() {
                         </button>
                       </form>
                       <form method="post" action={`/api/catalog/upgrades/${u.id}/delete`}>
-                        <button
-                          type="submit"
+                        <ConfirmSubmitButton
+                          message={`Delete upgrade "${u.code}" from the control catalog?`}
                           className="rounded border border-line-strong px-2 py-1"
                         >
                           Delete
-                        </button>
+                        </ConfirmSubmitButton>
                       </form>
                     </div>
                   </td>
