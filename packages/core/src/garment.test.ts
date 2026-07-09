@@ -38,3 +38,9 @@ describe("normalizeGarmentType", () => {
     expect(normalizeGarmentType(42)).toBe("shirt");
   });
 });
+
+describe("inferGarmentType jacket fallback", () => {
+  it("recognizes jacket-only keys in historic snapshots", () => {
+    expect(inferGarmentType({ chest: 100, backLength: 45, jacketLength: 75 })).toBe("jacket");
+  });
+});

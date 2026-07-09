@@ -1,3 +1,4 @@
+import { GARMENT_TYPES } from "@cutura/core";
 import {
   claimGuestOrders,
   findOrCreateCustomer,
@@ -64,7 +65,7 @@ async function handle(request: Request): Promise<Response> {
     const measureToken = readMeasureToken(request.headers.get("cookie"));
     if (measureToken) {
       // Migrate each garment type the guest measured into its own profile.
-      for (const garmentType of ["shirt", "trouser"]) {
+      for (const garmentType of GARMENT_TYPES) {
         const version = await readMeasurementVersion(measureToken, garmentType);
         if (!version) continue;
         const migrated = await migrateGuestMeasurement(

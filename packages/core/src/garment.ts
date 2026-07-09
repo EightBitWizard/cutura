@@ -6,7 +6,7 @@
 
 import type { GarmentType } from "./types";
 
-const GARMENT_TYPES: readonly GarmentType[] = [
+export const GARMENT_TYPES: readonly GarmentType[] = [
   "shirt",
   "trouser",
   "jacket",
@@ -49,6 +49,9 @@ export function inferGarmentType(
   for (const key of TROUSER_ONLY_KEYS) {
     if (key in measurements) return "trouser";
   }
+  // Jacket-only keys (men's cut as the historic fallback; the women's cuts share
+  // field sets and are only distinguishable via the explicit version garmentType).
+  if ("jacketLength" in measurements || "backLength" in measurements) return "jacket";
   return "shirt";
 }
 

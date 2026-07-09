@@ -55,6 +55,7 @@ export async function POST(request: Request): Promise<Response> {
     const outlier = checkOutliers(garmentType, body.confirmedValues);
     const version = createProfileVersion({
       method: body.method === "wizard" ? "wizard" : "detailed",
+      garmentType,
       originalInputs: body.originalInputs ?? {},
       derivedValues: body.derivedValues ?? {},
       confirmedValues: body.confirmedValues,

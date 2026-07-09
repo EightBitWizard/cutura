@@ -6,12 +6,17 @@
 // retains the predecessor. See REQUIREMENTS.md E5 (US-5.5, US-5.6, US-5.9;
 // FR-530, FR-531, FR-540, FR-570) and CLAUDE.md invariants.
 
-import type { GarmentMeasurements, MeasurementMethod } from "./types";
+import type { GarmentType, GarmentMeasurements, MeasurementMethod } from "./types";
 
 export interface MeasurementProfileVersion {
   version: number;
   previousVersion: number | null;
   method: MeasurementMethod;
+  /**
+   * Explicit garment type of this version. Optional for historic versions;
+   * persistence falls back to key-based inference when absent.
+   */
+  garmentType?: GarmentType;
   originalInputs: Partial<GarmentMeasurements>;
   derivedValues: Partial<GarmentMeasurements>;
   confirmedValues: GarmentMeasurements;
@@ -20,6 +25,7 @@ export interface MeasurementProfileVersion {
 
 export interface CreateProfileInput {
   method: MeasurementMethod;
+  garmentType?: GarmentType;
   originalInputs: Partial<GarmentMeasurements>;
   derivedValues: Partial<GarmentMeasurements>;
   confirmedValues: GarmentMeasurements;
@@ -40,6 +46,7 @@ export function createProfileVersion(
     version: 1,
     previousVersion: null,
     method: input.method,
+    garmentType: input.garmentType,
     originalInputs: { ...input.originalInputs },
     derivedValues: { ...input.derivedValues },
     confirmedValues: { ...input.confirmedValues } as GarmentMeasurements,
@@ -61,6 +68,7 @@ export function reviseConfirmedValues(
     version: previous.version + 1,
     previousVersion: previous.version,
     method: previous.method,
+    garmentType: previous.garmentType,
     originalInputs: { ...previous.originalInputs },
     derivedValues: { ...previous.derivedValues },
     confirmedValues: { ...previous.confirmedValues, ...changes } as GarmentMeasurements,

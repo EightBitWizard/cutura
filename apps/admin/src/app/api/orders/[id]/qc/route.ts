@@ -1,4 +1,4 @@
-import { type QcChecklistItem, getDefaultQcChecklist } from "@cutura/core";
+import { type QcChecklistItem, getDefaultQcChecklist, normalizeGarmentType } from "@cutura/core";
 import { submitQc } from "@cutura/db";
 
 import { environmentDb } from "@/server/catalog";
@@ -15,7 +15,7 @@ export async function POST(
   const packageId = String(form.get("packageId") ?? "");
   if (!packageId) return seeOther(`/orders/${id}`);
 
-  const garmentType = form.get("garmentType") === "trouser" ? "trouser" : "shirt";
+  const garmentType = normalizeGarmentType(form.get("garmentType"));
   const checklist: QcChecklistItem[] = getDefaultQcChecklist(garmentType).map((t) => ({
     id: t.id,
     label: t.label,

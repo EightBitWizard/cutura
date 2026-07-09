@@ -1,4 +1,4 @@
-import { garmentFields } from "@cutura/core";
+import { GARMENT_TYPES, garmentFields } from "@cutura/core";
 import { buildReorderLine, getDb } from "@cutura/db";
 
 import { defaultLocale, isLocale } from "@/i18n/config";
@@ -9,8 +9,8 @@ import { getCustomerId } from "@/server/session";
 
 export const dynamic = "force-dynamic";
 
-// Union of both garment types' supplier field sets (single source: packages/core).
-const FIELDS = [...new Set([...garmentFields("shirt"), ...garmentFields("trouser")])];
+// Union of every garment type's field set (single source: packages/core).
+const FIELDS = [...new Set(GARMENT_TYPES.flatMap((t) => garmentFields(t)))];
 
 export async function POST(request: Request): Promise<Response> {
   const form = await request.formData();

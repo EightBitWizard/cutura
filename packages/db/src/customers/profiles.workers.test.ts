@@ -139,3 +139,33 @@ describe("profile management", () => {
     expect(await archiveProfile(db(), other.id, profileId)).toBe(false);
   });
 });
+
+describe("explicit garment type persistence (jacket_w)", () => {
+  it("saves and returns a women's jacket profile as jacket_w, not shirt", async () => {
+    const { customer } = await findOrCreateCustomer(db(), `w_${crypto.randomUUID()}@x.ch`, "de");
+    const version = createProfileVersion({
+      method: "detailed",
+      garmentType: "jacket_w",
+      originalInputs: {},
+      derivedValues: {},
+      confirmedValues: {
+        chest: 92,
+        waist: 74,
+        hips: 100,
+        shoulder: 41,
+        sleeveLength: 55,
+        backLength: 39.5,
+        jacketLength: 64,
+        biceps: 28,
+        wrist: 15,
+      } as never,
+      createdAt: "2026-07-09T00:00:00Z",
+    });
+    const { profileId } = await saveCustomerMeasurement(db(), customer.id, version, KEY);
+    const got = await getProfile(db(), customer.id, profileId, KEY);
+    expect(got?.garmentType).toBe("jacket_w");
+    // A second jacket_w save revises the same profile instead of creating a shirt one.
+    const again = await saveCustomerMeasurement(db(), customer.id, version, KEY);
+    expect(again.profileId).toBe(profileId);
+  });
+});

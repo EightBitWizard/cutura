@@ -80,3 +80,30 @@ describe("three-layer measurement profile versioning", () => {
     expect((v3.confirmedValues as ShirtMeasurements).chest).toBe(103);
   });
 });
+
+describe("explicit garment type on versions", () => {
+  it("createProfileVersion carries the explicit garment type", () => {
+    const v = createProfileVersion({
+      method: "detailed",
+      garmentType: "jacket_w",
+      originalInputs: {},
+      derivedValues: {},
+      confirmedValues: { chest: 92 } as never,
+      createdAt: "t1",
+    });
+    expect(v.garmentType).toBe("jacket_w");
+  });
+
+  it("reviseConfirmedValues preserves the garment type", () => {
+    const v1 = createProfileVersion({
+      method: "detailed",
+      garmentType: "trouser_w",
+      originalInputs: {},
+      derivedValues: {},
+      confirmedValues: { waist: 74 } as never,
+      createdAt: "t1",
+    });
+    const v2 = reviseConfirmedValues(v1, { waist: 75 }, "t2");
+    expect(v2.garmentType).toBe("trouser_w");
+  });
+});

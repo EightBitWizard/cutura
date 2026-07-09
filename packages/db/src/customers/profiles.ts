@@ -40,7 +40,9 @@ async function insertVersion(
     profileId,
     version: version.version,
     previousVersion: version.previousVersion,
-    garmentType: inferGarmentType(version.confirmedValues as unknown as Record<string, unknown>),
+    garmentType:
+      version.garmentType ??
+      inferGarmentType(version.confirmedValues as unknown as Record<string, unknown>),
     method: version.method,
     originalInputsEnc: await enc(version.originalInputs),
     derivedValuesEnc: await enc(version.derivedValues),
@@ -86,9 +88,9 @@ export async function migrateGuestMeasurement(
   key: string,
   deps: CustomerClock = {},
 ): Promise<{ profileId: string } | null> {
-  const garmentType = inferGarmentType(
-    version.confirmedValues as unknown as Record<string, unknown>,
-  );
+  const garmentType =
+    version.garmentType ??
+    inferGarmentType(version.confirmedValues as unknown as Record<string, unknown>);
   if (await getProfileIdForGarmentType(db, customerId, garmentType)) return null;
   return createProfile(db, customerId, version, key, null, deps);
 }
@@ -188,6 +190,7 @@ async function readVersion(
     version: row.version,
     previousVersion: row.previousVersion,
     method: row.method,
+    garmentType: (row.garmentType as MeasurementProfileVersion["garmentType"]) ?? undefined,
     originalInputs: await dec(row.originalInputsEnc),
     derivedValues: await dec(row.derivedValuesEnc),
     confirmedValues: await decryptJson<GarmentMeasurements>(
@@ -221,7 +224,9 @@ export async function getProfile(
     currentVersion: profile.currentVersion,
     archivedAt: profile.archivedAt,
     method: version.method,
-    garmentType: inferGarmentType(version.confirmedValues as unknown as Record<string, unknown>),
+    garmentType:
+      version.garmentType ??
+      inferGarmentType(version.confirmedValues as unknown as Record<string, unknown>),
     confirmed: version.confirmedValues,
   };
 }
@@ -316,9 +321,9 @@ export async function saveCustomerMeasurement(
 ): Promise<{ profileId: string }> {
   // Revise the profile of the same garment type, or create one for a new type, so a
   // customer keeps a shirt profile and a trouser profile independently.
-  const garmentType = inferGarmentType(
-    version.confirmedValues as unknown as Record<string, unknown>,
-  );
+  const garmentType =
+    version.garmentType ??
+    inferGarmentType(version.confirmedValues as unknown as Record<string, unknown>);
   const profileId = await getProfileIdForGarmentType(db, customerId, garmentType);
   if (!profileId) return createProfile(db, customerId, version, key, null, deps);
   await reviseProfile(db, customerId, profileId, version.confirmedValues, key, deps);
